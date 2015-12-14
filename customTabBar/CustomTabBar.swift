@@ -12,17 +12,14 @@ class CustomTabBar: UITabBar {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        //print(self.subviews)
-        
-        //let rect = self.frame
-        //print(self.layer)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         //print(self.superview)
         //print(self.subviews.last)
-            }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         //print(self.frame)

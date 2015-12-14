@@ -7,43 +7,77 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		76017D5F1C1C772000E9693B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D5E1C1C772000E9693B /* LoginViewController.swift */; };
+		76017D621C1CCA1500E9693B /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D601C1CCA1400E9693B /* Bolts.framework */; };
+		76017D631C1CCA1500E9693B /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D611C1CCA1400E9693B /* Parse.framework */; };
+		76017D651C1CD36E00E9693B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D641C1CD36E00E9693B /* AudioToolbox.framework */; };
+		76017D671C1CD37C00E9693B /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D661C1CD37C00E9693B /* CFNetwork.framework */; };
+		76017D691C1CD43600E9693B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D681C1CD43600E9693B /* CoreGraphics.framework */; };
+		76017D6B1C1CD43F00E9693B /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D6A1C1CD43F00E9693B /* CoreLocation.framework */; };
+		76017D6D1C1CD46C00E9693B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D6C1C1CD46C00E9693B /* QuartzCore.framework */; };
+		76017D6F1C1CD47600E9693B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D6E1C1CD47600E9693B /* Security.framework */; };
+		76017D711C1CD47E00E9693B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D701C1CD47E00E9693B /* StoreKit.framework */; };
+		76017D731C1CD48900E9693B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D721C1CD48900E9693B /* SystemConfiguration.framework */; };
+		76017D751C1CD49800E9693B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D741C1CD49800E9693B /* libz.tbd */; };
+		76017D771C1CD4A000E9693B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D761C1CD4A000E9693B /* libsqlite3.tbd */; };
+		76017D7B1C1E12D800E9693B /* ChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7A1C1E12D800E9693B /* ChannelViewController.swift */; };
+		76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7C1C1E17F800E9693B /* ProfileViewController.swift */; };
+		76017D801C1E19BD00E9693B /* FollowingFollowerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */; };
 		761D03351C171D8100BF37A2 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03341C171D8100BF37A2 /* ImageCache.swift */; };
 		761D03381C171DAF00BF37A2 /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03361C171DAF00BF37A2 /* Episode.swift */; };
 		761D03391C171DAF00BF37A2 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03371C171DAF00BF37A2 /* Channel.swift */; };
 		761D033B1C1723E200BF37A2 /* PlayLaterItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */; };
+		7647BC5D1C1B95AD0092E96D /* TabBarPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */; };
 		764C43041C156F68009F29E8 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764C43031C156F68009F29E8 /* CustomTabBarController.swift */; };
-		764C43061C15EC65009F29E8 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764C43051C15EC65009F29E8 /* CustomTabBar.swift */; };
 		764C43081C161222009F29E8 /* UITabBar+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764C43071C161222009F29E8 /* UITabBar+Buttons.swift */; };
 		764C430A1C16B7C7009F29E8 /* mkbhd.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 764C43091C16B7C7009F29E8 /* mkbhd.jpg */; };
 		764C430C1C16B821009F29E8 /* testim.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 764C430B1C16B821009F29E8 /* testim.jpg */; };
 		7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7687069B1C1563AB00D1A457 /* AppDelegate.swift */; };
-		7687069E1C1563AB00D1A457 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7687069D1C1563AB00D1A457 /* ViewController.swift */; };
 		768706A11C1563AB00D1A457 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7687069F1C1563AB00D1A457 /* Main.storyboard */; };
 		768706A31C1563AB00D1A457 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 768706A21C1563AB00D1A457 /* Assets.xcassets */; };
 		768706A61C1563AB00D1A457 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 768706A41C1563AB00D1A457 /* LaunchScreen.storyboard */; };
 		769A262F1C16D748007A2EDA /* HomeFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769A262E1C16D748007A2EDA /* HomeFeedController.swift */; };
+		76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717561C1E376400B79AC1 /* CustomTabBar.swift */; };
+		76F717591C1E3F4C00B79AC1 /* FollowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717581C1E3F4C00B79AC1 /* FollowCell.swift */; };
 		76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */; };
 		76F8FC521C16E089009B7E81 /* ChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F8FC511C16E089009B7E81 /* ChannelCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		76017D5E1C1C772000E9693B /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		76017D601C1CCA1400E9693B /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = customTabBar/Bolts.framework; sourceTree = "<group>"; };
+		76017D611C1CCA1400E9693B /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = customTabBar/Parse.framework; sourceTree = "<group>"; };
+		76017D641C1CD36E00E9693B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		76017D661C1CD37C00E9693B /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		76017D681C1CD43600E9693B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		76017D6A1C1CD43F00E9693B /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		76017D6C1C1CD46C00E9693B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		76017D6E1C1CD47600E9693B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		76017D701C1CD47E00E9693B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		76017D721C1CD48900E9693B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		76017D741C1CD49800E9693B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		76017D761C1CD4A000E9693B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		76017D7A1C1E12D800E9693B /* ChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewController.swift; sourceTree = "<group>"; };
+		76017D7C1C1E17F800E9693B /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingFollowerVC.swift; sourceTree = "<group>"; };
 		761D03341C171D8100BF37A2 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		761D03361C171DAF00BF37A2 /* Episode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		761D03371C171DAF00BF37A2 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayLaterItems.swift; sourceTree = "<group>"; };
+		7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarPlayButton.swift; sourceTree = "<group>"; };
 		764C43031C156F68009F29E8 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
-		764C43051C15EC65009F29E8 /* CustomTabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		764C43071C161222009F29E8 /* UITabBar+Buttons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITabBar+Buttons.swift"; sourceTree = "<group>"; };
 		764C43091C16B7C7009F29E8 /* mkbhd.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mkbhd.jpg; sourceTree = "<group>"; };
 		764C430B1C16B821009F29E8 /* testim.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testim.jpg; sourceTree = "<group>"; };
 		768706981C1563AB00D1A457 /* customTabBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = customTabBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7687069B1C1563AB00D1A457 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7687069D1C1563AB00D1A457 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		768706A01C1563AB00D1A457 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		768706A21C1563AB00D1A457 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		768706A51C1563AB00D1A457 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		768706A71C1563AB00D1A457 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		769A262E1C16D748007A2EDA /* HomeFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeFeedController.swift; sourceTree = "<group>"; };
+		76F717561C1E376400B79AC1 /* CustomTabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
+		76F717581C1E3F4C00B79AC1 /* FollowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowCell.swift; sourceTree = "<group>"; };
 		76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
 		76F8FC511C16E089009B7E81 /* ChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -53,13 +87,63 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76017D771C1CD4A000E9693B /* libsqlite3.tbd in Frameworks */,
+				76017D751C1CD49800E9693B /* libz.tbd in Frameworks */,
+				76017D731C1CD48900E9693B /* SystemConfiguration.framework in Frameworks */,
+				76017D711C1CD47E00E9693B /* StoreKit.framework in Frameworks */,
+				76017D6F1C1CD47600E9693B /* Security.framework in Frameworks */,
+				76017D6D1C1CD46C00E9693B /* QuartzCore.framework in Frameworks */,
+				76017D6B1C1CD43F00E9693B /* CoreLocation.framework in Frameworks */,
+				76017D691C1CD43600E9693B /* CoreGraphics.framework in Frameworks */,
+				76017D671C1CD37C00E9693B /* CFNetwork.framework in Frameworks */,
+				76017D651C1CD36E00E9693B /* AudioToolbox.framework in Frameworks */,
+				76017D631C1CCA1500E9693B /* Parse.framework in Frameworks */,
+				76017D621C1CCA1500E9693B /* Bolts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		761D03331C171D4F00BF37A2 /* DB */ = {
+		76017D781C1CD4AA00E9693B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				76017D601C1CCA1400E9693B /* Bolts.framework */,
+				76017D761C1CD4A000E9693B /* libsqlite3.tbd */,
+				76017D741C1CD49800E9693B /* libz.tbd */,
+				76017D611C1CCA1400E9693B /* Parse.framework */,
+				76017D721C1CD48900E9693B /* SystemConfiguration.framework */,
+				76017D701C1CD47E00E9693B /* StoreKit.framework */,
+				76017D6E1C1CD47600E9693B /* Security.framework */,
+				76017D6C1C1CD46C00E9693B /* QuartzCore.framework */,
+				76017D6A1C1CD43F00E9693B /* CoreLocation.framework */,
+				76017D681C1CD43600E9693B /* CoreGraphics.framework */,
+				76017D661C1CD37C00E9693B /* CFNetwork.framework */,
+				76017D641C1CD36E00E9693B /* AudioToolbox.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		76017D791C1CFF5C00E9693B /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				76017D5E1C1C772000E9693B /* LoginViewController.swift */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
+		76017D7E1C1E17FE00E9693B /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				76017D7C1C1E17F800E9693B /* ProfileViewController.swift */,
+				76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */,
+				76F717581C1E3F4C00B79AC1 /* FollowCell.swift */,
+				76017D7A1C1E12D800E9693B /* ChannelViewController.swift */,
+			);
+			name = Profile;
+			sourceTree = "<group>";
+		};
+		761D03331C171D4F00BF37A2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				761D03341C171D8100BF37A2 /* ImageCache.swift */,
@@ -67,12 +151,24 @@
 				761D03371C171DAF00BF37A2 /* Channel.swift */,
 				761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */,
 			);
-			name = DB;
+			name = Model;
+			sourceTree = "<group>";
+		};
+		7647BC5B1C1B95010092E96D /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				764C43071C161222009F29E8 /* UITabBar+Buttons.swift */,
+				764C43031C156F68009F29E8 /* CustomTabBarController.swift */,
+				76F717561C1E376400B79AC1 /* CustomTabBar.swift */,
+				7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */,
+			);
+			name = TabBar;
 			sourceTree = "<group>";
 		};
 		7687068F1C1563AB00D1A457 = {
 			isa = PBXGroup;
 			children = (
+				76017D781C1CD4AA00E9693B /* Frameworks */,
 				7687069A1C1563AB00D1A457 /* customTabBar */,
 				768706991C1563AB00D1A457 /* Products */,
 			);
@@ -90,13 +186,12 @@
 			isa = PBXGroup;
 			children = (
 				7687069B1C1563AB00D1A457 /* AppDelegate.swift */,
-				7687069D1C1563AB00D1A457 /* ViewController.swift */,
 				7687069F1C1563AB00D1A457 /* Main.storyboard */,
-				764C43031C156F68009F29E8 /* CustomTabBarController.swift */,
-				764C43051C15EC65009F29E8 /* CustomTabBar.swift */,
+				76017D791C1CFF5C00E9693B /* Login */,
+				7647BC5B1C1B95010092E96D /* TabBar */,
 				76F8FC4E1C16E026009B7E81 /* Home */,
-				764C43071C161222009F29E8 /* UITabBar+Buttons.swift */,
-				761D03331C171D4F00BF37A2 /* DB */,
+				76017D7E1C1E17FE00E9693B /* Profile */,
+				761D03331C171D4F00BF37A2 /* Model */,
 				768706A21C1563AB00D1A457 /* Assets.xcassets */,
 				768706A41C1563AB00D1A457 /* LaunchScreen.storyboard */,
 				768706A71C1563AB00D1A457 /* Info.plist */,
@@ -189,17 +284,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76017D5F1C1C772000E9693B /* LoginViewController.swift in Sources */,
 				761D03351C171D8100BF37A2 /* ImageCache.swift in Sources */,
-				764C43061C15EC65009F29E8 /* CustomTabBar.swift in Sources */,
 				76F8FC521C16E089009B7E81 /* ChannelCell.swift in Sources */,
 				769A262F1C16D748007A2EDA /* HomeFeedController.swift in Sources */,
+				76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */,
 				764C43081C161222009F29E8 /* UITabBar+Buttons.swift in Sources */,
 				761D033B1C1723E200BF37A2 /* PlayLaterItems.swift in Sources */,
 				761D03391C171DAF00BF37A2 /* Channel.swift in Sources */,
-				7687069E1C1563AB00D1A457 /* ViewController.swift in Sources */,
+				76017D801C1E19BD00E9693B /* FollowingFollowerVC.swift in Sources */,
+				7647BC5D1C1B95AD0092E96D /* TabBarPlayButton.swift in Sources */,
+				76F717591C1E3F4C00B79AC1 /* FollowCell.swift in Sources */,
 				76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */,
 				7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */,
 				761D03381C171DAF00BF37A2 /* Episode.swift in Sources */,
+				76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */,
+				76017D7B1C1E12D800E9693B /* ChannelViewController.swift in Sources */,
 				764C43041C156F68009F29E8 /* CustomTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -311,6 +411,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/customTabBar",
+				);
 				INFOPLIST_FILE = customTabBar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wdeng.customTabBar;
@@ -322,6 +426,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/customTabBar",
+				);
 				INFOPLIST_FILE = customTabBar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wdeng.customTabBar;

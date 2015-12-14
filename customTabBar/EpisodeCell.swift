@@ -10,6 +10,7 @@ import UIKit
 
 class EpisodeCell: UITableViewCell {
 
+    @IBOutlet weak var episodeThumb: UIImageView!
     
     @IBOutlet weak var playLater: UIButton!
     @IBOutlet weak var save: UIButton!
@@ -22,6 +23,13 @@ class EpisodeCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        episodeThumb.contentMode = .ScaleAspectFill
+        episodeThumb.clipsToBounds = true
+        playLater.contentMode = .ScaleAspectFill
+        playLater.clipsToBounds = true
+        save.contentMode = .ScaleAspectFit
+        otherOptions.contentMode = .ScaleAspectFit
+        
         // Initialization code
     }
 

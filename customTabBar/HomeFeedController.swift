@@ -8,20 +8,44 @@
 
 import UIKit
 import Foundation
+import Parse
 
 class HomeFeedController: UITableViewController {
     // TODO : wrap to a Infinite scroll format
     let PageSize = 20
     var items:[MyItem] = []
     var isLoading = false
+    //for infinite scrolling
     @IBOutlet var refreshView : UIView!
     @IBOutlet weak var refreshIndicator: UIActivityIndicatorView!
     @IBOutlet weak var refreshButton: UIButton!
     
+    @IBOutlet weak var noInternetLabel: UILabel!
+    
+    var pullRefresher = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        noInternetLabel.hidden = true
+        refreshButton.hidden = true
+        tableView.contentInset.bottom = 38
         loadSegment(0, size: 20)
+        
+        //pullRefresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        pullRefresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(pullRefresher)
+        
+        //refresh()
+    }
+    
+    func refresh() {
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.navigationItem.title = "Home"
     }
     
     func getRandomNumberBetween (From: Int , To: Int) -> Int {
@@ -73,29 +97,11 @@ class HomeFeedController: UITableViewController {
             manager.requestData(offset, size: size,
                 listener: {(items:[HomeFeedController.MyItem]) -> () in
                     
-                    /*
-                    //You can also Reload all the Data using below code.
-                    //But this one is the not good option.
-                    //Instead of Reloading Table data, you can add 20 rows when table scroll is at end positoon
-                    
-                    for item in items {
-                        self.items += item
-                    }
-                    self.tableView.reloadData()
-                    self.isLoading = false
-                    self.MyFooterView.hidden = true
-                    
-                    */
-                    
-                    
-                    /*
-                    Add Rows at indexpath
-                    */
                     for item in items {
                         let row = self.items.count
                         let indexPath = NSIndexPath(forRow:row,inSection:0)
                         self.items.append(item)
-                        self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
+                        self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: .None) //insertSections should be this
                     }
                     self.isLoading = false
                     self.refreshView.hidden = true
@@ -120,9 +126,11 @@ class HomeFeedController: UITableViewController {
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell") as! ChannelCell
         
-        let imagename = getRandomNumberBetween(1, To: 10).description + ".png"
-        chCell.photo.image = UIImage(named:imagename)! as UIImage
-        chCell.name.text = items[section].name as String
+        //let imagename = getRandomNumberBetween(1, To: 10).description + ".png"
+        //chCell.photo.image = UIImage(named:imagename)! as UIImage
+        //chCell.name.text = items[section].name as String
+        
+        return chCell
     }
 
     
@@ -136,17 +144,17 @@ class HomeFeedController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let eCell = tableView.dequeueReusableCellWithIdentifier("nameCell", forIndexPath: indexPath) as! EpisodeCell
+        let epCell = tableView.dequeueReusableCellWithIdentifier("contentCell", forIndexPath: indexPath) as! EpisodeCell
 
         //Configure the cell...
+        //print(epCell.episodeThumb.contentMode.rawValue)
         
         
         
         
         
         
-        
-        return cell
+        return epCell
     }
     
     

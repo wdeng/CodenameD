@@ -30,27 +30,16 @@ class CustomTabBarController: UITabBarController {
     var customTabBar: UIView!
     let playPauseButton = UIButton()
     let audioTitleButton = UIButton()
-
-    var audioPlaying: Bool! {
-        didSet{
-            if audioPlaying == false {
-                // TODO: delete these to delegate
-                let im = UIImage(named: "play")?.imageWithRenderingMode(tabBarTabsColorStyle)
-                playPauseButton.setImage(im, forState: .Normal)
-            }
-            else {
-                let im = UIImage(named: "pause")?.imageWithRenderingMode(tabBarTabsColorStyle)
-                playPauseButton.setImage(im, forState: .Normal)
-            }
-        }
-    }
     
     //player delegate
     func sectionPlayerDidChangeRate(rate: Float) {
         if rate == 0 {
             //TODO: change play button status
+            let im = UIImage(named: "play")?.imageWithRenderingMode(tabBarTabsColorStyle)
+            playPauseButton.setImage(im, forState: .Normal)
         } else if rate == 1 {
-            //change to pause button
+            let im = UIImage(named: "pause")?.imageWithRenderingMode(tabBarTabsColorStyle)
+            playPauseButton.setImage(im, forState: .Normal)
         }
     }
     
@@ -86,10 +75,7 @@ class CustomTabBarController: UITabBarController {
         
         //TODO: probably change location
         addPlayerViewToTabBar()
-        audioPlaying = false /// should be true at start
         
-        
-        SectionPlayer.sharedInstance.delegate = self
     }
     
     override func viewWillLayoutSubviews() {
@@ -171,17 +157,11 @@ class CustomTabBarController: UITabBarController {
         //TODO: custom tab bar (4 tabs) need refresh
     }
     
+    
     //TODO: make sure if audio was interrepted, can correctly display
     func playPauseAudio() {
-        if audioPlaying! {
-            audioPlaying = false
-            // stop audio player
-        }
-        else {
-            audioPlaying = true
-            //TODO: probably make audioTitleButton scrolling
-            // start audio player
-        }
+        print("play button tapped")
+        return
     }
     
     func openPlayer() {
