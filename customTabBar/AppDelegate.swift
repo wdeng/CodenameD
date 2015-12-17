@@ -27,6 +27,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
 
         
+        
+//        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+//        
+//        // Load Main App Screen
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+//        HomeScreenVC *homeScreenVC = [storyboard instantiateInitialViewController];
+//        self.window.rootViewController = homeScreenVC;
+//        [self.window makeKeyAndVisible];
+//        
+//        // Load Login/Signup View Controller
+//        UIViewController *mainLoginVC = [storyboard instantiateViewControllerWithIdentifier:@"MainLoginVC"];
+//        [mainLoginVC setModalPresentationStyle:UIModalPresentationFullScreen];
+//        [homeScreenVC presentModalViewController:mainLoginVC animated:NO];
+        
+        
+        
+        
+        
+        
+        
+        
         return true
     }
 

@@ -18,11 +18,7 @@ class FollowingFollowerVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
     }
 
     // MARK: - Table view data source
@@ -35,7 +31,7 @@ class FollowingFollowerVC: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("followCell", forIndexPath: indexPath) as! FollowCell
         
-        cell.textLabel?.text = usernames[indexPath.row]
+        cell.username.text = usernames[indexPath.row]
         let followedObjectID = userids[indexPath.row]
         
         cell.isFollowing.tag = indexPath.row
@@ -45,7 +41,7 @@ class FollowingFollowerVC: UITableViewController {
         } else {
             cell.isFollowing.setTitle("Follow", forState: .Normal)
         }
-        
+        //cell.isFollowing.frame = CGRect()
         return cell
     }
     
@@ -55,10 +51,10 @@ class FollowingFollowerVC: UITableViewController {
             b.setTitle("Follow", forState: .Normal)
             isFollowing[id] = false
             
-            //Parse
+            // Parse
             let query = PFQuery(className: "followers")
             query.whereKey("follower", equalTo: PFUser.currentUser()!.objectId!)
-            query.whereKey("follower", equalTo: userids[b.tag])
+            query.whereKey("following", equalTo: userids[b.tag])
             
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if let objects = objects {
@@ -67,14 +63,18 @@ class FollowingFollowerVC: UITableViewController {
                     }
                 }
             })
-            //End Parse
+            // End Parse
+            
         } else {
             b.setTitle("Following", forState: .Normal)
             isFollowing[id] = true
             
-            //Parse
-            
-            
+            // Parse
+            let following = PFObject(className: "following")
+            following["following"] = userids[b.tag]
+            following["follower"] = PFUser.currentUser()?.objectId
+            following.saveInBackground()
+            // End Parse
             
         }
     }

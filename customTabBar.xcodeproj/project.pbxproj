@@ -39,6 +39,12 @@
 		769A262F1C16D748007A2EDA /* HomeFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769A262E1C16D748007A2EDA /* HomeFeedController.swift */; };
 		76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717561C1E376400B79AC1 /* CustomTabBar.swift */; };
 		76F717591C1E3F4C00B79AC1 /* FollowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717581C1E3F4C00B79AC1 /* FollowCell.swift */; };
+		76F7175D1C1F228500B79AC1 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F7175C1C1F228500B79AC1 /* AppSettings.swift */; };
+		76F717601C1F331A00B79AC1 /* PostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F7175F1C1F331A00B79AC1 /* PostingViewController.swift */; };
+		76F717631C20D66E00B79AC1 /* RecordedBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717611C20D66E00B79AC1 /* RecordedBundle.swift */; };
+		76F717641C20D66E00B79AC1 /* AudioMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717621C20D66E00B79AC1 /* AudioMerger.swift */; };
+		76F717661C20F2DA00B79AC1 /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717651C20F2DA00B79AC1 /* DiscoverViewController.swift */; };
+		76F717691C211B2800B79AC1 /* ParseBasedActivities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */; };
 		76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */; };
 		76F8FC521C16E089009B7E81 /* ChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F8FC511C16E089009B7E81 /* ChannelCell.swift */; };
 /* End PBXBuildFile section */
@@ -78,6 +84,12 @@
 		769A262E1C16D748007A2EDA /* HomeFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeFeedController.swift; sourceTree = "<group>"; };
 		76F717561C1E376400B79AC1 /* CustomTabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		76F717581C1E3F4C00B79AC1 /* FollowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowCell.swift; sourceTree = "<group>"; };
+		76F7175C1C1F228500B79AC1 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		76F7175F1C1F331A00B79AC1 /* PostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostingViewController.swift; sourceTree = "<group>"; };
+		76F717611C20D66E00B79AC1 /* RecordedBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordedBundle.swift; sourceTree = "<group>"; };
+		76F717621C20D66E00B79AC1 /* AudioMerger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioMerger.swift; sourceTree = "<group>"; };
+		76F717651C20F2DA00B79AC1 /* DiscoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
+		76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseBasedActivities.swift; sourceTree = "<group>"; };
 		76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
 		76F8FC511C16E089009B7E81 /* ChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -147,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				761D03341C171D8100BF37A2 /* ImageCache.swift */,
+				76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */,
 				761D03361C171DAF00BF37A2 /* Episode.swift */,
 				761D03371C171DAF00BF37A2 /* Channel.swift */,
 				761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */,
@@ -186,6 +199,9 @@
 			isa = PBXGroup;
 			children = (
 				7687069B1C1563AB00D1A457 /* AppDelegate.swift */,
+				76F7175C1C1F228500B79AC1 /* AppSettings.swift */,
+				76F717671C20F2E000B79AC1 /* Discover */,
+				76F7175E1C1F307800B79AC1 /* Record */,
 				7687069F1C1563AB00D1A457 /* Main.storyboard */,
 				76017D791C1CFF5C00E9693B /* Login */,
 				7647BC5B1C1B95010092E96D /* TabBar */,
@@ -197,6 +213,24 @@
 				768706A71C1563AB00D1A457 /* Info.plist */,
 			);
 			path = customTabBar;
+			sourceTree = "<group>";
+		};
+		76F7175E1C1F307800B79AC1 /* Record */ = {
+			isa = PBXGroup;
+			children = (
+				76F7175F1C1F331A00B79AC1 /* PostingViewController.swift */,
+				76F717611C20D66E00B79AC1 /* RecordedBundle.swift */,
+				76F717621C20D66E00B79AC1 /* AudioMerger.swift */,
+			);
+			name = Record;
+			sourceTree = "<group>";
+		};
+		76F717671C20F2E000B79AC1 /* Discover */ = {
+			isa = PBXGroup;
+			children = (
+				76F717651C20F2DA00B79AC1 /* DiscoverViewController.swift */,
+			);
+			name = Discover;
 			sourceTree = "<group>";
 		};
 		76F8FC4E1C16E026009B7E81 /* Home */ = {
@@ -287,18 +321,24 @@
 				76017D5F1C1C772000E9693B /* LoginViewController.swift in Sources */,
 				761D03351C171D8100BF37A2 /* ImageCache.swift in Sources */,
 				76F8FC521C16E089009B7E81 /* ChannelCell.swift in Sources */,
+				76F717641C20D66E00B79AC1 /* AudioMerger.swift in Sources */,
+				76F717601C1F331A00B79AC1 /* PostingViewController.swift in Sources */,
 				769A262F1C16D748007A2EDA /* HomeFeedController.swift in Sources */,
 				76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */,
 				764C43081C161222009F29E8 /* UITabBar+Buttons.swift in Sources */,
 				761D033B1C1723E200BF37A2 /* PlayLaterItems.swift in Sources */,
 				761D03391C171DAF00BF37A2 /* Channel.swift in Sources */,
+				76F717631C20D66E00B79AC1 /* RecordedBundle.swift in Sources */,
 				76017D801C1E19BD00E9693B /* FollowingFollowerVC.swift in Sources */,
 				7647BC5D1C1B95AD0092E96D /* TabBarPlayButton.swift in Sources */,
 				76F717591C1E3F4C00B79AC1 /* FollowCell.swift in Sources */,
+				76F717691C211B2800B79AC1 /* ParseBasedActivities.swift in Sources */,
 				76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */,
 				7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */,
 				761D03381C171DAF00BF37A2 /* Episode.swift in Sources */,
+				76F7175D1C1F228500B79AC1 /* AppSettings.swift in Sources */,
 				76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */,
+				76F717661C20F2DA00B79AC1 /* DiscoverViewController.swift in Sources */,
 				76017D7B1C1E12D800E9693B /* ChannelViewController.swift in Sources */,
 				764C43041C156F68009F29E8 /* CustomTabBarController.swift in Sources */,
 			);

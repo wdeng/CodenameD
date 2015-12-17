@@ -39,16 +39,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     //TODO: put in app settings
-    func displayAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action) -> Void in
-            self.dismissViewControllerAnimated(true, completion: nil)} ) )
-        self.presentViewController(alert, animated: true, completion: nil)
-        
-    }
     
     func turnOnActivityIndicator(ignoreUser: Bool) {
-        activityIndicator = UIActivityIndicatorView(frame: view.bounds)
         activityIndicator.center = view.center
         activityIndicator.backgroundColor = UIColor(white: 1.0, alpha: 0.2)
         activityIndicator.hidesWhenStopped = true
@@ -64,13 +56,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func login(sender: AnyObject) {
         
         if username.text == "" || password.text == "" {
-            displayAlert("Error", message: "Please enter a username and password")
+            AppUtils.displayAlert("Error", message: "Please enter a username and password", onViewController: self)
             return
         } //else if password.text?.characters.count < 8 {
             //displayAlert("Password too short", message: "Please enter password longer than 8 charactors")
             //return }
         
-        turnOnActivityIndicator(true)
+        activityIndicator = UIActivityIndicatorView(frame: view.bounds)
+        AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser:  true)
+        //turnOnActivityIndicator(true)
         var errorMessage = "Please try again later"
         if signUpActived {
             // Parse
@@ -91,7 +85,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     if let errorString = error!.userInfo["error"] as? String {
                         errorMessage = errorString
                     }
-                    self.displayAlert("Sign Up Failed", message: errorMessage)
+                    AppUtils.displayAlert("Sign Up Failed", message: errorMessage, onViewController: self)
                 }
             })
         }
@@ -107,7 +101,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     if let errorString = error!.userInfo["error"] as? String {
                         errorMessage = errorString
                     }
-                    self.displayAlert("Login Failed", message: errorMessage)
+                    AppUtils.displayAlert("Login Failed", message: errorMessage, onViewController: self)
                 }
             })
             // End Parse
@@ -153,7 +147,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 if let errorString = error!.userInfo["error"] as? String {
                     errorMessage = errorString
                 }
-                self.displayAlert("Login Failed", message: errorMessage)
+                AppUtils.displayAlert("Login Failed", message: errorMessage, onViewController: self)
                 return
             }
         })

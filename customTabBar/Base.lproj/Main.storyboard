@@ -957,17 +957,34 @@
                                                 </mask>
                                             </variation>
                                         </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0yd-iP-jaM">
+                                            <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="0yd-iP-jaM" firstAttribute="leading" secondItem="yh7-z9-eeb" secondAttribute="leadingMargin" id="EAf-71-kl9">
+                                            <variation key="widthClass=compact" constant="8"/>
+                                        </constraint>
+                                        <constraint firstItem="P5a-si-qfr" firstAttribute="leading" secondItem="0yd-iP-jaM" secondAttribute="trailing" constant="100" id="UQn-UV-wd4"/>
                                         <constraint firstItem="P5a-si-qfr" firstAttribute="top" secondItem="yh7-z9-eeb" secondAttribute="topMargin" id="UjU-ue-6kJ"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="0yd-iP-jaM" secondAttribute="bottom" id="fsE-UB-vE4"/>
+                                        <constraint firstItem="0yd-iP-jaM" firstAttribute="top" secondItem="yh7-z9-eeb" secondAttribute="topMargin" id="jZy-6z-jNR"/>
                                         <constraint firstItem="P5a-si-qfr" firstAttribute="bottom" secondItem="yh7-z9-eeb" secondAttribute="bottomMargin" id="mvC-Wz-Q3n"/>
                                         <constraint firstItem="P5a-si-qfr" firstAttribute="trailing" secondItem="yh7-z9-eeb" secondAttribute="trailingMargin" id="v7R-CB-V8p"/>
                                     </constraints>
                                     <variation key="default">
                                         <mask key="subviews">
                                             <exclude reference="P5a-si-qfr"/>
+                                            <exclude reference="0yd-iP-jaM"/>
                                         </mask>
                                         <mask key="constraints">
+                                            <exclude reference="EAf-71-kl9"/>
+                                            <exclude reference="fsE-UB-vE4"/>
+                                            <exclude reference="jZy-6z-jNR"/>
+                                            <exclude reference="UQn-UV-wd4"/>
                                             <exclude reference="UjU-ue-6kJ"/>
                                             <exclude reference="mvC-Wz-Q3n"/>
                                             <exclude reference="v7R-CB-V8p"/>
@@ -976,8 +993,13 @@
                                     <variation key="widthClass=compact">
                                         <mask key="subviews">
                                             <include reference="P5a-si-qfr"/>
+                                            <include reference="0yd-iP-jaM"/>
                                         </mask>
                                         <mask key="constraints">
+                                            <include reference="EAf-71-kl9"/>
+                                            <include reference="fsE-UB-vE4"/>
+                                            <include reference="jZy-6z-jNR"/>
+                                            <include reference="UQn-UV-wd4"/>
                                             <include reference="UjU-ue-6kJ"/>
                                             <include reference="mvC-Wz-Q3n"/>
                                             <include reference="v7R-CB-V8p"/>
@@ -986,6 +1008,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="isFollowing" destination="P5a-si-qfr" id="PfT-PJ-2vc"/>
+                                    <outlet property="username" destination="0yd-iP-jaM" id="wjH-a9-s9h"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

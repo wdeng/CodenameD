@@ -19,12 +19,12 @@ class CustomTabBarController: UITabBarController {
         didSet {
             if oldValue != nil {
                 oldValue.selected = false
-                oldValue.backgroundColor = tabBarTabsNormalBackgroundColor
-                oldValue.tintColor = tabBarTabsNormalColor
+                oldValue.backgroundColor = TabBarSettings.tabsNormalBackgroundColor
+                oldValue.tintColor = TabBarSettings.tabsNormalColor
             }
             currentTab.selected = true
-            currentTab.backgroundColor = tabBarTabsSelectedBackgroundColor
-            currentTab.tintColor = tabBarTabsSelectedColor
+            currentTab.backgroundColor = TabBarSettings.tabsSelectedBackgroundColor
+            currentTab.tintColor = TabBarSettings.tabsSelectedColor
         }
     }
     var customTabBar: UIView!
@@ -35,31 +35,13 @@ class CustomTabBarController: UITabBarController {
     func sectionPlayerDidChangeRate(rate: Float) {
         if rate == 0 {
             //TODO: change play button status
-            let im = UIImage(named: "play")?.imageWithRenderingMode(tabBarTabsColorStyle)
+            let im = UIImage(named: "play")?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
             playPauseButton.setImage(im, forState: .Normal)
         } else if rate == 1 {
-            let im = UIImage(named: "pause")?.imageWithRenderingMode(tabBarTabsColorStyle)
+            let im = UIImage(named: "pause")?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
             playPauseButton.setImage(im, forState: .Normal)
         }
     }
-    
-    
-    //TODO: put in app settings
-    let appStartControllerIndex: Int = 0
-    let tabBarHeight: CGFloat = 38.0
-    var tabBarTabsWidth: CGFloat = 50.0
-    var playButtonWidth: CGFloat = 30.0
-    let tabBarTabsSelectedBackgroundColor: UIColor = UIColor.whiteColor()
-    let tabBarTabsNormalBackgroundColor: UIColor = UIColor.darkGrayColor()
-    
-    let tabBarTabsNormalColor: UIColor = UIColor.whiteColor()
-    let tabBarTabsSelectedColor: UIColor = UIColor.darkGrayColor()
-    let tabBarTabsColorStyle: UIImageRenderingMode = .AlwaysTemplate
-    let audioTitleColor: UIColor = UIColor.whiteColor()
-    let audioTitleFont: UIFont = UIFont.systemFontOfSize(11.0)
-    let audioTitleLines: Int = 2
-    let audioButtonBackgroundColor: UIColor = UIColor.grayColor()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,11 +49,11 @@ class CustomTabBarController: UITabBarController {
         let rect = tabBar.frame
         tabBar.removeFromSuperview()
         customTabBar = UIView(frame: rect)
-        customTabBar.backgroundColor = tabBarTabsNormalBackgroundColor
+        customTabBar.backgroundColor = TabBarSettings.tabsNormalBackgroundColor
         view.addSubview(customTabBar)
         
         addButtons(customTabBar)
-        currentTab = tabs[appStartControllerIndex]
+        currentTab = tabs[TabBarSettings.appStartControllerIndex]
         
         //TODO: probably change location
         addPlayerViewToTabBar()
@@ -80,7 +62,7 @@ class CustomTabBarController: UITabBarController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        let customTabFrame = CGRect(x: 0, y: view.bounds.height - tabBarHeight, width: view.bounds.width, height: tabBarHeight)
+        let customTabFrame = CGRect(x: 0, y: view.bounds.height - TabBarSettings.height, width: view.bounds.width, height: TabBarSettings.height)
         customTabBar.frame = customTabFrame
     }
     
@@ -92,16 +74,16 @@ class CustomTabBarController: UITabBarController {
                 
                 //tabBarTabsWidth = barView.frame.size.width / CGFloat(vcs.count)
                 
-                let x = CGFloat(i) * tabBarTabsWidth
+                let x = CGFloat(i) * TabBarSettings.tabsWidth
                 
                 // TODO: change to autolayout in code
-                button.frame = CGRect(x: x, y: 0, width: tabBarTabsWidth, height: barView.bounds.height)
+                button.frame = CGRect(x: x, y: 0, width: TabBarSettings.tabsWidth, height: barView.bounds.height)
                 
-                let normalImage = UIImage(named: buttonNames[i])?.imageWithRenderingMode(tabBarTabsColorStyle)
+                let normalImage = UIImage(named: buttonNames[i])?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
                 button.setImage(normalImage, forState: .Normal)
                 button.tintColor = UIColor.whiteColor()
                 
-                let selectedImage = UIImage(named: buttonNames[i])?.imageWithRenderingMode(tabBarTabsColorStyle)
+                let selectedImage = UIImage(named: buttonNames[i])?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
                 button.setImage(selectedImage, forState: .Selected)
                 button.imageView?.contentMode = .ScaleAspectFit
                 button.adjustsImageWhenHighlighted = false
@@ -131,24 +113,24 @@ class CustomTabBarController: UITabBarController {
     
     func addPlayerViewToTabBar() {
         //TODO: title should be fixed width not determine by tabs width, have a min width and a max width
-        let tabsWidth = CGFloat(tabs.count) * tabBarTabsWidth
+        let tabsWidth = CGFloat(tabs.count) * TabBarSettings.tabsWidth
         
         let w = customTabBar.bounds.width - tabsWidth
         audioTitleButton.frame = CGRect(x: tabsWidth, y: 0, width: w, height: customTabBar.bounds.height)
         
         audioTitleButton.setTitle("Sony Xperia Z5 Premium: A 4K SmartPhone! #4k #sony", forState: .Normal)
-        audioTitleButton.setTitleColor(audioTitleColor.colorWithAlphaComponent(0.2), forState: .Highlighted)
-        audioTitleButton.setTitleColor(audioTitleColor, forState: .Normal)
+        audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor.colorWithAlphaComponent(0.2), forState: .Highlighted)
+        audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor, forState: .Normal)
         audioTitleButton.titleLabel?.lineBreakMode = NSLineBreakMode.ByTruncatingTail
-        audioTitleButton.titleLabel?.numberOfLines = audioTitleLines
-        audioTitleButton.titleLabel?.font = audioTitleFont
-        audioTitleButton.backgroundColor = audioButtonBackgroundColor
+        audioTitleButton.titleLabel?.numberOfLines = TabBarSettings.audioTitleLines
+        audioTitleButton.titleLabel?.font = TabBarSettings.audioTitleFont
+        audioTitleButton.backgroundColor = TabBarSettings.audioButtonBackgroundColor
         audioTitleButton.titleEdgeInsets.left = 2
-        audioTitleButton.titleEdgeInsets.right = playButtonWidth
+        audioTitleButton.titleEdgeInsets.right = TabBarSettings.playButtonWidth
         audioTitleButton.addTarget(self, action: "openPlayer", forControlEvents: .TouchUpInside)
         customTabBar.addSubview(audioTitleButton)
         
-        playPauseButton.frame = CGRect(x: customTabBar.bounds.width - playButtonWidth, y: 0, width: playButtonWidth, height: customTabBar.bounds.height)
+        playPauseButton.frame = CGRect(x: customTabBar.bounds.width - TabBarSettings.playButtonWidth, y: 0, width: TabBarSettings.playButtonWidth, height: customTabBar.bounds.height)
         playPauseButton.tintColor = UIColor.whiteColor()
         playPauseButton.imageView?.contentMode = .ScaleAspectFit
         //TODO: add animations if we want progress indicator around playButton
