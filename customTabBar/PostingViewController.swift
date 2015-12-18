@@ -46,7 +46,7 @@ class PostingViewController: UIViewController {
             let set = playingSections.imageSets[i]
             for j in 0 ..< set.images.count {
                 // Parse
-                let imData = UIImageJPEGRepresentation(set.images[j], generalSettings.compressQuality)
+                let imData = UIImageJPEGRepresentation(set.images[j], GeneralSettings.compressQuality)
                 let im = PFFile(name: "\(i)-\(j).jpg", data: imData!)
                 let objectForSave = PFObject(className: "Post")
                 

@@ -25,8 +25,14 @@ struct TabBarSettings {
     static let audioButtonBackgroundColor: UIColor = UIColor.grayColor()
 }
 
-struct generalSettings {
+struct HomeFeedsSettings {
+    static let sectionsInPage: Int = 5
+    static let itemsInSection: Int = 3
+}
+
+struct GeneralSettings {
     static let compressQuality: CGFloat = 0.5
+    static var adsAvailable: Bool = false
 }
 
 

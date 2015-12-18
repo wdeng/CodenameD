@@ -12,7 +12,7 @@ import Parse
 
 class HomeFeedController: UITableViewController {
     // TODO : wrap to a Infinite scroll format
-    let PageSize = 20
+    //let PageSize = 20
     var items:[MyItem] = []
     var isLoading = false
     //for infinite scrolling
@@ -30,17 +30,26 @@ class HomeFeedController: UITableViewController {
         noInternetLabel.hidden = true
         refreshButton.hidden = true
         tableView.contentInset.bottom = TabBarSettings.height
-        loadSegment(0, size: 20)
+        loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
         
-        //pullRefresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        pullRefresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        pullRefresher.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        pullRefresher.beginRefreshing()
         self.tableView.addSubview(pullRefresher)
         
-        //refresh()
     }
     
     func refresh() {
         
+        tableView.reloadData()
+        pullRefresher.endRefreshing()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //TODO: put these in Parse with refresh indicator on
+        loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
+        refresh()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -58,7 +67,6 @@ class HomeFeedController: UITableViewController {
         init(name:String) {
             self.name = name
         }
-        
         var description: String {
             return name
         }
@@ -67,12 +75,10 @@ class HomeFeedController: UITableViewController {
     class DataManager {
         func requestData(offset:Int, size:Int, listener:([MyItem]) -> ()) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                
                 //Sleep the Process
                 if offset != 0 {
                     sleep(2)
                 }
-                
                 //generate items
                 var arr:[MyItem] = []
                 for i in offset ... (offset + size) {
@@ -98,10 +104,11 @@ class HomeFeedController: UITableViewController {
                 listener: {(items:[HomeFeedController.MyItem]) -> () in
                     
                     for item in items {
-                        let row = self.items.count
-                        let indexPath = NSIndexPath(forRow:row,inSection:0)
+                        print(self.items.count)
                         self.items.append(item)
-                        self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: .None) //insertSections should be this
+                        //self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                        
+                        self.tableView?.insertSections(NSIndexSet(index: self.items.count-1), withRowAnimation: .None)
                     }
                     self.isLoading = false
                     self.refreshView.hidden = true
@@ -113,29 +120,31 @@ class HomeFeedController: UITableViewController {
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         let maxOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        if (maxOffset - offset) <= 40 {
-            loadSegment(items.count, size: PageSize-1)
+        if (maxOffset - offset) <= 50 {
+            loadSegment(items.count, size: HomeFeedsSettings.sectionsInPage - 1)
         }
     }
     
     // #pragma mark - Table view data source
     override func numberOfSectionsInTableView(tableView: UITableView?) -> Int {
-        return 1
+        return items.count
     }
     
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell") as! ChannelCell
-        
+        // TODO: change to UIView not Cell to avoid "no index path for table cell"
+
         //let imagename = getRandomNumberBetween(1, To: 10).description + ".png"
         //chCell.photo.image = UIImage(named:imagename)! as UIImage
         //chCell.name.text = items[section].name as String
-        
+        //chCell.name.text = "abcd"
+        //print(chCell.contentView.subviews)
         return chCell
     }
 
     
     override func tableView(tableView: UITableView?, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return 3
     }
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 85;

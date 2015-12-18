@@ -83,49 +83,6 @@ class ProfileViewController: UITableViewController {
             
         }
     }
-            
-            
-            
-            
-    
-            
-            // Parse
-//            let query = PFQuery(className: "activity")
-//            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-//            query.whereKey("type", equalTo: "following")
-//            
-//            query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-//                if error != nil {
-//                    print("couldn't fetch users")
-//                    return
-//                }
-//                
-//                guard let activities = objects else {return}
-//                
-//                for object in activities {
-//                    
-//                    guard let followingUser = object["toUser"] as? String where followingUser.characters.count > 0 else {return}
-//                    
-//                    let query = PFUser.query()
-//                    
-//                    query?.getObjectInBackgroundWithId(followingUser, block: { (user, error) -> Void in
-//                        if (error != nil) {return}
-//                        
-//                        guard let u = user as? PFUser else {return}
-//                        
-//                        vc.usernames.append(u.username!)
-//                        vc.userids.append(u.objectId!)
-//                        vc.isFollowing[u.objectId!] = true
-//                        
-//                        vc.tableView.reloadData()
-//                    })
-//                    
-//                }
-//                
-//            }
-//            
-//        }
-
     
 }
 
