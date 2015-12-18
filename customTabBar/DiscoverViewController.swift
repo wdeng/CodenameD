@@ -24,13 +24,22 @@ class DiscoverViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        allNotFollowed()
     }
     
-    func allUsersNotFollowed() {
-        let query = PFUser.query()  // gets all the usernames
+    
+    
+    func allNotFollowed() {
         var errorMessage = "Please try again later"
-        query?.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-            
+        guard let queryA = PFUser.query() else {return}
+        let queryB = PFQuery(className: "activity")
+        
+        queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+        queryB.whereKey("type", equalTo: "following")
+        queryA.whereKey("objectId", doesNotMatchKey: "toUser", inQuery: queryB)
+        
+        queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
             if error != nil {
                 if let errorString = error!.userInfo["error"] as? String {
                     errorMessage = errorString
@@ -38,48 +47,20 @@ class DiscoverViewController: UITableViewController {
                 AppUtils.displayAlert("Fetching Users Failed", message: errorMessage, onViewController: self)
                 return
             }
-            if let users = objects {
-                for object in users {
-                    
-                    guard let user = object as? PFUser else {return}
-                    
-                    if user.objectId! == PFUser.currentUser()?.objectId {continue}
-                    
-                    
-                    self.usernames.append(user.username!)
-                    self.userids.append(user.objectId!)
-                    
-                    let query = PFQuery(className: "activity")
-                    
-                    query.whereKey("fromUser", equalTo: PFUser.currentUser()!)
-                    query.whereKey("type", equalTo: "following")
-                    
-                    //query.whereKey("follower", equalTo: PFUser.currentUser()!.objectId!)
-                    //query.whereKey("following", equalTo: user.objectId!)
-                    
-                    query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
-                        
-                        if let objects = objects {
-                            if objects.count > 0 {
-                                self.isFollowing[user.objectId!] = true
-                            } else {
-                                self.isFollowing[user.objectId!] = false
-                            }
-                        }
-                        
-                        if self.isFollowing.count == self.usernames.count {
-                            self.tableView.reloadData()
-                        }
-                    })
-                    
-                }
+            
+            guard let users = objects else {return}
+            
+            for object in users {
+                guard let u = object as? PFUser else {return}
+                if u.objectId! == PFUser.currentUser()?.objectId {continue}
+                self.userids.append(u.objectId!)
+                self.usernames.append(u.username!)
+                self.isFollowing[u.objectId!] = false
             }
-            
-            
-            
+            self.tableView.reloadData()
         }
+        
     }
-    
     
     
     
@@ -146,23 +127,22 @@ class DiscoverViewController: UITableViewController {
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return usernames.count
     }
 
-    /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("discoverCell", forIndexPath: indexPath)
 
-        // Configure the cell...
+        cell.textLabel?.text = usernames[indexPath.row]
+        
 
         return cell
     }
-    */
 
     /*
     // Override to support conditional editing of the table view.

@@ -29,7 +29,7 @@ class HomeFeedController: UITableViewController {
         
         noInternetLabel.hidden = true
         refreshButton.hidden = true
-        tableView.contentInset.bottom = 38
+        tableView.contentInset.bottom = TabBarSettings.height
         loadSegment(0, size: 20)
         
         //pullRefresher.attributedTitle = NSAttributedString(string: "Pull to refresh")

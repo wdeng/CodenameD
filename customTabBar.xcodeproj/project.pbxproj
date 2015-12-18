@@ -200,12 +200,12 @@
 			children = (
 				7687069B1C1563AB00D1A457 /* AppDelegate.swift */,
 				76F7175C1C1F228500B79AC1 /* AppSettings.swift */,
-				76F717671C20F2E000B79AC1 /* Discover */,
 				76F7175E1C1F307800B79AC1 /* Record */,
 				7687069F1C1563AB00D1A457 /* Main.storyboard */,
 				76017D791C1CFF5C00E9693B /* Login */,
 				7647BC5B1C1B95010092E96D /* TabBar */,
 				76F8FC4E1C16E026009B7E81 /* Home */,
+				76F717671C20F2E000B79AC1 /* Discover */,
 				76017D7E1C1E17FE00E9693B /* Profile */,
 				761D03331C171D4F00BF37A2 /* Model */,
 				768706A21C1563AB00D1A457 /* Assets.xcassets */,
@@ -277,6 +277,7 @@
 				TargetAttributes = {
 					768706971C1563AB00D1A457 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = 7X5H79S2RL;
 					};
 				};
 			};
@@ -451,6 +452,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/customTabBar",
@@ -459,6 +462,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wdeng.customTabBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -466,6 +470,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/customTabBar",
@@ -474,6 +480,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wdeng.customTabBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

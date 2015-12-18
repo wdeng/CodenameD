@@ -10,7 +10,7 @@ import UIKit
 
 struct TabBarSettings {
     static let appStartControllerIndex: Int = 0
-    static let height: CGFloat = 38.0
+    static let height: CGFloat = 44.0
     static var tabsWidth: CGFloat = 50.0
     static var playButtonWidth: CGFloat = 30.0
     static let tabsSelectedBackgroundColor: UIColor = UIColor.whiteColor()
@@ -21,7 +21,7 @@ struct TabBarSettings {
     static let tabsColorStyle: UIImageRenderingMode = .AlwaysTemplate
     static let audioTitleColor: UIColor = UIColor.whiteColor()
     static let audioTitleFont: UIFont = UIFont.systemFontOfSize(11.0)
-    static let audioTitleLines: Int = 2
+    static let audioTitleLines: Int = 2 // TODO: how many lines we need
     static let audioButtonBackgroundColor: UIColor = UIColor.grayColor()
 }
 

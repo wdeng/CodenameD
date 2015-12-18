@@ -52,9 +52,13 @@ class FollowingFollowerVC: UITableViewController {
             isFollowing[id] = false
             
             // Parse
-            let query = PFQuery(className: "followers")
-            query.whereKey("follower", equalTo: PFUser.currentUser()!.objectId!)
-            query.whereKey("following", equalTo: userids[b.tag])
+            let query = PFQuery(className: "activity")
+            
+            query.whereKey("type", equalTo: "following")
+            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+            query.whereKey("toUser", equalTo: userids[b.tag])
+            //query.whereKey("follower", equalTo: PFUser.currentUser()!.objectId!)
+            //query.whereKey("following", equalTo: userids[b.tag])
             
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if let objects = objects {
@@ -70,9 +74,10 @@ class FollowingFollowerVC: UITableViewController {
             isFollowing[id] = true
             
             // Parse
-            let following = PFObject(className: "following")
-            following["following"] = userids[b.tag]
-            following["follower"] = PFUser.currentUser()?.objectId
+            let following = PFObject(className: "activity")
+            following["type"] = "following"
+            following["toUser"] = userids[b.tag]
+            following["fromUser"] = PFUser.currentUser()?.objectId
             following.saveInBackground()
             // End Parse
             

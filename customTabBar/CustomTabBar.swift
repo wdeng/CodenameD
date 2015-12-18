@@ -32,7 +32,7 @@ class CustomTabBar: UITabBar {
     
     override func sizeThatFits(size: CGSize) -> CGSize {
         var sizeThatFits = super.sizeThatFits(size)
-        sizeThatFits.height = 38
+        sizeThatFits.height = TabBarSettings.height
         return sizeThatFits
     }
 

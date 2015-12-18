@@ -44,7 +44,17 @@ class ParseActions: NSObject {
     query.includeKey("fromUser")
     query.whereKey("type", equalTo: "comment")
     query.orderByAscending("createdAt")
+        
+        
+        
+    // PFUser query
+        
+    let queryA = PFUser.query()
+    let queryB = PFQuery(className: "activity")
     
+    queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+    queryB.whereKey("type", equalTo: "following")
+    queryA!.whereKey("objectId", doesNotMatchKey: "toUser", inQuery: queryB)
     
     
     }

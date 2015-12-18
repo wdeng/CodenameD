@@ -50,69 +50,82 @@ class ProfileViewController: UITableViewController {
     }
 
     
-    //TODO: modify this
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showFollowing" {
             let vc = segue.destinationViewController as! FollowingFollowerVC
             
-            // Parse
             
-            let query = PFUser.query()
-            query?.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-                if let users = objects {
-                    for object in users {
-                        if let user = object as? PFUser {
-                            
-                            if user.objectId! != PFUser.currentUser()?.objectId {
-                                
-                                vc.usernames.append(user.username!)
-                                vc.userids.append(user.objectId!)
-                                
-                                let query = PFQuery(className: "activity")
-                                
-                                query.whereKey("type", equalTo: "following")
-                                query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-                                query.whereKey("toUser", equalTo: user.objectId!)
-                                
-                                query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
-                                    
-                                    if let objects = objects {
-                                        
-                                        if objects.count > 0 {
-                                            
-                                            vc.isFollowing[user.objectId!] = true
-                                            
-                                        } else {
-                                            
-                                            vc.isFollowing[user.objectId!] = false
-                                            
-                                        }
-                                    }
-                                    
-                                    if vc.isFollowing.count == vc.usernames.count {
-                                        vc.tableView.reloadData()
-                                    }
-                                    
-                                    
-                                })
-                                
-                                
-                                
-                            }
-                        }
-                        
-                    }
-                    
-                    
-                    
+            guard let queryA = PFUser.query() else {return}
+            let queryB = PFQuery(className: "activity")
+            
+            queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+            queryB.whereKey("type", equalTo: "following")
+            queryA.whereKey("objectId", matchesKey: "toUser", inQuery: queryB)
+            
+            
+            queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+                if error != nil {
+                    print("couldn't fetch users")
+                    return
                 }
                 
+                guard let users = objects else {return}
                 
-                
+                for object in users {
+                    guard let u = object as? PFUser else {return}
+                    //if u.objectId! == PFUser.currentUser()?.objectId {continue}
+                    vc.userids.append(u.objectId!)
+                    vc.usernames.append(u.username!)
+                    vc.isFollowing[u.objectId!] = true
+                }
+                vc.tableView.reloadData()
             }
             
         }
     }
+            
+            
+            
+            
+    
+            
+            // Parse
+//            let query = PFQuery(className: "activity")
+//            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+//            query.whereKey("type", equalTo: "following")
+//            
+//            query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+//                if error != nil {
+//                    print("couldn't fetch users")
+//                    return
+//                }
+//                
+//                guard let activities = objects else {return}
+//                
+//                for object in activities {
+//                    
+//                    guard let followingUser = object["toUser"] as? String where followingUser.characters.count > 0 else {return}
+//                    
+//                    let query = PFUser.query()
+//                    
+//                    query?.getObjectInBackgroundWithId(followingUser, block: { (user, error) -> Void in
+//                        if (error != nil) {return}
+//                        
+//                        guard let u = user as? PFUser else {return}
+//                        
+//                        vc.usernames.append(u.username!)
+//                        vc.userids.append(u.objectId!)
+//                        vc.isFollowing[u.objectId!] = true
+//                        
+//                        vc.tableView.reloadData()
+//                    })
+//                    
+//                }
+//                
+//            }
+//            
+//        }
+
     
 }
 
