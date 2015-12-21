@@ -57,4 +57,6 @@ class AppUtils: NSObject {
         vc.presentViewController(alert, animated: true, completion: nil)
         
     }
+    
+    
 }

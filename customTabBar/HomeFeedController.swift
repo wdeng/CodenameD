@@ -21,7 +21,6 @@ class HomeFeedController: UITableViewController {
     @IBOutlet weak var refreshButton: UIButton!
     
     @IBOutlet weak var noInternetLabel: UILabel!
-    
     var pullRefresher = UIRefreshControl()
     
     override func viewDidLoad() {
@@ -29,6 +28,7 @@ class HomeFeedController: UITableViewController {
         
         noInternetLabel.hidden = true
         refreshButton.hidden = true
+        tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
         tableView.contentInset.bottom = TabBarSettings.height
         loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
         
@@ -85,8 +85,6 @@ class HomeFeedController: UITableViewController {
                     arr.append(MyItem(name: "Item " + String(i)))
                 }
                 
-                print(arr)
-                
                 //call listener in main thread
                 dispatch_async(dispatch_get_main_queue()) {
                     listener(arr)
@@ -104,7 +102,7 @@ class HomeFeedController: UITableViewController {
                 listener: {(items:[HomeFeedController.MyItem]) -> () in
                     
                     for item in items {
-                        print(self.items.count)
+                        //print(self.items.count)
                         self.items.append(item)
                         //self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                         

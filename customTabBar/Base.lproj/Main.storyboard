@@ -25,6 +25,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sYV-bk-IZ9">
+                                            <rect key="frame" x="15" y="0.0" width="570" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -992,13 +993,13 @@
                                             <exclude reference="0yd-iP-jaM"/>
                                         </mask>
                                         <mask key="constraints">
-                                            <exclude reference="EAf-71-kl9"/>
-                                            <exclude reference="fsE-UB-vE4"/>
-                                            <exclude reference="jZy-6z-jNR"/>
                                             <exclude reference="UQn-UV-wd4"/>
                                             <exclude reference="UjU-ue-6kJ"/>
                                             <exclude reference="mvC-Wz-Q3n"/>
                                             <exclude reference="v7R-CB-V8p"/>
+                                            <exclude reference="EAf-71-kl9"/>
+                                            <exclude reference="fsE-UB-vE4"/>
+                                            <exclude reference="jZy-6z-jNR"/>
                                         </mask>
                                     </variation>
                                     <variation key="widthClass=compact">
@@ -1007,13 +1008,13 @@
                                             <include reference="0yd-iP-jaM"/>
                                         </mask>
                                         <mask key="constraints">
-                                            <include reference="EAf-71-kl9"/>
-                                            <include reference="fsE-UB-vE4"/>
-                                            <include reference="jZy-6z-jNR"/>
                                             <include reference="UQn-UV-wd4"/>
                                             <include reference="UjU-ue-6kJ"/>
                                             <include reference="mvC-Wz-Q3n"/>
                                             <include reference="v7R-CB-V8p"/>
+                                            <include reference="EAf-71-kl9"/>
+                                            <include reference="fsE-UB-vE4"/>
+                                            <include reference="jZy-6z-jNR"/>
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>

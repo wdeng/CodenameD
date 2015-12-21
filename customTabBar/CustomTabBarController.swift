@@ -8,6 +8,7 @@
 
 import UIKit
 
+//TODO: add snapkit to custom tab bar for auto layout http://snapkit.io/
 class CustomTabBarController: UITabBarController {
     var tabs: [UIButton] = [UIButton]() {
         didSet {
@@ -28,7 +29,7 @@ class CustomTabBarController: UITabBarController {
         }
     }
     var customTabBar: UIView!
-    let playPauseButton = UIButton()
+    let playPauseButton = TabBarPlayButton()
     let audioTitleButton = UIButton()
     
     //player delegate
@@ -117,11 +118,10 @@ class CustomTabBarController: UITabBarController {
         
         let w = customTabBar.bounds.width - tabsWidth
         audioTitleButton.frame = CGRect(x: tabsWidth, y: 0, width: w, height: customTabBar.bounds.height)
-        
         audioTitleButton.setTitle("Sony Xperia Z5 Premium: A 4K SmartPhone! #4k #sony", forState: .Normal)
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor.colorWithAlphaComponent(0.2), forState: .Highlighted)
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor, forState: .Normal)
-        audioTitleButton.titleLabel?.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        audioTitleButton.titleLabel?.lineBreakMode = .ByTruncatingTail
         audioTitleButton.titleLabel?.numberOfLines = TabBarSettings.audioTitleLines
         audioTitleButton.titleLabel?.font = TabBarSettings.audioTitleFont
         audioTitleButton.backgroundColor = TabBarSettings.audioButtonBackgroundColor
@@ -133,8 +133,16 @@ class CustomTabBarController: UITabBarController {
         playPauseButton.frame = CGRect(x: customTabBar.bounds.width - TabBarSettings.playButtonWidth, y: 0, width: TabBarSettings.playButtonWidth, height: customTabBar.bounds.height)
         playPauseButton.tintColor = UIColor.whiteColor()
         playPauseButton.imageView?.contentMode = .ScaleAspectFit
-        //TODO: add animations if we want progress indicator around playButton
         playPauseButton.addTarget(self, action: "playPauseAudio", forControlEvents: .TouchUpInside)
+        
+        ////////////////////////////////////////////////////////
+        ///////////////     THIS IS TEMPORARY     !!!!!!!!!!!!!!
+        ////////////////////////////////////////////////////////
+        sectionPlayerDidChangeRate(1)
+        playPauseButton.progress = 0.85
+        
+        
+        
         customTabBar.addSubview(playPauseButton)
         //TODO: custom tab bar (4 tabs) need refresh
     }

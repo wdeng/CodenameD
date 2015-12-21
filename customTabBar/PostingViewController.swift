@@ -48,14 +48,14 @@ class PostingViewController: UIViewController {
                 // Parse
                 let imData = UIImageJPEGRepresentation(set.images[j], GeneralSettings.compressQuality)
                 let im = PFFile(name: "\(i)-\(j).jpg", data: imData!)
-                let objectForSave = PFObject(className: "Post")
+                let objectForSave = PFObject(className: "Episode")
                 
                 im!.saveInBackgroundWithBlock{(success, error) -> Void in
                     if error == nil {
                         objectForSave.setObject(im!, forKey: "image")
                         objectForSave.saveInBackgroundWithBlock{(success, error) -> Void in
                             if success {
-                                AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
+                                //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
                             } else {
                                 AppUtils.displayAlert("Could not upload image", message: "Please try again later", onViewController: self)
                             }
@@ -72,7 +72,7 @@ class PostingViewController: UIViewController {
         
         let audioData = NSData(contentsOfURL: playingSections.outputAudio!)
         let audioFile = PFFile(name: "audio.m4a", data: audioData!)
-        let post = PFObject(className: "Post")
+        let post = PFObject(className: "Episode")
         post["audio"] = audioFile
         post.saveInBackgroundWithBlock{(success, error) -> Void in
             self.activityIndicator.stopAnimating()
@@ -94,7 +94,7 @@ class PostingViewController: UIViewController {
         activityIndicator = UIActivityIndicatorView(frame: view.bounds)
         AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser: true)
         
-        let post = PFObject(className: "Post")
+        let post = PFObject(className: "Episode")
         
         post["message"] = message.text
         post["userId"] = PFUser.currentUser()!.objectId!

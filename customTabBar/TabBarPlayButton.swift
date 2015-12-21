@@ -13,7 +13,7 @@ class TabBarPlayButton: UIButton {
     //self!.progressIndicatorView.progress = CGFloat(receivedSize)/CGFloat(expectedSize)
     
     let circlePathLayer = CAShapeLayer()
-    let circleRadius: CGFloat = 20.0
+    let circleRadius: CGFloat = TabBarSettings.playButtonWidth / 2 - 2.0
     
     var progress: CGFloat {
         get {
@@ -44,20 +44,13 @@ class TabBarPlayButton: UIButton {
         circlePathLayer.frame = bounds
         circlePathLayer.lineWidth = 2
         circlePathLayer.fillColor = UIColor.clearColor().CGColor
-        circlePathLayer.strokeColor = UIColor.redColor().CGColor
+        circlePathLayer.strokeColor = UIColor.whiteColor().CGColor
         layer.addSublayer(circlePathLayer)
-        //backgroundColor = UIColor.whiteColor()
-    }
-    
-    func circleFrame() -> CGRect {
-        var circleFrame = CGRect(x: 0, y: 0, width: 2*circleRadius, height: 2*circleRadius)
-        circleFrame.origin.x = CGRectGetMidX(circlePathLayer.bounds) - CGRectGetMidX(circleFrame)
-        circleFrame.origin.y = CGRectGetMidY(circlePathLayer.bounds) - CGRectGetMidY(circleFrame)
-        return circleFrame
     }
     
     func circlePath() -> UIBezierPath {
-        return UIBezierPath(ovalInRect: circleFrame())
+        let bezierPath = UIBezierPath(arcCenter:CGPointMake(bounds.midX,bounds.midY), radius:circleRadius, startAngle: CGFloat(M_PI_2) * 3.0, endAngle:CGFloat(M_PI_2) * 3.0 + CGFloat(M_PI) * 2.0, clockwise: true)
+        return bezierPath
     }
     
     override func layoutSubviews() {
