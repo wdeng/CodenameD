@@ -27,7 +27,7 @@ class ParseActions: NSObject {
     queryPhotoCount.cachePolicy = PFCachePolicy.CacheThenNetwork
     queryPhotoCount.countObjectsInBackgroundWithBlock { (number, error) in
     if error == nil {
-    let appendS = (number == 1) ? "" : "s"
+    //let appendS = (number == 1) ? "" : "s"
     //photoCountLabel.text = "\(number) photo\(appendS)"
     //PAPCache.sharedCache.setPhotoCount(Int(number), user: self.user!)
     }
@@ -39,7 +39,7 @@ class ParseActions: NSObject {
     
     
     
-    let query = PFQuery(className: "activity")
+    let query = PFQuery(className: "Activities")
     query.whereKey("photo", equalTo: PFObject())//self.photo!)   //PFObject
     query.includeKey("fromUser")
     query.whereKey("type", equalTo: "comment")
@@ -50,7 +50,7 @@ class ParseActions: NSObject {
     // PFUser query
         
     let queryA = PFUser.query()
-    let queryB = PFQuery(className: "activity")
+    let queryB = PFQuery(className: "Activities")
     
     queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
     queryB.whereKey("type", equalTo: "following")
@@ -61,7 +61,7 @@ class ParseActions: NSObject {
     
     
     class func unfollowUserEventually(user: PFUser) {
-        let query = PFQuery(className: "activity")
+        let query = PFQuery(className: "Activities")
         query.whereKey("fromUser", equalTo: PFUser.currentUser()!)
         query.whereKey("toUser", equalTo: user)
         query.whereKey("type", equalTo: "following")
@@ -76,6 +76,46 @@ class ParseActions: NSObject {
         //TODO: cache thing sometime in the future
         //PAPCache.sharedCache.setFollowStatus(false, user: user)
     }
+    
+    var episode = EpisodeInParse()
+    func fetchFollowingPosts(skip: Int = 0) {
+        let query = PFQuery(className: "Activities")
+        query.whereKey("fromUser", equalTo: PFUser.currentUser()!)
+        query.whereKey("type", equalTo: "following")
+        query.orderByDescending("postUpdatedAt")
+        query.skip = skip
+        query.limit = 6
+        query.findObjectsInBackgroundWithBlock { (us, error) in
+            // While normally there should only be one follow activity returned, we can't guarantee that.
+            if error == nil {
+                for u: PFObject in us! as [PFObject] {
+                    
+                    let q = PFQuery(className: "Episode")
+                    q.whereKey("userId", equalTo: u["toUser"])
+                    q.orderByDescending("UpdatedAt")
+                    q.limit = 3
+                    q.findObjectsInBackgroundWithBlock{ (posts, error) in
+                        if posts == nil {
+                            //AppUtils.displayAlert("Fetching Feed Failed", message: "Please try again later", onViewController: (self as? UIViewController)!)
+                            print("couldn't fetch home")
+                        }
+                        else {
+                            
+                        }
+                        
+                        
+                        
+                        
+                    }
+                    
+                }
+            }
+        }
+
+    }
+    
+    
+    
 }
 
 

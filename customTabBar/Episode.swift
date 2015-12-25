@@ -40,7 +40,6 @@ class Episode : NSObject, NSCoding {
         get {
             return nil//TheMovieDB.Caches.imageCache.imageWithIdentifier(posterPath)
         }
-        
         set {
             //TheMovieDB.Caches.imageCache.storeImage(newValue, withIdentifier: posterPath!)
         }

@@ -20,7 +20,8 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
     var isFollowing = [String: Bool]()
     let searchBar = UISearchBar()
     var searchController: UISearchController!
-    var tmpViewToStoreNav: UIView?
+    weak var tmpViewToStoreNav: UIView?
+    var tmpItem: [UIBarButtonItem]?
     
     //var leftBarButton: UIBarButtonItem!
     
@@ -31,7 +32,6 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         
         allNotFollowed()
         
-        tmpViewToStoreNav = tabBarController?.navigationItem.titleView
         
         // TODO: custom search controller with segment controls
         searchController = {
@@ -48,14 +48,22 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        tabBarController?.navigationItem.titleView = searchController.searchBar
+        tmpViewToStoreNav = tabBarController?.navigationItem.titleView
+        tmpItem = tabBarController?.navigationItem.rightBarButtonItems
         
+        tabBarController?.navigationItem.titleView = searchController.searchBar
+        tabBarController?.navigationItem.rightBarButtonItems = []
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         // set it back
         tabBarController?.navigationItem.titleView = tmpViewToStoreNav
+        if tmpItem?.count > 0 {
+            tabBarController?.navigationItem.rightBarButtonItems?.insert(tmpItem![0], atIndex: 0)
+        }
+        //if tabBarController?.navigationItem.rightBarButtonItems?.count > 0 {/*don't insert current*/}
+        tmpItem = nil
     }
     
     func fetchSearchData() {
@@ -167,7 +175,7 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
     func allNotFollowed() {
         var errorMessage = "Please try again later"
         guard let queryA = PFUser.query() else {return}
-        let queryB = PFQuery(className: "activity")
+        let queryB = PFQuery(className: "Activities")
         
         queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
         queryB.whereKey("type", equalTo: "following")
@@ -197,18 +205,18 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
     }
     
     func followUser(aUser: PFUser) {
-        let activity = PFObject(className:"activity")
+        let activities = PFObject(className:"Activities")
         
         guard let currentUser = PFUser.currentUser() else {return}
         
         let follow : String = "following"
         
-        activity.setObject(currentUser, forKey: "fromUser")
-        activity.setObject(aUser, forKey: "toUser") // user is a another PFUser in my app
+        activities.setObject(currentUser, forKey: "fromUser")
+        activities.setObject(aUser, forKey: "toUser") // user is a another PFUser in my app
         
-        activity.setObject(follow, forKey: "type")
+        activities.setObject(follow, forKey: "type")
         
-        activity.saveEventually()
+        activities.saveEventually()
     }
     
     
@@ -217,7 +225,7 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         followingUserList.removeAll()
         //followingUserList.removeAllObjects()
         
-        let findUserObjectId =       PFQuery(className: "activity")
+        let findUserObjectId = PFQuery(className: "Activities")
         findUserObjectId.whereKey("fromUser", equalTo: PFUser.currentUser()!)
         findUserObjectId.whereKey("type", equalTo: "following")
         

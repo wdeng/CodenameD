@@ -8,6 +8,114 @@
 
 import UIKit
 
+
+struct AppSettings {
+    static let DEBUG_LOG = true
+    static let minDBValue: Float = -80.0
+    static let minSoundLevel: Double = 0.08
+    static let reallySmallNumber: Double = 0.000001
+    static let tabBarHeight: CGFloat = 38.0
+    
+    
+}
+
+struct RecordSettings {
+    static let recordedDurationLimit: (Double, Double) = (1.0, 60.0)
+    static let audioButtonColor: UIColor = UIColor.grayColor()
+    static let recordedAudioCellCornerRadius: CGFloat = 12.0
+    static let recordedAudioCellHeight: CGFloat = 38.0
+    
+    
+    static let addedImageCornerRadius: CGFloat = 5.0
+    static let selectedPhotoCellHeight: CGFloat = 80.0
+    static let imageDeleteButtonWidth: CGFloat = 30.0
+    static let defaultImageLimit: CGSize = CGSize(width: 720, height: 2000)
+    
+    //for iphone only, iphone is mono input
+    static let numberOfChannels:Int = 1
+    
+    static let minCellBlankWidth: CGFloat = 100.0
+    static let minAudioButtonWidth: CGFloat = 32.0
+}
+
+struct PlaySoundSetting {
+    static let progressBarHeight: CGFloat = 30.0
+    
+}
+
+
+enum PlayingSpeed: Float {
+    case x100 = 1.0
+    case x125 = 1.25
+    case x150 = 1.5
+    case x200 = 2.0
+}
+
+class ImageUtils: NSObject {
+    
+    class func getFillSize(image: UIImage, targetSize: CGSize) -> CGSize {
+        let s = image.size
+        let ratio = s.height/s.width
+        
+        // fill the targetSize
+        let h = max(targetSize.width * ratio, targetSize.height)
+        let w = max(targetSize.height / ratio, targetSize.width)
+        
+        return CGSize(width: w, height: h)
+        
+    }
+    
+    class func getFitRect(image: UIImage, targetRect: CGRect) -> CGRect {
+        let s = image.size
+        let ratio = s.height/s.width
+        
+        // fill the targetSize
+        let h = min(targetRect.width * ratio, targetRect.height)
+        let w = min(targetRect.height / ratio, targetRect.width)
+        let x = (targetRect.width - w) / 2
+        let y = (targetRect.height - h) / 2
+        
+        // in targetRect's bounds
+        return CGRect(x: x, y: y, width: w, height: h)
+    }
+    
+    
+    
+    class func createFitImageFromSize(image: UIImage, targetSize: CGSize) -> UIImage? {
+        let s = image.size
+        let ratio = s.height/s.width
+        
+        // fill the targetSize
+        let h = min(targetSize.width * ratio, targetSize.height)
+        let w = min(targetSize.height / ratio, targetSize.width)
+        
+        //context to get new image
+        UIGraphicsBeginImageContext(CGSizeMake(w, h))  //UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.drawInRect(CGRectMake(0, 0, w, h))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        //resize finished
+        
+        // crop to center
+        let (orgx, orgy) = (h > targetSize.height) ? (0, (h - targetSize.height)/2) : ((w - targetSize.width)/2, 0)
+        // Correct rect size based on the device screen scale
+        let scaledRect = CGRectMake(orgx * newImage.scale, orgy * newImage.scale, targetSize.width * newImage.scale, targetSize.height * newImage.scale);
+        // New CGImage reference based on the input image (self) and the specified rect
+        let imageRef = CGImageCreateWithImageInRect(newImage.CGImage, scaledRect)
+        // Gets an UIImage from the CGImage
+        if let tmp = imageRef {
+            return UIImage(CGImage: tmp, scale: newImage.scale, orientation: newImage.imageOrientation)
+        }
+        else {
+            return nil
+        }
+        
+    }
+    
+}
+
+
+
 struct TabBarSettings {
     static let appStartControllerIndex: Int = 0
     static let height: CGFloat = 44.0
@@ -52,8 +160,9 @@ class AppUtils: NSObject {
     
     class func displayAlert(title: String, message: String, onViewController vc: UIViewController) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action) -> Void in
-            vc.dismissViewControllerAnimated(true, completion: nil)} ) )
+        alert.addAction(UIAlertAction(title: "OK", style: .Default) { (action) -> Void in
+            //vc.dismissViewControllerAnimated(true, completion: nil)
+            })
         vc.presentViewController(alert, animated: true, completion: nil)
         
     }

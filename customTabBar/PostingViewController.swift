@@ -31,7 +31,6 @@ class PostingViewController: UIViewController {
         //let imageFile = PFFile(name: "image.png", data: imageData!)
         //post["imageFile"] = imageFile
         
-        
         uploadMedia()
         
         
@@ -40,7 +39,6 @@ class PostingViewController: UIViewController {
 
     @IBOutlet var message: UITextView!
     
-    //TODO: image should be around 100kb per one
     func uploadMedia() {
         for i in 0 ..< playingSections.imageSets.count {
             let set = playingSections.imageSets[i]
@@ -52,7 +50,7 @@ class PostingViewController: UIViewController {
                 
                 im!.saveInBackgroundWithBlock{(success, error) -> Void in
                     if error == nil {
-                        objectForSave.setObject(im!, forKey: "image")
+                        objectForSave.setObject(im!, forKey: "image") //addObject
                         objectForSave.saveInBackgroundWithBlock{(success, error) -> Void in
                             if success {
                                 //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
@@ -61,7 +59,7 @@ class PostingViewController: UIViewController {
                             }
                         }
                     } else {
-                        AppUtils.displayAlert("Could not upload image", message: "Please try again later", onViewController: self)
+                        AppUtils.displayAlert("Could not upload images", message: "Please try again later", onViewController: self)
                     }
                     
                 }

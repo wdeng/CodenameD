@@ -10,6 +10,8 @@ import UIKit
 import Parse
 
 class ProfileViewController: UITableViewController {
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +23,22 @@ class ProfileViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Profile"
-        tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
+        
+        //tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
+        let item = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
+        
+        if tabBarController?.navigationItem.rightBarButtonItems?.count > 0 {
+            tabBarController?.navigationItem.rightBarButtonItems!.append(item)
+        } else {
+            tabBarController?.navigationItem.rightBarButtonItems = [item]
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        if tabBarController?.navigationItem.rightBarButtonItems?.count > 1 {
+            tabBarController?.navigationItem.rightBarButtonItems?.removeLast()
+        }
     }
     
     func followingTapped() {
@@ -56,12 +73,11 @@ class ProfileViewController: UITableViewController {
             
             
             guard let queryA = PFUser.query() else {return}
-            let queryB = PFQuery(className: "activity")
-            
+            let queryB = PFQuery(className: "Activities")
+            //TODO: change to only use activities
             queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
             queryB.whereKey("type", equalTo: "following")
             queryA.whereKey("objectId", matchesKey: "toUser", inQuery: queryB)
-            
             
             queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
                 if error != nil {

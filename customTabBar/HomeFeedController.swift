@@ -36,6 +36,7 @@ class HomeFeedController: UITableViewController {
         pullRefresher.beginRefreshing()
         self.tableView.addSubview(pullRefresher)
         
+        
     }
     
     func refresh() {

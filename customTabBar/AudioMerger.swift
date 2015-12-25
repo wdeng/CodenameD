@@ -9,8 +9,9 @@
 import UIKit
 import AVFoundation
 
-protocol AudioMergerDelegate {
-    func mergingDidFinished(status: AVAssetExportSessionStatus)
+@objc protocol AudioMergerDelegate {
+    optional func mergingDidFinished(status: AVAssetExportSessionStatus)
+    optional func mergingWillStart()
 }
 
 class AudioMerger: NSObject {
@@ -21,13 +22,18 @@ class AudioMerger: NSObject {
     var outputAudio: NSURL?
     var exportSession: AVAssetExportSession?
     
+    
+    var assetWriter: AVAssetWriter?
+    var assetReader: AVAssetReader?
+    var assetQueue: dispatch_queue_t?
+    
     //let exportSession = AVAssetExportSession(asset: AVMutableComposition(), presetName: AVAssetExportPresetAppleM4A)
     
     private func bundleToSetions(items: [AnyObject]) {
         
         var currentSecionIndex = 0
         
-        
+        //TODO: will need a placeholder image if no image
         for i in 0 ..< items.count {
             if let item = items[i] as? AddedImageSet {
                 if audios.last?.itemIndex == imageSets.last!.itemIndex { /// this also solves the first item as audio
@@ -56,7 +62,9 @@ class AudioMerger: NSObject {
     }
     
     
-    
+    override init() {
+        super.init()
+    }
     
     
     init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
@@ -77,12 +85,11 @@ class AudioMerger: NSObject {
     var delegate: AudioMergerDelegate?
     
     func stopMerger() {
-        if exportSession == nil{
-            return
-        }
-        
-        if (exportSession!.status == .Waiting) || (exportSession!.status == .Exporting) {
-            exportSession!.cancelExport()
+        if let q = assetQueue {
+            dispatch_async(q) {
+                self.assetWriter?.cancelWriting()
+                self.assetReader?.cancelReading()
+            }
         }
     }
     
@@ -113,37 +120,116 @@ class AudioMerger: NSObject {
             nextClipStartTime = CMTimeAdd(nextClipStartTime, timeRangeInAsset.duration)
         }
         
-        //TODO: change the setting for AVAssetWriter,  if export session doesn't work
+        //TODO: change the setting for AVAssetWriter, export session doesn't resize
+        //http://www.rockhoppertech.com/blog/ios-trimming-audio-files/  trimming
         
-        exportSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetAppleM4A)
-        if exportSession == nil {
-            return nil
-        }
+        
+        let outputSettings:[String : AnyObject] = [
+            AVFormatIDKey: NSNumber(unsignedInt:kAudioFormatMPEG4AAC),
+            AVEncoderBitRateKey : 64000,
+            AVNumberOfChannelsKey: 1,
+            AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key, if cannot change export session in the
         
         let resultPath = dirPath + "/" + audio
-        print(resultPath)
         deleteDuplication(resultPath)
         let resultURL = NSURL.fileURLWithPath(resultPath)
-        exportSession!.outputURL = resultURL
-        exportSession!.outputFileType = AVFileTypeAppleM4A
-        exportSession!.exportAsynchronouslyWithCompletionHandler({ () -> Void in
         
-            switch self.exportSession!.status {
-            case AVAssetExportSessionStatus.Failed:
-                self.delegate?.mergingDidFinished(.Failed)
-                print("failed \(self.exportSession!.error)")
-            case AVAssetExportSessionStatus.Completed:
-                print("Complete")
-                self.delegate?.mergingDidFinished(.Completed)
-            case AVAssetExportSessionStatus.Cancelled:
-                self.delegate?.mergingDidFinished(.Cancelled)
-                print("cancel")
-            default:
-                print("something happened in exporting")
-                break
+        
+        do{
+            assetWriter = try AVAssetWriter(URL: resultURL, fileType: AVFileTypeAppleM4A)
+            assetReader = try AVAssetReader(asset: composition)
+        }catch{
+            print("Couldn't start the reader writer")
+        }
+        
+        if (assetWriter == nil) || (assetReader == nil) {return nil}
+        
+        assetReader!.timeRange = CMTimeRange(start: kCMTimeZero, end: kCMTimePositiveInfinity)
+        let readerOutput = AVAssetReaderTrackOutput(track: compositionAudioTrack, outputSettings: nil)
+        assetReader!.addOutput(readerOutput)
+        
+        let writerInput = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: outputSettings)
+        writerInput.expectsMediaDataInRealTime = false
+        if assetWriter!.canAddInput(writerInput) {
+            assetWriter!.addInput(writerInput)
+        }
+        assetWriter!.shouldOptimizeForNetworkUse = true
+        //let duration = composition.duration
+        
+        assetWriter!.startWriting()
+        assetWriter!.startSessionAtSourceTime(kCMTimeZero)
+        assetReader!.startReading()
+        
+        assetQueue = dispatch_queue_create("com.lbs.audiorecorder.assetreadingqueue", DISPATCH_QUEUE_SERIAL)
+        self.delegate?.mergingWillStart?()
+        writerInput.requestMediaDataWhenReadyOnQueue(assetQueue!){
+            
+            while writerInput.readyForMoreMediaData {
+                let nextBuffer = readerOutput.copyNextSampleBuffer()
+                if (self.assetReader!.status == .Reading) && (nextBuffer != nil) {
+                    writerInput.appendSampleBuffer(nextBuffer!)
+                } else {
+                    writerInput.markAsFinished()
+                    
+                    switch self.assetReader!.status {
+                    case .Failed:
+                        print("Writer writing Failed")
+                        self.assetWriter!.cancelWriting()
+                        self.delegate?.mergingDidFinished?(.Failed)
+                    case .Completed:
+                        print("Writer writing Complete")
+                        self.assetWriter!.endSessionAtSourceTime(composition.duration)
+                        self.assetWriter!.finishWritingWithCompletionHandler{ _ in
+                            dispatch_async(dispatch_get_main_queue()){
+                                self.delegate?.mergingDidFinished?(.Completed)
+                            }
+                        }
+                    case .Cancelled:
+                        print("Writer writing cancelled")
+                        self.delegate?.mergingDidFinished?(.Cancelled)
+                    default:
+                        print("Something happened in writing")
+                        break
+                        
+                    }
+                    
+                    
+                }
+                
             }
-        })
+
+        }
+
         
+//        exportSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetAppleM4A)
+//        if exportSession == nil {
+//            return nil
+//        }
+//        
+//        let resultPath = dirPath + "/" + audio
+//        print(resultPath)
+//        deleteDuplication(resultPath)
+//        let resultURL = NSURL.fileURLWithPath(resultPath)
+//        exportSession!.outputURL = resultURL
+//        exportSession!.outputFileType = AVFileTypeAppleM4A
+//        exportSession!.exportAsynchronouslyWithCompletionHandler({ () -> Void in
+//        
+//            switch self.exportSession!.status {
+//            case AVAssetExportSessionStatus.Failed:
+//                self.delegate?.mergingDidFinished(.Failed)
+//                print("failed \(self.exportSession!.error)")
+//            case AVAssetExportSessionStatus.Completed:
+//                print("Complete")
+//                self.delegate?.mergingDidFinished(.Completed)
+//            case AVAssetExportSessionStatus.Cancelled:
+//                self.delegate?.mergingDidFinished(.Cancelled)
+//                print("cancel")
+//            default:
+//                print("something happened in exporting")
+//                break
+//            }
+//        })
+//        
         return resultURL
         
     }

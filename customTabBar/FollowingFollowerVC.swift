@@ -52,7 +52,7 @@ class FollowingFollowerVC: UITableViewController {
             isFollowing[id] = false
             
             // Parse
-            let query = PFQuery(className: "activity")
+            let query = PFQuery(className: "Activities")
             
             query.whereKey("type", equalTo: "following")
             query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
@@ -74,10 +74,11 @@ class FollowingFollowerVC: UITableViewController {
             isFollowing[id] = true
             
             // Parse
-            let following = PFObject(className: "activity")
+            let following = PFObject(className: "Activities")
             following["type"] = "following"
             following["toUser"] = userids[b.tag]
             following["fromUser"] = PFUser.currentUser()?.objectId
+            following["toUsername"] = usernames[b.tag]
             following.saveInBackground()
             // End Parse
             

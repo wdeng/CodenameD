@@ -20,12 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         Parse.enableLocalDatastore()
         
-        // Initialize Parse.
         Parse.setApplicationId("s8hP8hof2u8B6E301jYQSz0bnMzmzxFg7U8Qah7U", clientKey: "uhp9Z4aHpeojbO9eURsffvA0V8NIV9oniDopkAf5")
         
-        // [Optional] Track statistics around application opens.
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
 
+        let defaultACL = PFACL()
+        defaultACL.publicReadAccess = true
+        defaultACL.publicWriteAccess = false
+        PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
         
         
 //        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -40,16 +42,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        UIViewController *mainLoginVC = [storyboard instantiateViewControllerWithIdentifier:@"MainLoginVC"];
 //        [mainLoginVC setModalPresentationStyle:UIModalPresentationFullScreen];
 //        [homeScreenVC presentModalViewController:mainLoginVC animated:NO];
-        
-        
-        
-        
-        
+        //presentViewController:animated:completion
         
         
         
         return true
     }
+    
+    
+    
+    // background play control
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        if event?.subtype == UIEventSubtype.RemoteControlPlay {
+            print("received remote play")
+            SectionPlayer.sharedInstance.play()
+        }
+        else if event?.subtype == UIEventSubtype.RemoteControlPause {
+            print("received remote play")
+        } else if event?.subtype == UIEventSubtype.RemoteControlTogglePlayPause {
+            print("received toggle")
+            SectionPlayer.sharedInstance.playPauseToggle()
+        }
+    }
+    
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
