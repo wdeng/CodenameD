@@ -30,6 +30,8 @@ class EpisodeCell: UITableViewCell {
         save.contentMode = .ScaleAspectFit
         otherOptions.contentMode = .ScaleAspectFit
         
+        self.separatorInset = UIEdgeInsets(top: 0, left: bounds.width, bottom: 0, right: 0)
+        
         // Initialization code
     }
 

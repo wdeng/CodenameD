@@ -73,10 +73,10 @@ class PostingViewController: UIViewController {
         let post = PFObject(className: "Episode")
         post["audio"] = audioFile
         post.saveInBackgroundWithBlock{(success, error) -> Void in
-            self.activityIndicator.stopAnimating()
-            UIApplication.sharedApplication().endIgnoringInteractionEvents()
+            //self.activityIndicator.stopAnimating()
+            //UIApplication.sharedApplication().endIgnoringInteractionEvents()
             if error == nil {
-                AppUtils.displayAlert("Audio Uploaded", message: "Your audio has been posted successfully", onViewController: self)
+                //AppUtils.displayAlert("Audio Uploaded", message: "Your audio has been posted successfully", onViewController: self)
             } else {
                 
                 AppUtils.displayAlert("Could not upload", message: "Please try again later", onViewController: self)
@@ -94,7 +94,7 @@ class PostingViewController: UIViewController {
         
         let post = PFObject(className: "Episode")
         
-        post["message"] = message.text
+        post["title"] = message.text
         post["userId"] = PFUser.currentUser()!.objectId!
         
         post.saveInBackgroundWithBlock{(success, error) -> Void in
@@ -105,7 +105,7 @@ class PostingViewController: UIViewController {
                 
                 //self.imageToPost.image = UIImage(named: "315px-Blank_woman_placeholder.svg.png")
                 
-                self.message.text = ""
+                //self.message.text = ""
                 
             } else {
                 

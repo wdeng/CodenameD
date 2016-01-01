@@ -74,22 +74,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         let audioData = NSData(contentsOfURL: episodeData!.outputAudio!)
         let audioFile = PFFile(name: "audio.m4a", data: audioData!)
         
-//        audioFile!.saveInBackgroundWithBlock{(success, error) -> Void in
-//            if error == nil {
-//                self.post.setObject(audioFile!, forKey: "audio") //addObject
-//                self.post.saveInBackgroundWithBlock{(success, error) -> Void in
-//                    if success {
-//                        //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
-//                    } else {
-//                        AppUtils.displayAlert("Could not upload an image", message: "Please try again later", onViewController: self)
-//                    }
-//                }
-//            } else {
-//                AppUtils.displayAlert("Could not upload images", message: "Please try again later", onViewController: self)
-//            }
-//        }
-        
-        // TODO: check if audio went through
         post["audio"] = audioFile
         post.saveInBackgroundWithBlock{(success, error) -> Void in
             if success {
@@ -139,17 +123,16 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
                 u["postUpdatedAt"] = d
                 u.saveInBackgroundWithBlock{(success, error) -> Void in
                     if success{
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        //self.dismissViewControllerAnimated(true, completion: nil)
                     }
                 }
             }
-            self.tableView.reloadData()
+            //self.tableView.reloadData()
         }
     }
     
 
     //MARK: Segue to Section Playing Scene
-    
     @IBOutlet weak var episodeTitle: UITextView!
     @IBOutlet weak var openPlayer: UIButton!
     @IBAction func openSoundPlayer(sender: AnyObject) {
@@ -196,9 +179,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     }
     
     //MARK: scroll view delegate
-    
     override func scrollViewDidScroll(scrollView: UIScrollView) {
-        //TODO: change to the height of the nav bar or the init contentOffset of table view
         if scrollView.contentOffset.y >= tableViewDefaultOffset {
             // scrolling up
             containerView.clipsToBounds = true
@@ -212,7 +193,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     }
     
     //MARK: textView delegate
-    
     func textViewDidBeginEditing(textView: UITextView) {
         print("begin editing")
         if textView.textColor == UIColor.lightGrayColor() {

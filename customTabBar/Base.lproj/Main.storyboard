@@ -269,6 +269,7 @@
                                         </imageView>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
                                     <outlet property="name" destination="9PO-uC-DYV" id="zhg-yI-6tq"/>
                                     <outlet property="photo" destination="U48-8K-0kn" id="ZXV-RQ-rIj"/>
@@ -510,6 +511,7 @@
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
                                     <outlet property="duration" destination="u1I-Xz-VLF" id="v6Z-TO-cbc"/>
                                     <outlet property="episodeThumb" destination="Wgw-Ib-LxM" id="9gA-mS-h4M"/>

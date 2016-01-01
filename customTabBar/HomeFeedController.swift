@@ -119,7 +119,7 @@ class HomeFeedController: UITableViewController {
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         let maxOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        if (maxOffset - offset) <= 50 {
+        if (maxOffset - offset) <= 200 {
             loadSegment(items.count, size: HomeFeedsSettings.sectionsInPage - 1)
         }
     }
@@ -129,46 +129,50 @@ class HomeFeedController: UITableViewController {
         return items.count
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell") as! ChannelCell
-        // TODO: change to UIView not Cell to avoid "no index path for table cell"
-
-        //let imagename = getRandomNumberBetween(1, To: 10).description + ".png"
-        //chCell.photo.image = UIImage(named:imagename)! as UIImage
-        //chCell.name.text = items[section].name as String
-        //chCell.name.text = "abcd"
-        //print(chCell.contentView.subviews)
-        return chCell
-    }
-
-    
     override func tableView(tableView: UITableView?, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 85;
+        if indexPath.row == 0 {
+            return 40
+        } else {
+            return 85
+        }
     }
     
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if indexPath.row == 0 {
+            let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell") as! ChannelCell
+            
+            //let imagename = getRandomNumberBetween(1, To: 10).description + ".png"
+            //chCell.photo.image = UIImage(named:imagename)! as UIImage
+            //chCell.name.text = items[section].name as String
+            //chCell.name.text = "abcd"
+            //print(chCell.contentView.subviews)
+            
+            return chCell
+        }
+        else {
         
-        let epCell = tableView.dequeueReusableCellWithIdentifier("contentCell", forIndexPath: indexPath) as! EpisodeCell
-
-        //Configure the cell...
-        //print(epCell.episodeThumb.contentMode.rawValue)
+            let epCell = tableView.dequeueReusableCellWithIdentifier("contentCell", forIndexPath: indexPath) as! EpisodeCell
+        
+        /*
+            //Image Files are PFFile type
+            imageFiles[indexPath.row].getDataInBackgroundWithBlock { (data, error) -> Void in
+                if let downloadedImage = UIImage(data: data!) {
+                    myCell.postedImage.image = downloadedImage
+                }
+            }
+        */
         
         
         
         
         
-        
-        return epCell
+            return epCell
+        }
     }
-    
-    
-    
-    
-    
     
     
 }

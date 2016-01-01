@@ -77,6 +77,10 @@ class ParseActions: NSObject {
         //PAPCache.sharedCache.setFollowStatus(false, user: user)
     }
     
+    
+    
+    
+    // Abandoned
     var episode = EpisodeInParse()
     func fetchFollowingPosts(skip: Int = 0) {
         let query = PFQuery(className: "Activities")
@@ -85,10 +89,10 @@ class ParseActions: NSObject {
         query.orderByDescending("postUpdatedAt")
         query.skip = skip
         query.limit = 6
-        query.findObjectsInBackgroundWithBlock { (us, error) in
+        query.findObjectsInBackgroundWithBlock { (users, error) in
             // While normally there should only be one follow activity returned, we can't guarantee that.
             if error == nil {
-                for u: PFObject in us! as [PFObject] {
+                for u: PFObject in users! as [PFObject] {
                     
                     let q = PFQuery(className: "Episode")
                     q.whereKey("userId", equalTo: u["toUser"])
@@ -98,13 +102,8 @@ class ParseActions: NSObject {
                         if posts == nil {
                             //AppUtils.displayAlert("Fetching Feed Failed", message: "Please try again later", onViewController: (self as? UIViewController)!)
                             print("couldn't fetch home")
+                            return
                         }
-                        else {
-                            
-                        }
-                        
-                        
-                        
                         
                     }
                     
