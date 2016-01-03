@@ -134,7 +134,7 @@ struct TabBarSettings {
 }
 
 struct HomeFeedsSettings {
-    static let sectionsInPage: Int = 5
+    static let sectionsInPage: Int = 6
     static let itemsInSection: Int = 3
 }
 

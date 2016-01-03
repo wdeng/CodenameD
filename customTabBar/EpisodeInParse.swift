@@ -10,10 +10,11 @@ import Foundation
 import AVFoundation
 import Parse
 
-class EpisodeInParse: NSObject {
+class EpisodeInParse {
     var episodeTitle: String?
     var episodeURL: NSURL?
     var imageSets: [PFFile]?
+    var thumb: UIImage?
     var sectionDurations: [Float]?
 }
 
@@ -44,6 +45,7 @@ class HomeFeedFromParse: NSObject {
         query.findObjectsInBackgroundWithBlock { (us, error) in
             // While normally there should only be one follow activity returned, we can't guarantee that.
             if (us == nil) || (error != nil) {
+                print("couldn't find following users")
                 return
             }
             

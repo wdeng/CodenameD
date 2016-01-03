@@ -25,13 +25,13 @@ class ProfileViewController: UITableViewController {
         tabBarController?.navigationItem.title = "Profile"
         
         //tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
-        let item = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
+        //let item = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
         
-        if tabBarController?.navigationItem.rightBarButtonItems?.count > 0 {
-            tabBarController?.navigationItem.rightBarButtonItems!.append(item)
-        } else {
-            tabBarController?.navigationItem.rightBarButtonItems = [item]
-        }
+        //if tabBarController?.navigationItem.rightBarButtonItems?.count > 0 {
+        //    tabBarController?.navigationItem.rightBarButtonItems!.append(item)
+        //} else {
+        //    tabBarController?.navigationItem.rightBarButtonItems = [item]
+        //}
     }
     
     override func viewWillDisappear(animated: Bool) {
