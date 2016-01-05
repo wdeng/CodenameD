@@ -118,6 +118,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
                 return
             }
             
+            // TODO: change into only use save() to change updatedAt remove postUpdatedAt
             guard let followers = objects else {return}
             for u in followers {
                 u["postUpdatedAt"] = d

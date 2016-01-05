@@ -15,16 +15,18 @@ class FollowingFollowerVC: UITableViewController {
     var userids = [String]()
     var isFollowing = [String: Bool]()
     
+    //before prepare for segue
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
     }
 
     // MARK: - Table view data source
-
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return usernames.count
     }
 
@@ -41,48 +43,19 @@ class FollowingFollowerVC: UITableViewController {
         } else {
             cell.isFollowing.setTitle("Follow", forState: .Normal)
         }
-        //cell.isFollowing.frame = CGRect()
+
         return cell
     }
     
     func followUnfollow(b: UIButton) {
         let id = userids[b.tag]
-        if b.titleLabel?.text == "Following" {
-            b.setTitle("Follow", forState: .Normal)
+        let username = usernames[b.tag]
+        if isFollowing[id] == true {
             isFollowing[id] = false
-            
-            // Parse
-            let query = PFQuery(className: "Activities")
-            
-            query.whereKey("type", equalTo: "following")
-            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-            query.whereKey("toUser", equalTo: userids[b.tag])
-            //query.whereKey("follower", equalTo: PFUser.currentUser()!.objectId!)
-            //query.whereKey("following", equalTo: userids[b.tag])
-            
-            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
-                if let objects = objects {
-                    for object in objects {
-                        object.deleteInBackground()
-                    }
-                }
-            })
-            // End Parse
-            
         } else {
-            b.setTitle("Following", forState: .Normal)
             isFollowing[id] = true
-            
-            // Parse
-            let following = PFObject(className: "Activities")
-            following["type"] = "following"
-            following["toUser"] = userids[b.tag]
-            following["fromUser"] = PFUser.currentUser()?.objectId
-            following["toUsername"] = usernames[b.tag]
-            following.saveInBackground()
-            // End Parse
-            
         }
+        ParseActions.followUnfollow(b, withID: id, andUsername: username)
     }
     
     

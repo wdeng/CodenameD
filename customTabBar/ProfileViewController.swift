@@ -11,12 +11,12 @@ import Parse
 
 class ProfileViewController: UITableViewController {
     
+    @IBOutlet weak var isFollowing: UIButton!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
+        self.clearsSelectionOnViewWillAppear = true
 
     }
 
@@ -68,34 +68,41 @@ class ProfileViewController: UITableViewController {
 
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let vc = segue.destinationViewController as! FollowingFollowerVC
         if segue.identifier == "showFollowing" {
-            let vc = segue.destinationViewController as! FollowingFollowerVC
+            let query = PFQuery(className: "Activities")
+            query.whereKey("type", equalTo: "following")
+            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+            query.limit = 100
             
-            
-            guard let queryA = PFUser.query() else {return}
-            let queryB = PFQuery(className: "Activities")
-            //TODO: change to only use activities
-            queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-            queryB.whereKey("type", equalTo: "following")
-            queryA.whereKey("objectId", matchesKey: "toUser", inQuery: queryB)
-            
-            queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+            query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
                 if error != nil {
                     print("couldn't fetch users")
                     return
                 }
                 
-                guard let users = objects else {return}
+                guard let followings = objects else {return}
                 
-                for object in users {
-                    guard let u = object as? PFUser else {return}
-                    //if u.objectId! == PFUser.currentUser()?.objectId {continue}
-                    vc.userids.append(u.objectId!)
-                    vc.usernames.append(u.username!)
-                    vc.isFollowing[u.objectId!] = true
+                for following in followings {
+                    let id = following["toUser"] as! String
+                    vc.userids.append(id)
+                    vc.usernames.append(following["toUsername"] as! String)
+                    vc.isFollowing[id] = true
                 }
                 vc.tableView.reloadData()
             }
+            
+        } else if segue.identifier == "showFollowers" {
+            
+            ParseActions.fetchActivities(.Followers, finished: { (followings: [PFObject]) -> Void in
+                for following in followings {
+                    let id = following["fromUser"] as! String
+                    vc.userids.append(id)
+                    vc.usernames.append(following["fromUsername"] as! String)
+                    vc.isFollowing[id] = false
+                }
+                vc.tableView.reloadData()
+            })
             
         }
     }
