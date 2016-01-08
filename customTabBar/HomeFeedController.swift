@@ -7,14 +7,14 @@
 //
 
 import UIKit
-import Foundation
 import Parse
 
 class HomeFeedController: UITableViewController {
-    // TODO : wrap to a Infinite scroll format
-    //let PageSize = 20
     var items:[MyItem] = []
-    var isLoading = false
+    var feeds: [ChannelFeed] = []
+    
+    let loadOffset: CGFloat = 200
+    var canLoadNewItems = false
     //for infinite scrolling
     @IBOutlet var refreshView : UIView!
     @IBOutlet weak var refreshIndicator: UIActivityIndicatorView!
@@ -30,10 +30,12 @@ class HomeFeedController: UITableViewController {
         refreshButton.hidden = true
         tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
         tableView.contentInset.bottom = TabBarSettings.height
-        loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
+        
+        //TODO: change to persistence
+        //loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
         
         pullRefresher.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-        pullRefresher.beginRefreshing()
+        
         self.tableView.addSubview(pullRefresher)
         
         
@@ -47,15 +49,16 @@ class HomeFeedController: UITableViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        //pullRefresher.beginRefreshing()
         
         //TODO: put these in Parse with refresh indicator on
-        loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
-        refresh()
+        //loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Home"
+        canLoadNewItems = true
     }
     
     func getRandomNumberBetween (From: Int , To: Int) -> Int {
@@ -82,7 +85,7 @@ class HomeFeedController: UITableViewController {
                 }
                 //generate items
                 var arr:[MyItem] = []
-                for i in offset ... (offset + size) {
+                for i in offset ..< (offset + size) {
                     arr.append(MyItem(name: "Item " + String(i)))
                 }
                 
@@ -95,38 +98,51 @@ class HomeFeedController: UITableViewController {
     }
     
     func loadSegment(offset:Int, size:Int) {
-        if (!self.isLoading) {
-            self.isLoading = true
-            self.refreshView.hidden = (offset==0) ? true : false
-            let manager = DataManager()
-            manager.requestData(offset, size: size,
-                listener: {(items:[HomeFeedController.MyItem]) -> () in
-                    
-                    for item in items {
-                        //print(self.items.count)
-                        self.items.append(item)
-                        //self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                        
-                        self.tableView?.insertSections(NSIndexSet(index: self.items.count-1), withRowAnimation: .None)
-                    }
-                    self.isLoading = false
-                    self.refreshView.hidden = true
-                }
-            )
+        canLoadNewItems = false
+        self.refreshView.hidden = (offset==0) ? true : false
+        let manager = DataManager()
+        manager.requestData(offset, size: size,
+            listener: {(items:[HomeFeedController.MyItem]) -> () in
+                self.items += items
+                
+                let r = NSRange(location: offset, length: items.count)
+                let i = NSIndexSet(indexesInRange: r)
+                self.tableView?.insertSections(i, withRowAnimation: .None)
+                self.canLoadNewItems = true
+                self.refreshView.hidden = true
+            }
+        )
+    }
+    
+    func loadFeed(start:Int, size:Int) {
+        canLoadNewItems = false
+        refreshView.hidden = false
+        
+        HomeFeedFromParse.fetchFollowingPosts(start, size: size) { (newItems) -> Void in
+            print(newItems.count)
+            self.feeds += newItems
+            // TODO: is very likely not the exact number
+            let r = NSRange(location: start, length: newItems.count)
+            let i = NSIndexSet(indexesInRange: r)
+            self.tableView?.insertSections(i, withRowAnimation: .None)
         }
+        
+        
+        
     }
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         let maxOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        if (maxOffset - offset) <= 200 {
-            loadSegment(items.count, size: HomeFeedsSettings.sectionsInPage - 1)
+        if (maxOffset-offset < loadOffset) && canLoadNewItems {
+            //loadSegment(items.count, size: HomeFeedsSettings.sectionsInPage - 1)
+            
+            loadFeed(feeds.count, size: HomeFeedsSettings.sectionsInPage)
         }
     }
     
-    // #pragma mark - Table view data source
     override func numberOfSectionsInTableView(tableView: UITableView?) -> Int {
-        return items.count
+        return feeds.count
     }
     
     override func tableView(tableView: UITableView?, numberOfRowsInSection section: Int) -> Int {

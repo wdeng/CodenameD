@@ -195,6 +195,7 @@
 				761D03341C171D8100BF37A2 /* ImageCache.swift */,
 				761D03361C171DAF00BF37A2 /* Episode.swift */,
 				76DEA0811C2C8D9B00207DF9 /* EpisodeInParse.swift */,
+				76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */,
 				761D03371C171DAF00BF37A2 /* Channel.swift */,
 				761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */,
 			);
@@ -215,7 +216,6 @@
 		766E97631C289AD70012EDA9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */,
 				76F7175F1C1F331A00B79AC1 /* PostingViewController.swift */,
 				768706A21C1563AB00D1A457 /* Assets.xcassets */,
 				766E97641C289AEA0012EDA9 /* NumTypes+Conversion.swift */,

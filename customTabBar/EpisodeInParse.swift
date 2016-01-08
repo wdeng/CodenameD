@@ -28,39 +28,53 @@ class HomeFeedFromParse: NSObject {
     var channels: [ChannelFeed] = []
     
     
-    init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
-        super.init()
+//    init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
+//        super.init()
+//        
+//    }
+    
+    
+    
+    class func fetchFollowingPosts(skip: Int, size: Int, finished:([ChannelFeed]) -> Void ) {
+        var feeds = [ChannelFeed]()
         
-    }
-    
-    
-    
-    func fetchFollowingPosts(skip: Int = 0) {
         let query = PFQuery(className: "Activities")
-        query.whereKey("fromUser", equalTo: PFUser.currentUser()!)
+        query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
         query.whereKey("type", equalTo: "following")
-        query.orderByDescending("postUpdatedAt")
+        query.orderByDescending("updatedAt")
         query.skip = skip
-        query.limit = 6
+        query.limit = size
         query.findObjectsInBackgroundWithBlock { (us, error) in
-            // While normally there should only be one follow activity returned, we can't guarantee that.
-            if (us == nil) || (error != nil) {
+            if (error != nil) {
                 print("couldn't find following users")
                 return
             }
             
-            for u: PFObject in us! as [PFObject] {
+            guard let us = us else {return}
+            // TODO: if channel 
+//            var following = [String]()
+//            for u in us {
+//                if let userId = u["toUser"] as? String {
+//                    following.append(userId)
+//                }
+//            }
+//            let q = PFQuery(className: "Episode")
+//            q.whereKey("userId", containedIn: following)
+//            q.orderByDescending("updatedAt")
+            
+            
+            
+            for u: PFObject in us as [PFObject] {
                 
                 let ch = ChannelFeed()
                 ch.username = u["toUsername"] as? String
                 
                 let q = PFQuery(className: "Episode")
                 q.whereKey("userId", equalTo: u["toUser"])
-                q.orderByDescending("UpdatedAt")
+                q.orderByDescending("updatedAt")
                 q.limit = 3
                 q.findObjectsInBackgroundWithBlock{ (posts, error) in
-                    if posts == nil {
-                        //AppUtils.displayAlert("Fetching Feed Failed", message: "Please try again later", onViewController: (self as? UIViewController)!)
+                    if error != nil {
                         print("couldn't fetch home")
                         return
                     }
@@ -72,21 +86,21 @@ class HomeFeedFromParse: NSObject {
                         }
                         e.episodeTitle = p["title"] as? String
                         e.imageSets = p["images"] as? [PFFile]
+                        print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
                         ch.episodes.append(e)
                     }
                     
-                    self.channels.append(ch)
+                    feeds.append(ch)
+                    
+                    if feeds.count == us.count {
+                        finished(feeds)
+                    }
                 }
-                
-                
-                
-                
                 
                 
                 
             }
         }
-        
     }
     
     
@@ -96,3 +110,23 @@ class HomeFeedFromParse: NSObject {
     
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

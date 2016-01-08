@@ -10,19 +10,57 @@ import UIKit
 import Parse
 
 class ProfileViewController: UITableViewController {
+    //THIS IS MAINLY FOR DISPLAY OTHER USERS PROFILE
+    
+    struct Options {
+        static var followText = "Loading"
+        static var hideFollowing = true
+        static var username = PFUser.currentUser()?.username
+        static var userId = PFUser.currentUser()?.objectId
+        static var profileName = "Profile Name"
+    }
     
     @IBOutlet weak var isFollowing: UIButton!
+    @IBOutlet weak var followingNum: UIButton!
+    @IBOutlet weak var followerNum: UIButton!
     
+    @IBOutlet weak var profileUsername: UILabel!
+    @IBOutlet weak var profileName: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.clearsSelectionOnViewWillAppear = true
-
+        
+        
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        tabBarController?.navigationItem.title = "Profile"
+        isFollowing.setTitle(Options.followText, forState: .Normal)
+        isFollowing.enabled = false
+        isFollowing.hidden = Options.hideFollowing
+        if !isFollowing.hidden {
+            ParseActions.isFollowingFollower([Options.userId!], withType: .Following) { (x) -> Void in
+                self.isFollowing.enabled = true
+                if x.first == true {
+                    self.isFollowing.setTitle("Following", forState: .Normal)
+                } else {
+                    self.isFollowing.setTitle("Follow", forState: .Normal)
+                }
+                
+            }
+        }
+        
+        if let un = Options.username {
+            profileUsername.text = "@" + un
+        } else {
+            profileUsername.text = ""
+        }
+        
+        profileName.text = Options.profileName
+        tabBarController?.navigationItem.title = profileName.text
+        
+        
         
         //tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
         //let item = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
@@ -46,7 +84,11 @@ class ProfileViewController: UITableViewController {
     }
 
     // MARK: - Table view data source
-
+    
+    
+    
+    /////// TODO:     Automatically resizing UITableViewCells
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
@@ -67,6 +109,7 @@ class ProfileViewController: UITableViewController {
     }
 
     
+    // show following followers
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let vc = segue.destinationViewController as! FollowingFollowerVC
         if segue.identifier == "showFollowing" {
@@ -106,6 +149,15 @@ class ProfileViewController: UITableViewController {
             
         }
     }
+    
+    @IBAction func followUnfollow(sender: UIButton) {
+        guard let id = Options.userId else {return}
+        guard let username = Options.username else {return}
+        
+        ParseActions.followUnfollow(sender, withID: id, andUsername: username)
+        
+    }
+    
     
 }
 

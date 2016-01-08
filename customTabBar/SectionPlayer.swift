@@ -11,8 +11,44 @@ import AVFoundation
 
 public class SectionPlayer: NSObject {
     static let sharedInstance = SectionPlayer()
-    
     private var player: AVPlayer?
+    var isPlaying: Bool? {
+        get {
+            if player == nil {
+                return nil
+            }
+            else if player!.rate == 0 {
+                return false
+            }
+            else {
+                return true
+            }
+        }
+    }
+    var rate: Float {
+        get {
+            if let player = player {
+                return (player.rate)
+            }
+            else {
+                return -1
+            }
+        }
+    }
+    
+    var currentTime: Double? {
+        get {
+            //print("currentTime is \(player?.currentTime().seconds)")
+            return player?.currentTime().seconds
+        }
+        set {
+            player?.seekToTime(CMTime(seconds: newValue!, preferredTimescale: 1000))
+            
+            //timeScale = self.player.currentItem.asset.duration.timescale;
+            //CMTime time = CMTimeMakeWithSeconds(77.000000, timeScale);
+            //[self.player seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+        }
+    }
     
     //private var player: AVPlayer = AVPlayer(URL: NSURL(string: "http://www.radiobrasov.ro/listen.m3u")!)
     
@@ -21,7 +57,7 @@ public class SectionPlayer: NSObject {
         if player != nil {
             player?.removeObserver(self, forKeyPath: "rate", context: nil)
         }
-        
+        // probably check the NSUserDefault for current playList
         if u != nil {
             player = AVPlayer(URL: u!)
             
@@ -42,21 +78,6 @@ public class SectionPlayer: NSObject {
         }
     }
     
-    var currentTime: Double? {
-        get {
-            //print("currentTime is \(player?.currentTime().seconds)")
-            return player?.currentTime().seconds
-        }
-        set {
-            player?.seekToTime(CMTime(seconds: newValue!, preferredTimescale: 1000))
-            //TODO: maybe changed to new preferred time scale
-            
-            //timeScale = self.player.currentItem.asset.duration.timescale;
-            //CMTime time = CMTimeMakeWithSeconds(77.000000, timeScale);
-            //[self.player seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-        }
-    }
-    
     func fastForward(time: Double) {
         currentTime! += time
     }
@@ -65,7 +86,7 @@ public class SectionPlayer: NSObject {
         currentTime! -= time
     }
     
-    func tempHolderForFunction(items: [AVPlayerItem]) {
+    func shouldntBeUsedFunction(items: [AVPlayerItem]) {
         //TODO: check how to use queueplayer and
         
         //NSArray *theItems = [NSArray arrayWithObjects:thePlayerItemA, thePlayerItemB, thePlayerItemC, thePlayerItemD, nil];
@@ -83,20 +104,6 @@ public class SectionPlayer: NSObject {
     
     //playerItemDidReachEnd:(NSNotification *)notification {
     
-    var isPlaying: Bool? {
-        get {
-            if player == nil {
-                return nil
-            }
-            else if player!.rate == 0 {
-                return false
-            }
-            else {
-                return true
-            }
-        }
-    }
-    
     func setPlaySpeed(targetSpeed: PlayingSpeed) {
         player?.rate = targetSpeed.rawValue
     }
@@ -104,6 +111,8 @@ public class SectionPlayer: NSObject {
     func play() {
         player?.play()
     }
+    
+    
     
     func pause() {
         player?.pause()

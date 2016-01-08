@@ -106,7 +106,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     }
     
     func updateFollowersTime(date: NSDate?) {
-        guard let d = date else {return}
         
         let q = PFQuery(className: "Activities")
         q.whereKey("toUser", equalTo: PFUser.currentUser()!.objectId!)
@@ -119,16 +118,19 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
             }
             
             // TODO: change into only use save() to change updatedAt remove postUpdatedAt
-            guard let followers = objects else {return}
-            for u in followers {
-                u["postUpdatedAt"] = d
-                u.saveInBackgroundWithBlock{(success, error) -> Void in
-                    if success{
-                        //self.dismissViewControllerAnimated(true, completion: nil)
-                    }
-                }
-            }
-            //self.tableView.reloadData()
+            PFObject.saveAllInBackground(objects)
+            self.self.dismissViewControllerAnimated(true, completion: nil)
+            //guard let followers = objects else {return}
+            
+            
+//            for u in followers {
+//                u["postUpdatedAt"] = d
+//                u.saveInBackgroundWithBlock{(success, error) -> Void in
+//                    if success{
+//                        //self.dismissViewControllerAnimated(true, completion: nil)
+//                    }
+//                }
+//            }
         }
     }
     

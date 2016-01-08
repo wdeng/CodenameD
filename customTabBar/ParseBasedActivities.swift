@@ -80,7 +80,7 @@ class ParseActions: NSObject {
             for u in obs {
                 users.append(u[typeToCheck] as! String)
             }
-            
+
             for u in checkingUsers {
                 if users.contains(u) {
                     isFollowing.append(true)
@@ -90,6 +90,30 @@ class ParseActions: NSObject {
             }
             
             finished(isFollowing)
+        }
+        
+    }
+    class func fetchFollowingFollowerNumber(type: ActivityType, finished:(Int) -> Void ) {
+        let query = PFQuery(className: "Activities")
+        switch type {
+        case .Followers:
+            query.whereKey("type", equalTo: "following")
+            query.whereKey("toUser", equalTo: PFUser.currentUser()!.objectId!)
+        case .Following:
+            query.whereKey("type", equalTo: "following")
+            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+        default:
+            return
+        }
+        query.limit = 1000
+        query.countObjectsInBackgroundWithBlock { (count, error) -> Void in
+            if error != nil {
+                print("couldn't fetch Activities")
+                return
+            }
+            
+            finished(Int(count))
+            
         }
         
     }
@@ -122,7 +146,7 @@ class ParseActions: NSObject {
             following["toUsername"] = username
             
             //TODO: change to NSDate
-            following["postUpdatedAt"] = nil
+            //following["postUpdatedAt"] = nil
             following.saveInBackground()
         }
     }
@@ -136,7 +160,7 @@ class ParseActions: NSObject {
         //photoCountLabel.text = "0 photos"
         
         let queryPhotoCount = PFQuery(className: "Photo")
-        queryPhotoCount.whereKey("user", equalTo: PFUser.currentUser()!)
+        queryPhotoCount.whereKey("user", equalTo: PFUser.currentUser()!.objectId!)
         queryPhotoCount.cachePolicy = PFCachePolicy.CacheThenNetwork
         queryPhotoCount.countObjectsInBackgroundWithBlock { (number, error) in
         if error == nil {
@@ -175,7 +199,7 @@ class ParseActions: NSObject {
     
     class func unfollowUserEventually(user: PFUser) {
         let query = PFQuery(className: "Activities")
-        query.whereKey("fromUser", equalTo: PFUser.currentUser()!)
+        query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
         query.whereKey("toUser", equalTo: user)
         query.whereKey("type", equalTo: "following")
         query.findObjectsInBackgroundWithBlock { (followActivities, error) in
@@ -197,9 +221,9 @@ class ParseActions: NSObject {
     var episode = EpisodeInParse()
     func fetchFollowingPosts(skip: Int = 0) {
         let query = PFQuery(className: "Activities")
-        query.whereKey("fromUser", equalTo: PFUser.currentUser()!)
+        query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
         query.whereKey("type", equalTo: "following")
-        query.orderByDescending("postUpdatedAt")
+        query.orderByDescending("updatedAt")
         query.skip = skip
         query.limit = 6
         query.findObjectsInBackgroundWithBlock { (users, error) in

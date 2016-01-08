@@ -17,7 +17,6 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     
     private var pageViewController: UIPageViewController!
     let progressBar = SectionSlider(frame: CGRectZero)
-    //var audioPlayer: AVAudioPlayer!
     let audioPlayer = SectionPlayer.sharedInstance
     var playingSections: AudioMerger!
     private var updateTime: NSTimer?
@@ -80,8 +79,6 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         }
     }
     
-    var currentRate:Float = 0.0
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -100,9 +97,8 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         
         progressBar.addTarget(self, action: "progressSectionChanged:", forControlEvents: .PrimaryActionTriggered)
         
-        jumpToSection.hidden = true
-        dismissSection.hidden = true
         
+        //TODO: background Play should not be in this controller
         // setup background play
         if NSClassFromString("MPNowPlayingInfoCenter") != nil {
             if let poster = UIImage(named: "IMG_0006.jpg") {     //TODO: change to default image if there is (could be random of multiple artworks)
@@ -129,7 +125,11 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if audioPlayer.isPlaying == true { setPlayerForPlayPause(1) }
+        if let currentTime = audioPlayer.currentTime {
+            progressBar.value = currentTime
+        } else { progressBar.value = 0.0}
+        
+        if audioPlayer.isPlaying == true { setPlayerForPlayPause(audioPlayer.rate) }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "SectionPlayerRateChanged", object: nil)  //TODO:  see if object useful
     }
@@ -142,10 +142,7 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     
     func sectionSliderThumbDidChange() {
         audioPlayer.currentTime = progressBar.value
-        if !progressBar.sectionSelectedByUser {
-            jumpToSection.hidden = true
-            dismissSection.hidden = true
-        }
+        if !progressBar.sectionSelectedByUser {hideSectionJumping = true}
     }
     
     func sectionSliderThumbDidEndTrack() {
@@ -161,10 +158,7 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     // called when section changed
     func progressSectionChanged(progressBar: SectionSlider) {
         currentDisplayingSection = progressBar.currentSection
-        if progressBar.sectionSelectedByUser {
-            jumpToSection.hidden = false
-            dismissSection.hidden = false
-        }
+        if progressBar.sectionSelectedByUser {hideSectionJumping = false}
     }
     
     override func viewDidLayoutSubviews() {
@@ -259,8 +253,6 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if completed {
-            dismissSection.hidden = false
-            jumpToSection.hidden = false
             
             pageViewScrollSucceed = true
             progressBar.currentSection = pendingSection
@@ -268,8 +260,9 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
             let s = progressBar.sectionForLocation(progressBar.positionForValue(progressBar.value))
             if s == pendingSection {
                 progressBar.sectionSelectedByUser = false
-                dismissSection.hidden = true
-                jumpToSection.hidden = true
+                hideSectionJumping = true
+            } else {
+                hideSectionJumping = false
             }
             
         }
@@ -280,12 +273,22 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     }
     
     //MARK: hook page view to progressBar
+    var hideSectionJumping = true {
+        didSet {
+            if hideSectionJumping == false {
+                dismissSection.hidden = false
+                jumpToSection.hidden = false
+            } else {
+                dismissSection.hidden = true
+                jumpToSection.hidden = true
+            }
+        }
+    }
     @IBOutlet weak var dismissSection: UIButton!
     @IBOutlet weak var jumpToSection: UIButton!
     
     @IBAction func dismissSelectedSection(sender: AnyObject) {
-        dismissSection.hidden = true
-        jumpToSection.hidden = true
+        hideSectionJumping = true
         progressBar.sectionSelectedByUser = false
         
         let l = progressBar.positionForValue(progressBar.value)
@@ -294,13 +297,11 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     }
     
     @IBAction func jumpToSelectedSection(sender: AnyObject) {
-        
-        dismissSection.hidden = true
-        jumpToSection.hidden = true
+        hideSectionJumping = true
         progressBar.sectionSelectedByUser = false
         
         progressBar.value = progressBar.valueForPosition(progressBar.startOfSectionsInFrame[currentDisplayingSection])
-        audioPlayer.currentTime = progressBar.value + 0.2 /// because the length diff for merged audio
+        audioPlayer.currentTime = progressBar.value + 0.2 ///TODO: because the length diff for merged audio
     }
     
     

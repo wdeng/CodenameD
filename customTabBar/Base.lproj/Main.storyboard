@@ -36,6 +36,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="eXb-at-eEt" kind="show" identifier="showUserProfile" id="fdT-EN-Mgy"/>
+                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="followCell" id="oY4-9S-QO8" customClass="FollowCell" customModule="customTabBar" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="136" width="600" height="44"/>
@@ -190,7 +193,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wdx-qD-AkI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-561" y="360"/>
+            <point key="canvasLocation" x="1329" y="1920"/>
         </scene>
         <!--profile-->
         <scene sceneID="AVd-0m-OlP">
@@ -302,6 +305,9 @@
                                                     <include reference="d17-uF-fZu"/>
                                                 </mask>
                                             </variation>
+                                            <connections>
+                                                <segue destination="4NC-Hq-QtJ" kind="show" identifier="showFollowers" id="uv1-dU-GSv"/>
+                                            </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QFX-Lz-4zC">
                                             <rect key="frame" x="-23" y="-15" width="46" height="30"/>
@@ -320,6 +326,9 @@
                                                     <include reference="h96-nx-4sq"/>
                                                 </mask>
                                             </variation>
+                                            <connections>
+                                                <action selector="followUnfollow:" destination="eXb-at-eEt" eventType="touchUpInside" id="Tyd-9d-teZ"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -468,12 +477,16 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="profile" image="901" id="ylN-O9-G0Q"/>
                     <connections>
+                        <outlet property="followerNum" destination="T9w-aa-MVa" id="ML1-Kx-9Bz"/>
+                        <outlet property="followingNum" destination="y0Q-nC-iVw" id="IKd-kZ-RxA"/>
                         <outlet property="isFollowing" destination="QFX-Lz-4zC" id="BmT-TM-Cmp"/>
+                        <outlet property="profileName" destination="e77-mk-jBr" id="s84-EN-Sd6"/>
+                        <outlet property="profileUsername" destination="HGA-To-DGR" id="y5h-Xs-FYs"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ko0-o2-zWg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="42" y="360"/>
+            <point key="canvasLocation" x="-988.5" y="1207"/>
         </scene>
         <!--home-->
         <scene sceneID="BFq-KX-JMd">
@@ -869,7 +882,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IeS-hY-9gS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1764" y="360"/>
+            <point key="canvasLocation" x="600" y="376"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="SOT-Nt-NN0">
@@ -1282,7 +1295,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="followCell" id="wSn-Ay-NBP" customClass="FollowCell" customModule="customTabBar" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="followCell" id="wSn-Ay-NBP" customClass="FollowCell" customModule="customTabBar" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="92" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wSn-Ay-NBP" id="yh7-z9-eeb">
@@ -1359,6 +1372,7 @@
                                 <connections>
                                     <outlet property="isFollowing" destination="P5a-si-qfr" id="PfT-PJ-2vc"/>
                                     <outlet property="username" destination="0yd-iP-jaM" id="wjH-a9-s9h"/>
+                                    <segue destination="eXb-at-eEt" kind="show" identifier="showUserProfile" id="vG4-3H-u6v"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -1371,7 +1385,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="43K-yB-04g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="735" y="360"/>
+            <point key="canvasLocation" x="-103.5" y="1180"/>
         </scene>
         <!--Record-->
         <scene sceneID="qOQ-XJ-Rq3">
@@ -2069,7 +2083,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l0H-el-Y5T" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3502.5" y="-390"/>
+            <point key="canvasLocation" x="2764.5" y="386"/>
         </scene>
         <!--Page View Controller-->
         <scene sceneID="As1-te-RRa">
@@ -2077,7 +2091,7 @@
                 <pageViewController storyboardIdentifier="PageController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" pageSpacing="6" navigationOrientation="horizontal" spineLocation="none" id="lvh-mS-i5q" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tZ5-hT-Woz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2844" y="-389"/>
+            <point key="canvasLocation" x="2106" y="387"/>
         </scene>
         <!--Play Sound View Controller-->
         <scene sceneID="yea-Rx-JFE">
@@ -2154,14 +2168,14 @@
                                     </mask>
                                 </variation>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ijk-4D-bJX">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ijk-4D-bJX">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" title="JumpTo"/>
                                 <connections>
                                     <action selector="jumpToSelectedSection:" destination="4h8-Zg-evN" eventType="touchUpInside" id="bNB-b8-dHc"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DUU-ZQ-rD4">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DUU-ZQ-rD4">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" title="Dismiss"/>
                                 <connections>
@@ -2278,7 +2292,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a5I-rn-2xf" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="C0A-QT-by4"/>
             </objects>
-            <point key="canvasLocation" x="2076" y="-401"/>
+            <point key="canvasLocation" x="1338" y="375"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="UVE-eD-zQI">
@@ -2318,4 +2332,8 @@
         <image name="refresh" width="64" height="64"/>
         <image name="testim.jpg" width="827" height="464"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="vG4-3H-u6v"/>
+        <segue reference="NyX-8R-nQH"/>
+    </inferredMetricsTieBreakers>
 </document>

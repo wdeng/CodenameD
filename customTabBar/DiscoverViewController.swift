@@ -27,8 +27,6 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
         
         allNotFollowed()
         
@@ -53,6 +51,9 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         
         tabBarController?.navigationItem.titleView = searchController.searchBar
         tabBarController?.navigationItem.rightBarButtonItems = []
+        
+        
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -189,7 +190,7 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         //followingUserList.removeAllObjects()
         
         let findUserObjectId = PFQuery(className: "Activities")
-        findUserObjectId.whereKey("fromUser", equalTo: PFUser.currentUser()!)
+        findUserObjectId.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
         findUserObjectId.whereKey("type", equalTo: "following")
         
         
@@ -220,15 +221,61 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         }
     }
     
-    /*
-    // MARK: - Navigation
+    // MARK: - show user profile
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    
+        
+        if segue.identifier == "showUserProfile" {
+            guard let i = tableView.indexPathForCell(sender as! UITableViewCell)?.row else {return}
+            
+            ProfileViewController.Options.followText = "Follow"
+            ProfileViewController.Options.hideFollowing = false
+            ProfileViewController.Options.username = usernames[i]
+            ProfileViewController.Options.userId = userids[i]
+            ProfileViewController.Options.profileName = "Profile Name"
+            
+            
+            
+            
+            //vc.tableView.reloadData()
+        }
     }
-    */
-    
     
     
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

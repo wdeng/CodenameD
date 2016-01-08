@@ -189,7 +189,6 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showPostVC") {
             let postEpisodeVC = segue.destinationViewController as! PostEpisodeTVC
-            // TODO: this should be processed before sending
             postEpisodeVC.receivedBundles = sender as! [AnyObject]
             postEpisodeVC.post = post
         }
@@ -213,6 +212,11 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         let pickerController = UIImagePickerController()
         pickerController.delegate = self
         pickerController.sourceType = .SavedPhotosAlbum
+        
+        if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
+            pickerController.modalPresentationStyle = .OverCurrentContext
+        }
+        
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
     
@@ -282,7 +286,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         let multiplier = recordedTableView.indexPathsForSelectedRows?.count > 1 ? "s" : ""
         let destroyAction = UIAlertAction(title: "Delete Item"+multiplier, style: .Destructive) { (action) in
             guard let selectedRows = self.recordedTableView.indexPathsForSelectedRows else {return}
-            
+            //TODO: images more than 4 is probably not separated items, need to change uibuttons to collection view
             for i in selectedRows {
                 if let _ = self.addedItems[i.row] as? RecordedAudio {
                     self.numberOfAudios--
@@ -360,7 +364,6 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
             for i in 0 ..< 4 {
                 // change to more efficient way maybe, doesn't set image every time
                 if i < imageSet.images.count {
-                    //TODO: color of button should same as background
                     photoCell.photoButtons[i].setImage(imageSet.images[i], forState: .Normal)
                     photoCell.photoButtons[i].imageView?.contentMode = .ScaleAspectFill
                     photoCell.photoButtons[i].hidden = false

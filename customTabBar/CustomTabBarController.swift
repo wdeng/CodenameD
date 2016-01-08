@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import Parse
 
 //TODO: add snapkit to custom tab bar for auto layout http://snapkit.io/
-class CustomTabBarController: UITabBarController {
+class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     var tabs: [UIButton] = [UIButton]() {
         didSet {
             tabsShouldReset = true
@@ -59,6 +60,7 @@ class CustomTabBarController: UITabBarController {
         //TODO: probably change location
         addPlayerViewToTabBar()
         
+        
     }
     
     override func viewWillLayoutSubviews() {
@@ -100,7 +102,21 @@ class CustomTabBarController: UITabBarController {
         
     func selectTab(button: UIButton) {
         self.currentTab = button
-        self.selectedIndex = button.tag
+        // TODO: should put these in a subclass if necessary
+        if selectedIndex == button.tag {
+            if let vc = viewControllers![selectedIndex] as? UITableViewController {
+                let i = NSIndexPath(forRow: 0, inSection: 0)
+                vc.tableView.scrollToRowAtIndexPath(i, atScrollPosition: .Top, animated: true)
+            }
+        } else if let _ = viewControllers![button.tag] as? ProfileViewController {
+            ProfileViewController.Options.followText = "Follow"
+            ProfileViewController.Options.hideFollowing = true
+            ProfileViewController.Options.username = PFUser.currentUser()?.username
+            ProfileViewController.Options.userId = PFUser.currentUser()?.objectId
+            ProfileViewController.Options.profileName = "Profile Name"
+        }
+        
+        selectedIndex = button.tag
     }
     
     //TODO: need add this when start working on real audio
@@ -156,6 +172,13 @@ class CustomTabBarController: UITabBarController {
     
     func openPlayer() {
         print("should instantiate player controller")
+        let playerVC = PlaySoundViewController()
+        
+        
+        
+        if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
+            playerVC.modalPresentationStyle = .OverCurrentContext
+        }
     }
     
     
@@ -164,7 +187,9 @@ class CustomTabBarController: UITabBarController {
     //TODO: add delegate for profile delegate
     
     
-    
+    func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
+        print("tab changed \(self.selectedIndex)")
+    }
     
     
     
