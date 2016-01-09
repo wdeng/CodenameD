@@ -27,10 +27,11 @@ class ProfileViewController: UITableViewController {
     @IBOutlet weak var profileUsername: UILabel!
     @IBOutlet weak var profileName: UILabel!
 
+    @IBOutlet weak var profileView: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.clearsSelectionOnViewWillAppear = true
-        
+        profileView.frame.size.height = UITableViewAutomaticDimension
         
     }
 
@@ -72,6 +73,12 @@ class ProfileViewController: UITableViewController {
         //}
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        //TODO: check if UITableViewAutomaticDimension work
+        print(profileView.frame)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         if tabBarController?.navigationItem.rightBarButtonItems?.count > 1 {
@@ -85,9 +92,6 @@ class ProfileViewController: UITableViewController {
 
     // MARK: - Table view data source
     
-    
-    
-    /////// TODO:     Automatically resizing UITableViewCells
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -155,7 +159,6 @@ class ProfileViewController: UITableViewController {
         guard let username = Options.username else {return}
         
         ParseActions.followUnfollow(sender, withID: id, andUsername: username)
-        
     }
     
     

@@ -30,7 +30,6 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         
         allNotFollowed()
         
-        
         // TODO: custom search controller with segment controls
         searchController = {
             let controller = UISearchController(searchResultsController: nil)
@@ -41,6 +40,8 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
             controller.searchBar.sizeToFit()
             
             return controller}()
+        
+        
         
     }
     
@@ -133,6 +134,11 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
 
         return cell
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
     
     
     // MARK: following users

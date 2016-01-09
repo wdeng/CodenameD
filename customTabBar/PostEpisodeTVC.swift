@@ -155,7 +155,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
             postEpisodeVC.playingSections = sender as! AudioMerger
             //TODO: This make the user can see through the VC to the parent View, or OverFullScreen
             if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
-                postEpisodeVC.modalPresentationStyle = .OverCurrentContext
+                postEpisodeVC.modalPresentationStyle = .OverFullScreen
             }
         }
     }

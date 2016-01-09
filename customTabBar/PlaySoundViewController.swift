@@ -14,17 +14,16 @@ import MediaPlayer
 
 
 class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,UIPageViewControllerDelegate, SectionSliderDelegate {
-    
+    //TODO: why page view scrolls at first
     private var pageViewController: UIPageViewController!
     let progressBar = SectionSlider(frame: CGRectZero)
     let audioPlayer = SectionPlayer.sharedInstance
-    var playingSections: AudioMerger!
+    var playingSections: AudioMerger = AudioMerger()
     private var updateTime: NSTimer?
     
     @IBOutlet weak var playPauseButton: UIButton!
     
     func sectionPlayerDidChangeRate(notification: NSNotification) {
-        //print("notification \(notification.object)")
         if notification.userInfo == nil {
             return
         }
@@ -39,7 +38,7 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
             let im = UIImage(named: "play")//?.imageWithRenderingMode(.AlwaysTemplate)
             playPauseButton.setImage(im, forState: .Normal)
             updateTime?.invalidate()
-            
+            progressBar.value = audioPlayer.currentTime!
             
         } else {
             let im = UIImage(named: "pause")//?.imageWithRenderingMode(.AlwaysTemplate)
@@ -58,24 +57,18 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     var audioFile:AVAudioFile!
     private let progressBarHeight: CGFloat = 30.0
     
-    private var currentDisplayingSection:Int = 0 {
-        didSet {
-            // slide page by page
-            // animate again before animation finished will cause crash
-            if !pageViewScrollSucceed {
-                if currentDisplayingSection > oldValue {
-                    for i in oldValue ..< currentDisplayingSection {
-                        resetCurrentContentController(i+1, direction: .Forward)
-                        //TODO: maybe change the animation
-                    }
-                }
-                else if currentDisplayingSection < oldValue {
-                    for i in (currentDisplayingSection ..< oldValue).reverse() {
-                        resetCurrentContentController(i, direction: .Reverse)
-                    }
+    func sectionSliderSectionDidChange(oldVal: Int, newVal: Int) {
+        if !pageViewScrollInTransit {
+            if newVal > oldVal {
+                for i in oldVal ..< newVal {
+                    resetCurrentContentController(i+1, direction: .Forward)
                 }
             }
-            else { pageViewScrollSucceed = false }
+            else if newVal < oldVal {
+                for i in (newVal ..< oldVal).reverse() {
+                    resetCurrentContentController(i, direction: .Reverse)
+                }
+            }
         }
     }
     
@@ -85,7 +78,7 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         createPageViewController()
         
         //progress bar related
-        var duration = 0.0
+        var duration = 1.0
         for i in playingSections.imageSets {
             progressBar.sectionsLengths.append(i.sectionDuration)
             duration += i.sectionDuration
@@ -95,13 +88,11 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         view.bringSubviewToFront(progressBar)
         progressBar.delegate = self
         
-        progressBar.addTarget(self, action: "progressSectionChanged:", forControlEvents: .PrimaryActionTriggered)
-        
         
         //TODO: background Play should not be in this controller
         // setup background play
         if NSClassFromString("MPNowPlayingInfoCenter") != nil {
-            if let poster = UIImage(named: "IMG_0006.jpg") {     //TODO: change to default image if there is (could be random of multiple artworks)
+            if let poster = UIImage(named: "IMG_0006.jpg") {
                 let pic = MPMediaItemArtwork(image: poster)
                 let info: [String: AnyObject] = [MPMediaItemPropertyTitle: "Hello this is MKBHD",
                     MPMediaItemPropertyArtist: "MKBHD",    /// place holder, neeeeeed to change
@@ -118,17 +109,16 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         } catch _ {print("Audio session error")}
         
         
-        
-        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        progressBar.sectionSelectedByUser = false
         if let currentTime = audioPlayer.currentTime {
             progressBar.value = currentTime
         } else { progressBar.value = 0.0}
-        
+        print(progressBar.currentSection)
         if audioPlayer.isPlaying == true { setPlayerForPlayPause(audioPlayer.rate) }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "SectionPlayerRateChanged", object: nil)  //TODO:  see if object useful
@@ -136,13 +126,12 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     
     func sectionSliderThumbDidBeginTrack() {
         if audioPlayer.isPlaying != true {return}
-        
         updateTime?.invalidate()
     }
     
     func sectionSliderThumbDidChange() {
         audioPlayer.currentTime = progressBar.value
-        if !progressBar.sectionSelectedByUser {hideSectionJumping = true}
+        //if !progressBar.sectionSelectedByUser {hideSectionJumping = true}
     }
     
     func sectionSliderThumbDidEndTrack() {
@@ -154,31 +143,16 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         
     }
     
-    
-    // called when section changed
-    func progressSectionChanged(progressBar: SectionSlider) {
-        currentDisplayingSection = progressBar.currentSection
-        if progressBar.sectionSelectedByUser {hideSectionJumping = false}
-    }
-    
     override func viewDidLayoutSubviews() {
         // put progressBar in layoutsubviews so it conform to rotations
         super.viewDidLayoutSubviews()
         progressBar.frame = CGRect(x: 0.0, y: view.frame.height - progressBarHeight, width: view.frame.width, height: progressBarHeight)
     }
     
-
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // TODO: slide player to current page view
-        
-    }
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "SectionPlayerRateChanged", object: nil)
-        updateTime?.invalidate() //TODO:  see if object useful
+        updateTime?.invalidate()
     }
     
     
@@ -188,15 +162,15 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         pageViewController.dataSource = self
         pageViewController.delegate = self
         
-        let firstController = (playingSections.imageSets.count > currentDisplayingSection) ? viewControllerAtIndex(currentDisplayingSection) : viewControllerAtIndex(0)
+        let firstController = (playingSections.imageSets.count > progressBar.currentSection) ? viewControllerAtIndex(progressBar.currentSection) : viewControllerAtIndex(0)
         let startingViewControllers = [firstController]
             
-        pageViewController.setViewControllers(startingViewControllers, direction: .Forward, animated: true, completion: nil)
+        pageViewController.setViewControllers(startingViewControllers, direction: .Forward, animated: false, completion: nil)
         
         addChildViewController(pageViewController!)
         self.view.addSubview(pageViewController!.view)
         pageViewController!.didMoveToParentViewController(self)
-        
+        print(progressBar.currentSection)
     }
     
     private func resetCurrentContentController(index: Int, direction dir: UIPageViewControllerNavigationDirection) {
@@ -205,8 +179,6 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         
     }
     
-    
-    // called by delegate in loadView phase
     func viewControllerAtIndex(index: Int) -> ImageTableContentController {
         if index < playingSections.imageSets.count {
             let vc = storyboard?.instantiateViewControllerWithIdentifier("ImageTableVC") as! ImageTableContentController
@@ -220,75 +192,69 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
         
     }
     
-    // UIPageViewController DataSource
+    //MARK: UIPageViewController DataSource and Delegate
+    private var pendingSection = 0
+    private var pageViewScrollInTransit = false
+    
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        
         let itemController = viewController as! ImageTableContentController
         
         if itemController.itemIndex > 0 {
             return viewControllerAtIndex(itemController.itemIndex-1)
         }
-        
         return nil
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        
         let itemController = viewController as! ImageTableContentController
         
         if itemController.itemIndex + 1 < playingSections.imageSets.count {
             return viewControllerAtIndex(itemController.itemIndex+1)
         }
-        
         return nil
     }
     
-    //UIPageViewController Delegate
-    private var pendingSection = -1
-    private var pageViewScrollSucceed = false
+    
     func pageViewController(pageViewController: UIPageViewController, willTransitionToViewControllers pendingViewControllers: [UIViewController]) {
         pendingSection = (pendingViewControllers.first as! ImageTableContentController).itemIndex
         progressBar.sectionSelectedByUser = true
+        pageViewScrollInTransit = true
     }
     
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        
+        let currentSection = progressBar.sectionForLocation(progressBar.positionForValue(progressBar.value))
         if completed {
-            
-            pageViewScrollSucceed = true
             progressBar.currentSection = pendingSection
-            
-            let s = progressBar.sectionForLocation(progressBar.positionForValue(progressBar.value))
-            if s == pendingSection {
-                progressBar.sectionSelectedByUser = false
-                hideSectionJumping = true
-            } else {
-                hideSectionJumping = false
-            }
-            
         }
         else if finished {
-            progressBar.sectionSelectedByUser = false
+            //If didn't successfully finished
         }
-
+        
+        pageViewScrollInTransit = false
+        if currentSection == progressBar.currentSection {
+            progressBar.sectionSelectedByUser = false
+            //hideSectionJumping = true
+        }
     }
     
     //MARK: hook page view to progressBar
-    var hideSectionJumping = true {
-        didSet {
-            if hideSectionJumping == false {
-                dismissSection.hidden = false
-                jumpToSection.hidden = false
-            } else {
-                dismissSection.hidden = true
-                jumpToSection.hidden = true
-            }
+    
+    func sliderSelectedStatusDidChanged(oldVal: Bool, newVal: Bool) {
+        if newVal == oldVal { return }
+        else if newVal == false {
+            dismissSection.hidden = true
+            jumpToSection.hidden = true
+        } else {
+            dismissSection.hidden = false
+            jumpToSection.hidden = false
         }
     }
+    
     @IBOutlet weak var dismissSection: UIButton!
     @IBOutlet weak var jumpToSection: UIButton!
     
     @IBAction func dismissSelectedSection(sender: AnyObject) {
-        hideSectionJumping = true
         progressBar.sectionSelectedByUser = false
         
         let l = progressBar.positionForValue(progressBar.value)
@@ -297,20 +263,14 @@ class PlaySoundViewController: UIViewController, UIPageViewControllerDataSource,
     }
     
     @IBAction func jumpToSelectedSection(sender: AnyObject) {
-        hideSectionJumping = true
         progressBar.sectionSelectedByUser = false
         
-        progressBar.value = progressBar.valueForPosition(progressBar.startOfSectionsInFrame[currentDisplayingSection])
+        progressBar.value = progressBar.valueForPosition(progressBar.startOfSectionsInFrame[progressBar.currentSection])
         audioPlayer.currentTime = progressBar.value + 0.2 ///TODO: because the length diff for merged audio
     }
     
     
     //MARK: play sound
-    
-    
-    
-    
-
     
     @IBAction func playPauseAudio(sender: AnyObject) {
         audioPlayer.playPauseToggle()

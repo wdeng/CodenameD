@@ -482,6 +482,7 @@
                         <outlet property="isFollowing" destination="QFX-Lz-4zC" id="BmT-TM-Cmp"/>
                         <outlet property="profileName" destination="e77-mk-jBr" id="s84-EN-Sd6"/>
                         <outlet property="profileUsername" destination="HGA-To-DGR" id="y5h-Xs-FYs"/>
+                        <outlet property="profileView" destination="pAc-7i-7HO" id="lAJ-ge-wDj"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ko0-o2-zWg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2096,7 +2097,7 @@
         <!--Play Sound View Controller-->
         <scene sceneID="yea-Rx-JFE">
             <objects>
-                <viewController id="4h8-Zg-evN" customClass="PlaySoundViewController" customModule="customTabBar" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SectionPlayer" id="4h8-Zg-evN" customClass="PlaySoundViewController" customModule="customTabBar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4ro-P0-fzZ"/>
                         <viewControllerLayoutGuide type="bottom" id="Th1-Y0-bQD"/>
@@ -2211,7 +2212,7 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ijk-4D-bJX" firstAttribute="trailing" secondItem="9tj-nP-1b7" secondAttribute="trailingMargin" id="1lj-TR-HmX"/>
                             <constraint firstItem="G7H-8n-gze" firstAttribute="centerY" secondItem="pad-ZB-Nup" secondAttribute="centerY" id="2ZK-9x-Ghu"/>

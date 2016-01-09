@@ -86,7 +86,7 @@ public class SectionPlayer: NSObject {
         currentTime! -= time
     }
     
-    func shouldntBeUsedFunction(items: [AVPlayerItem]) {
+    func shouldNotBeUsedFunction(items: [AVPlayerItem]) {
         //TODO: check how to use queueplayer and
         
         //NSArray *theItems = [NSArray arrayWithObjects:thePlayerItemA, thePlayerItemB, thePlayerItemC, thePlayerItemD, nil];

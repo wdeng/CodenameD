@@ -123,7 +123,10 @@ class SectSliderThumbLayer: CALayer {
     optional func sectionSliderThumbDidBeginTrack()
     optional func sectionSliderThumbDidChange()
     optional func sectionSliderThumbDidEndTrack()
-    optional func sectionSliderSectionDidChange()
+    
+    optional func sectionSliderSectionDidChange(oldVal: Int, newVal: Int)
+    optional func sliderSelectedStatusDidChanged(oldVal: Bool, newVal: Bool)
+    
 }
 
 enum SliderSectionHandled: Int {
@@ -135,16 +138,20 @@ class SectionSlider: UIControl {
     //TODO: some of the didset funcs are not neccesary
     //TODO: should init using dictionary not set one by one [string: anyobject]
     var delegate: SectionSliderDelegate?
-    var sectionSelectedByUser: Bool = false
+    var sectionSelectedByUser: Bool = false {
+        didSet {
+            self.delegate?.sliderSelectedStatusDidChanged?(oldValue, newVal: sectionSelectedByUser)
+        }
+    }
     var currentSection: Int = 0 {
         didSet {
             if oldValue != currentSection {
-                progressTrackLayer.sectionSelected = currentSection
-                sendActionsForControlEvents(.PrimaryActionTriggered)
+                progressTrackLayer.sectionSelected = currentSection // Redraw the selected Section
+                
+                self.delegate?.sectionSliderSectionDidChange?(oldValue, newVal: currentSection)
             }
         }
     }
-    //internal(set) var sectionDidChange = false
     
     var minimumValue: Double = 0.0 {
         didSet {

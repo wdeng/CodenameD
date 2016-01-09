@@ -11,12 +11,7 @@ import Parse
 
 //TODO: add snapkit to custom tab bar for auto layout http://snapkit.io/
 class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
-    var tabs: [UIButton] = [UIButton]() {
-        didSet {
-            tabsShouldReset = true
-        }
-    }
-    var tabsShouldReset = false
+    var tabs: [UIButton] = [UIButton]()
     var currentTab: UIButton!{
         didSet {
             if oldValue != nil {
@@ -60,7 +55,6 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         //TODO: probably change location
         addPlayerViewToTabBar()
         
-        
     }
     
     override func viewWillLayoutSubviews() {
@@ -97,7 +91,6 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 button.addTarget(self, action: "selectTab:", forControlEvents: .TouchUpInside)
             }
         }
-        tabsShouldReset = false
     }
         
     func selectTab(button: UIButton) {
@@ -166,19 +159,16 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     //TODO: make sure if audio was interrepted, can correctly display
     func playPauseAudio() {
-        print("play button tapped")
-        return
+        SectionPlayer.sharedInstance.playPauseToggle()
     }
     
     func openPlayer() {
-        print("should instantiate player controller")
-        let playerVC = PlaySoundViewController()
-        
-        
+        let playerVC = storyboard!.instantiateViewControllerWithIdentifier("SectionPlayer") as! PlaySoundViewController
         
         if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
-            playerVC.modalPresentationStyle = .OverCurrentContext
+            playerVC.modalPresentationStyle = .OverFullScreen
         }
+        self.presentViewController(playerVC, animated: true, completion: nil)
     }
     
     

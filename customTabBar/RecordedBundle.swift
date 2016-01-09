@@ -16,6 +16,7 @@ import UIKit
 class AddedImageSet {
     // hold up to 4 images
     var images = [UIImage]()
+    var imageURLs = [NSURL]()
     var sectionDuration = 0.0
     var itemIndex: Int = -1
 }
