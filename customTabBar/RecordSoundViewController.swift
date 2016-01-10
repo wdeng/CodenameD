@@ -46,7 +46,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         
         //close button
         navigationItem.rightBarButtonItem = closeButton
-        
+
         // disable next step
         postSceneButton.hidden = true
         
@@ -54,6 +54,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         recordedTableView.delegate = self
         recordedTableView.dataSource = self
         recordedTableView.contentInset.top = 2.0
+        recordedTableView.contentInset.bottom = 50.0
         
         // setup edit button
         navigationItem.leftBarButtonItem = self.editButtonItem()
@@ -341,9 +342,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
             audioCell.showsReorderControl = true
             
             // single digit and double digit have different size for button
-            if duration < 10 {audioCell.insetForLabel = 20}
-            else if duration < 100{audioCell.insetForLabel = 30}
-            else {audioCell.insetForLabel = 40}
+            audioCell.insetForLabel = RecordSettings.recordedAudioCellInsetForLabel(duration)
             
             audioCell.audioLevels.nums = sampledAudioLevel
             audioCell.audioLevels.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "playSelectedSound:"))

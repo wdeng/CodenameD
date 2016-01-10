@@ -24,7 +24,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
             currentTab.tintColor = TabBarSettings.tabsSelectedColor
         }
     }
-    var customTabBar: UIView!
+    var customTabBar: CustomTabBar!
     let playPauseButton = TabBarPlayButton()
     let audioTitleButton = UIButton()
     
@@ -43,18 +43,16 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         //replace tab bar with new tab bars
-        let rect = tabBar.frame
+        var rect = tabBar.frame
+        rect.size.height = TabBarSettings.height
         tabBar.removeFromSuperview()
-        customTabBar = UIView(frame: rect)
+        customTabBar = CustomTabBar(frame: rect)
         customTabBar.backgroundColor = TabBarSettings.tabsNormalBackgroundColor
         view.addSubview(customTabBar)
         
         addButtons(customTabBar)
         currentTab = tabs[TabBarSettings.appStartControllerIndex]
-        
-        //TODO: probably change location
         addPlayerViewToTabBar()
-        
     }
     
     override func viewWillLayoutSubviews() {
@@ -69,12 +67,9 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
             for i in 0 ..< vcs.count {
                 let button = UIButton()
                 
-                //tabBarTabsWidth = barView.frame.size.width / CGFloat(vcs.count)
-                
-                let x = CGFloat(i) * TabBarSettings.tabsWidth
-                
-                // TODO: change to autolayout in code
-                button.frame = CGRect(x: x, y: 0, width: TabBarSettings.tabsWidth, height: barView.bounds.height)
+                let x = CGFloat(i) * TabBarSettings.tabWidth
+                button.frame = CGRect(x: x, y: 0, width: TabBarSettings.tabWidth, height: barView.bounds.height)
+                button.autoresizingMask = [.FlexibleLeftMargin, .FlexibleRightMargin, .None, .None]
                 
                 let normalImage = UIImage(named: buttonNames[i])?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
                 button.setImage(normalImage, forState: .Normal)
@@ -98,6 +93,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         // TODO: should put these in a subclass if necessary
         if selectedIndex == button.tag {
             if let vc = viewControllers![selectedIndex] as? UITableViewController {
+                if (vc.tableView.numberOfSections < 1) || (vc.tableView.numberOfRowsInSection(0)) < 1 { return }
                 let i = NSIndexPath(forRow: 0, inSection: 0)
                 vc.tableView.scrollToRowAtIndexPath(i, atScrollPosition: .Top, animated: true)
             }
@@ -114,7 +110,12 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     //TODO: need add this when start working on real audio
     func layoutButtons(buttonNumber bn: Int, buttonSize: CGFloat) { // input should be
-        // buttons frame won't be set, but call this when needed
+        // TODO: change to autolayout in code
+        
+        for i in 0 ..< tabs.count {
+            let x = CGFloat(i) * TabBarSettings.tabWidth
+            tabs[i].frame = CGRect(x: x, y: 0, width: TabBarSettings.tabWidth, height: customTabBar.bounds.height)
+        }
         
         if playPauseButton.hidden {
             
@@ -123,10 +124,10 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     func addPlayerViewToTabBar() {
         //TODO: title should be fixed width not determine by tabs width, have a min width and a max width
-        let tabsWidth = CGFloat(tabs.count) * TabBarSettings.tabsWidth
+        //let tabsWidth = CGFloat(tabs.count) * TabBarSettings.tabWidth
         
-        let w = customTabBar.bounds.width - tabsWidth
-        audioTitleButton.frame = CGRect(x: tabsWidth, y: 0, width: w, height: customTabBar.bounds.height)
+        //let w = customTabBar.bounds.width - tabsWidth
+        audioTitleButton.frame = TabBarSettings.audioTitleFrame(customTabBar.bounds, tabNum: tabs.count) //CGRect(x: tabsWidth, y: 0, width: w, height: customTabBar.bounds.height)
         audioTitleButton.setTitle("Sony Xperia Z5 Premium: A 4K SmartPhone! #4k #sony", forState: .Normal)
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor.colorWithAlphaComponent(0.2), forState: .Highlighted)
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor, forState: .Normal)
@@ -176,7 +177,6 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     //TODO: add delegate for profile delegate
     
-    
     func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
         print("tab changed \(self.selectedIndex)")
     }
@@ -186,7 +186,17 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     
     
-    
+    func viewDidLoad2() {
+        let newView = UIView()
+        newView.backgroundColor = UIColor.redColor()
+        newView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(newView)
+        let views = ["view": view, "newView": newView]
+        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:[view]-(<=0)-[newView(100)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views)
+        view.addConstraints(horizontalConstraints)
+        let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[view]-(<=0)-[newView(100)]", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: views)
+        view.addConstraints(verticalConstraints)
+    }
     
     
     
@@ -209,3 +219,18 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

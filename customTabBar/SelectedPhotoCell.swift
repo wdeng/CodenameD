@@ -75,7 +75,6 @@ class SelectedPhotoCell: UITableViewCell {
             imageView.layer.cornerRadius = 0
             }
             , completion: nil)
-
         
         let singleTap = UITapGestureRecognizer.init(target: self, action: "hidePhoto")
         

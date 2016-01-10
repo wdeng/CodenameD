@@ -59,6 +59,10 @@ class HomeFeedController: UITableViewController {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Home"
         canLoadNewItems = true
+        
+        //TODO: When posting, make nav bar right item as indicator
+        //activityIndicator = UIActivityIndicatorView(frame: view.bounds)
+        //AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser: true)
     }
     
     func getRandomNumberBetween (From: Int , To: Int) -> Int {
@@ -119,7 +123,6 @@ class HomeFeedController: UITableViewController {
         refreshView.hidden = false
         
         HomeFeedFromParse.fetchFollowingPosts(start, size: size) { (newItems) -> Void in
-            print(newItems.count)
             self.feeds += newItems
             // TODO: is very likely not the exact number
             let r = NSRange(location: start, length: newItems.count)

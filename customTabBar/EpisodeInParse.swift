@@ -15,7 +15,7 @@ class EpisodeInParse {
     var episodeURL: NSURL?
     var imageSets: [PFFile]?
     var thumb: UIImage?
-    var sectionDurations: [Float]?
+    var sectionDurations: [Double]?
 }
 
 class ChannelFeed {
@@ -72,7 +72,7 @@ class HomeFeedFromParse: NSObject {
                 let q = PFQuery(className: "Episode")
                 q.whereKey("userId", equalTo: u["toUser"])
                 q.orderByDescending("updatedAt")
-                q.limit = 3
+                q.limit = HomeFeedsSettings.itemsInSection
                 q.findObjectsInBackgroundWithBlock{ (posts, error) in
                     if error != nil {
                         print("couldn't fetch home")

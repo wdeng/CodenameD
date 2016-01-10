@@ -8,8 +8,9 @@
 
 import UIKit
 
-class CustomTabBar: UITabBar {
+class CustomTabBar: UIView {
 
+    // TODO: put buttons to here
     override func awakeFromNib() {
         super.awakeFromNib()
     }
@@ -35,5 +36,4 @@ class CustomTabBar: UITabBar {
         sizeThatFits.height = TabBarSettings.height
         return sizeThatFits
     }
-
 }

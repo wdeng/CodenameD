@@ -24,6 +24,14 @@ struct RecordSettings {
     static let audioButtonColor: UIColor = UIColor.grayColor()
     static let recordedAudioCellCornerRadius: CGFloat = 12.0
     static let recordedAudioCellHeight: CGFloat = 38.0
+    static func recordedAudioCellInsetForLabel(audioDur: Int) -> CGFloat {
+        var inset: CGFloat = 0
+        if audioDur < 10 {inset = 20}
+        else if audioDur < 100 {inset = 30}
+        else {inset = 40}
+        
+        return inset
+    }
     
     
     static let addedImageCornerRadius: CGFloat = 5.0
@@ -119,7 +127,11 @@ class ImageUtils: NSObject {
 struct TabBarSettings {
     static let appStartControllerIndex: Int = 0
     static let height: CGFloat = 44.0
-    static var tabsWidth: CGFloat = 50.0
+    static var tabWidth: CGFloat {
+        get {
+            return UIScreen.mainScreen().bounds.width > 400 ? 60.0 : 50.0 // TODO: check the best value
+        }
+    }
     static var playButtonWidth: CGFloat = 30.0
     static let tabsSelectedBackgroundColor: UIColor = UIColor.whiteColor()
     static let tabsNormalBackgroundColor: UIColor = UIColor.darkGrayColor()
@@ -131,6 +143,15 @@ struct TabBarSettings {
     static let audioTitleFont: UIFont = UIFont.systemFontOfSize(11.0)
     static let audioTitleLines: Int = 2 // TODO: how many lines we need
     static let audioButtonBackgroundColor: UIColor = UIColor.grayColor()
+    
+    static func audioTitleFrame(viewBound: CGRect, tabNum: Int) -> CGRect {
+        let tabsWidth = CGFloat(tabNum) * tabWidth
+        var frame = viewBound
+        frame.origin.x = tabsWidth
+        frame.size.width = viewBound.width - tabsWidth
+        
+        return frame
+    }
 }
 
 struct HomeFeedsSettings {

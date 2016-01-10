@@ -129,11 +129,6 @@ class SectSliderThumbLayer: CALayer {
     
 }
 
-enum SliderSectionHandled: Int {
-    case bySystem = 0
-    case byUser = 1
-}
-
 class SectionSlider: UIControl {
     //TODO: some of the didset funcs are not neccesary
     //TODO: should init using dictionary not set one by one [string: anyobject]

@@ -29,7 +29,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         
         episodeData = AudioMerger(withItems: receivedBundles)
         episodeData?.delegate = self
-        finishedMerging = false
         self.navigationItem.rightBarButtonItem = postButton
         openPlayer.setTitle(nil, forState: .Normal)
         
@@ -45,7 +44,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         if episodeData == nil {return}
         post["images"] = [PFFile]()
         
-        // TODO: need reconstruct put adding audio and images together, images first, cuz audio changes more often
         for i in 0 ..< episodeData!.imageSets.count {
             let set = episodeData!.imageSets[i]
             for j in 0 ..< set.images.count {
@@ -82,19 +80,61 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
                 AppUtils.displayAlert("Could not upload", message: "Please try again later", onViewController: self)
             }
         }
+    }
+    
+    //TODO: handle errors!!!
+    func uploadImages() {
+        if episodeData == nil {return}
+        var images = [PFFile]()
+        
+        for i in 0 ..< episodeData!.imageSets.count {
+            let set = episodeData!.imageSets[i]
+            for j in 0 ..< set.images.count {
+                let imData = UIImageJPEGRepresentation(set.images[j], GeneralSettings.compressQuality)
+                if let im = PFFile(name: "\(i)-\(j).jpg", data: imData!) {
+                    images.append(im)
+                }
+            }
+        }
+        post["images"] = images
+        
+        post.saveInBackgroundWithBlock{(success, error) -> Void in
+            if success {
+                print("images uploaed")
+                //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
+            } else {
+                AppUtils.displayAlert("Could not upload images", message: "Please try again later", onViewController: self)
+            }
+        }
+    }
+    
+    func uploadAudio() {
+        if episodeData == nil {return}
+        guard let audioData = NSData(contentsOfURL: episodeData!.outputAudio!) else {return}
+        if let audioFile = PFFile(name: "audio.m4a", data: audioData) {
+            post["audio"] = audioFile
+        }
+        post.saveInBackgroundWithBlock{(success, error) -> Void in
+            if success {
+                //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
+            } else {
+                AppUtils.displayAlert("Could not upload audio", message: "Please try again later", onViewController: self)
+            }
+        }
         
     }
     
     @IBAction func postEpisode(sender: AnyObject) {
         
-        //TODO: go back to main feed while posting
-        //activityIndicator = UIActivityIndicatorView(frame: view.bounds)
-        //AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser: true)
         if episodeTitle.textColor == UIColor.lightGrayColor() || episodeTitle.text.isEmpty {
             post["title"] = "Posted an Episode"
         }
         else { post["title"] = episodeTitle.text }
         post["userId"] = PFUser.currentUser()!.objectId!
+        var sectionDurs = [Double]()
+        for i in episodeData!.imageSets {
+            sectionDurs.append(i.sectionDuration)
+        }
         
         post.saveInBackgroundWithBlock{(success, error) -> Void in
             if error == nil {
@@ -173,12 +213,13 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
             episodeTitle.textColor = UIColor.lightGrayColor()
         }
         containerView.frame.size.height = 80.0
+        
+        uploadImages()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         tableViewDefaultOffset = tableView.contentOffset.y
-        uploadMedia() //TODO: decide where to put this
     }
     
     //MARK: scroll view delegate
@@ -215,6 +256,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     func mergingDidFinished(status: AVAssetExportSessionStatus) {
         if status == .Completed {
             print("Merging complete")
+            uploadAudio()
             finishedMerging = true
         }
         else {
