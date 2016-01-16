@@ -14,11 +14,17 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
 
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var recordingInProgress: UILabel!
-    @IBOutlet weak var photoButton: UIButton!
-    @IBOutlet weak var cameraButton: UIButton!
+
     @IBOutlet weak var recordedTableView: UITableView!
     @IBOutlet var deleteButton: UIBarButtonItem!
     @IBOutlet var closeButton: UIBarButtonItem!
+    
+    // Toolbar Items
+    @IBOutlet weak var photoButton: UIBarButtonItem!
+    @IBOutlet weak var cameraButton: UIBarButtonItem!
+    @IBOutlet weak var postSceneButton: UIBarButtonItem!
+    
+    @IBOutlet weak var toolBar: UIToolbar!
     
     
     var updateTime: NSTimer?
@@ -34,7 +40,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
     var addedItems = [AnyObject]() // TODO: if we want Edit button to hide and appear
     var numberOfAudios: Int = 0 {
         didSet {
-            postSceneButton.hidden = numberOfAudios > 0 ? false : true
+            postSceneButton.enabled = numberOfAudios > 0 ? true : false
         }
     }
     
@@ -44,11 +50,16 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Removes the toolbar hairline
+        toolBar.clipsToBounds = true
+        
+        //UIBarButtonItem.appearance()
+        
         //close button
         navigationItem.rightBarButtonItem = closeButton
 
         // disable next step
-        postSceneButton.hidden = true
+        postSceneButton.enabled = false
         
         // record table view
         recordedTableView.delegate = self
@@ -182,13 +193,13 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
     
     //MARK: Open Section Player
     
-    @IBOutlet weak var postSceneButton: UIButton!
-    @IBAction func openPostVC(sender: AnyObject) {
-        self.performSegueWithIdentifier("showPostVC", sender: addedItems)
+
+    @IBAction func openPostEpisodeVC(sender: AnyObject) {
+        self.performSegueWithIdentifier("showPostEpisodeVC", sender: addedItems)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if (segue.identifier == "showPostVC") {
+        if (segue.identifier == "showPostEpisodeVC") {
             let postEpisodeVC = segue.destinationViewController as! PostEpisodeTVC
             postEpisodeVC.receivedBundles = sender as! [AnyObject]
             postEpisodeVC.post = post
@@ -208,7 +219,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
     
-    @IBAction func selectPhoto(sender: UIButton) {
+    @IBAction func selectPhoto(sender: AnyObject) {
         
         let pickerController = UIImagePickerController()
         pickerController.delegate = self
@@ -224,7 +235,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
         if let im = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            let image = ImageUtils.createFitImageFromSize(im, targetSize: RecordSettings.defaultImageLimit)!
+            let image = ImageUtils.createFitImageFromSize(im)
             if let imageSet = addedItems.last as? AddedImageSet {
                 if imageSet.images.count < 4 {
                     picker.dismissViewControllerAnimated(true, completion: nil)
@@ -255,70 +266,8 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    //MARK: Edit Table View
     
-    func editButtonPressed() {
-        guard let idx = self.recordedTableView.indexPathsForVisibleRows else {return}
-        if self.editing {
-            setEditing(false, animated: true)
-            navigationItem.rightBarButtonItem = closeButton
-            self.recordedTableView.reloadRowsAtIndexPaths(idx, withRowAnimation: .None)
-            recordedTableView.setEditing(false, animated: true)
-        }
-        else {
-            setEditing(true, animated: true)
-            deleteButton.enabled = false
-            navigationItem.rightBarButtonItem = deleteButton
-            self.recordedTableView.reloadRowsAtIndexPaths(idx, withRowAnimation: .None)
-            recordedTableView.setEditing(true, animated: true)
-        }
-        
-    }
-    
-    @IBAction func deleteAction(sender: AnyObject) {
-        
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-            
-        }
-        alertController.addAction(cancelAction)
-        
-        let multiplier = recordedTableView.indexPathsForSelectedRows?.count > 1 ? "s" : ""
-        let destroyAction = UIAlertAction(title: "Delete Item"+multiplier, style: .Destructive) { (action) in
-            guard let selectedRows = self.recordedTableView.indexPathsForSelectedRows else {return}
-            //TODO: images more than 4 is probably not separated items, need to change uibuttons to collection view
-            for i in selectedRows {
-                if let _ = self.addedItems[i.row] as? RecordedAudio {
-                    self.numberOfAudios--
-                }
-                self.addedItems.removeAtIndex(i.row)
-            }
-            self.recordedTableView.deleteRowsAtIndexPaths(selectedRows, withRowAnimation: .Automatic)
-            
-            if self.addedItems.count < 1 {
-                self.deleteButton.enabled = false
-            }
-            
-        }
-        alertController.addAction(destroyAction)
-        self.presentViewController(alertController, animated: true, completion: nil)
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if recordedTableView.editing {
-            deleteButton.enabled = true
-        }
-    }
-    
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        if recordedTableView.indexPathsForSelectedRows?.count < 1 {
-            deleteButton.enabled = false
-        }
-    }
-    
-    
-    //MARK: Table View
+    //MARK: Table view delegate
     
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -405,52 +354,19 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         return 5
     }
     
-    //
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    
-    
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the object
-            if let _ = addedItems[indexPath.row] as? RecordedAudio {
-                numberOfAudios--
-            }
-            addedItems.removeAtIndex(indexPath.row)
-            
-            // Delete the row
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-            
-            // Save the array
-            //NSKeyedArchiver.archiveRootObject(objects, toFile: filePath)
-        }
-    }
-    
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+        //TODO: change to moveItemAtIndex
         let item = addedItems[sourceIndexPath.row]
         
         addedItems[sourceIndexPath.row] = addedItems[destinationIndexPath.row]
         addedItems[destinationIndexPath.row] = item
     }
     
-    func deletePhoto(sender: UIButton) {
-        guard let row = recordedTableView.indexPathForRowAtPoint(recordedTableView.convertPoint(sender.center, fromView: sender))?.row else {return}
-        
-        guard let imSet = addedItems[row] as? AddedImageSet else {return}
-        imSet.images.removeAtIndex(sender.tag)
-        if imSet.images.count == 0 {
-            addedItems.removeAtIndex(row)
-        }
-        // possibly add some merging rows
-        let indexPath = NSIndexPath(forRow: row, inSection: 0)
-        self.recordedTableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-    }
+    
     
     func playSelectedSound(gesture: UITapGestureRecognizer)
     {

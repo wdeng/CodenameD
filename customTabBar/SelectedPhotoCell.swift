@@ -56,16 +56,6 @@ class SelectedPhotoCell: UITableViewCell {
         topView.addSubview(imageFullView)
         imageFullView.addSubview(imageView)
         
-        // add delete button to full view
-//        let button = UIButton(frame: CGRect(x: 0, y: 0, width: RecordSettings.imageDeleteButtonWidth, height: RecordSettings.imageDeleteButtonWidth))
-//        button.setTitle("Del", forState: .Normal)
-//        button.translatesAutoresizingMaskIntoConstraints = true
-//        imageFullView.addSubview(button)
-//        
-//        button.frame.origin = CGPointMake(imageFullView.bounds.maxX - button.frame.width - 20, imageFullView.bounds.maxY - button.frame.height - 20)
-//        button.autoresizingMask = [.FlexibleLeftMargin, .None, .None, .FlexibleBottomMargin]
-//        //[.FlexibleLeftMargin, .FlexibleRightMargin, .FlexibleTopMargin, .FlexibleBottomMargin]
-//        deleteButtons.append(button)
         
         
         UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {

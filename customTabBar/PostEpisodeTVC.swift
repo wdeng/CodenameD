@@ -18,6 +18,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     let audioPlayer = SectionPlayer.sharedInstance
     var finishedMerging: Bool? = false    // nil means failed merging
     var tableViewDefaultOffset: CGFloat!
+    var thumbImage: UIImage?
     
     @IBOutlet var postButton: UIBarButtonItem!
     var playerForRecordedItem: Bool = false
@@ -32,16 +33,16 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         self.navigationItem.rightBarButtonItem = postButton
         openPlayer.setTitle(nil, forState: .Normal)
         
-        if (episodeData?.imageSets.count > 0) {
-            openPlayer.setBackgroundImage(episodeData!.imageSets.first?.images.first, forState: .Normal)
-        }
+        thumbImage = ImageUtils.createCropImageFromSize(episodeData!.imageSets.first?.images.first)
+        openPlayer.setBackgroundImage(thumbImage, forState: .Normal)
+        
         openPlayer.setImage(UIImage(named: "play"), forState: .Normal)
         openPlayer.tintColor = UIColor.whiteColor()
     }
     
     //MARK: Upload images
     func uploadMedia() {
-        if episodeData == nil {return}
+        
         post["images"] = [PFFile]()
         
         for i in 0 ..< episodeData!.imageSets.count {
@@ -67,10 +68,9 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
                 }
             }
         }
-
         
         let audioData = NSData(contentsOfURL: episodeData!.outputAudio!)
-        let audioFile = PFFile(name: "audio.m4a", data: audioData!)
+        let audioFile = PFFile(data: audioData!)
         
         post["audio"] = audioFile
         post.saveInBackgroundWithBlock{(success, error) -> Void in
@@ -83,6 +83,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     }
     
     //TODO: handle errors!!!
+    // should set the pffiles else where
     func uploadImages() {
         if episodeData == nil {return}
         var images = [PFFile]()
@@ -97,6 +98,11 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
             }
         }
         post["images"] = images
+        
+        if let thumbImage = thumbImage {
+            let thumb = UIImageJPEGRepresentation(thumbImage, GeneralSettings.compressQuality)
+            post["thumb"] = PFFile(data: thumb!)
+        }
         
         post.saveInBackgroundWithBlock{(success, error) -> Void in
             if success {

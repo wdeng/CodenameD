@@ -27,9 +27,11 @@
 		761D03381C171DAF00BF37A2 /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03361C171DAF00BF37A2 /* Episode.swift */; };
 		761D03391C171DAF00BF37A2 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03371C171DAF00BF37A2 /* Channel.swift */; };
 		761D033B1C1723E200BF37A2 /* PlayLaterItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */; };
+		7626AD6F1C49382600685B67 /* PlaySoundVC+Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7626AD6E1C49382600685B67 /* PlaySoundVC+Page.swift */; };
+		7626AD711C4969C100685B67 /* CurrentUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7626AD701C4969C100685B67 /* CurrentUserProfileVC.swift */; };
+		7626AD731C496AF800685B67 /* OtherUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7626AD721C496AF800685B67 /* OtherUserProfileVC.swift */; };
 		7647BC5D1C1B95AD0092E96D /* TabBarPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */; };
 		764C43041C156F68009F29E8 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764C43031C156F68009F29E8 /* CustomTabBarController.swift */; };
-		764C43081C161222009F29E8 /* UITabBar+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764C43071C161222009F29E8 /* UITabBar+Buttons.swift */; };
 		764C430A1C16B7C7009F29E8 /* mkbhd.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 764C43091C16B7C7009F29E8 /* mkbhd.jpg */; };
 		764C430C1C16B821009F29E8 /* testim.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 764C430B1C16B821009F29E8 /* testim.jpg */; };
 		766E97661C289AEA0012EDA9 /* NumTypes+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97641C289AEA0012EDA9 /* NumTypes+Conversion.swift */; };
@@ -37,7 +39,7 @@
 		766E97761C2934640012EDA9 /* AudioMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E976D1C2934640012EDA9 /* AudioMerger.swift */; };
 		766E97771C2934640012EDA9 /* PostEpisodeTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E976E1C2934640012EDA9 /* PostEpisodeTVC.swift */; };
 		766E97781C2934640012EDA9 /* PlaySoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E976F1C2934640012EDA9 /* PlaySoundViewController.swift */; };
-		766E97791C2934640012EDA9 /* PlaySoundVC+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97701C2934640012EDA9 /* PlaySoundVC+Buttons.swift */; };
+		766E97791C2934640012EDA9 /* PlaySoundVC+Funcs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97701C2934640012EDA9 /* PlaySoundVC+Funcs.swift */; };
 		766E977A1C2934640012EDA9 /* SectionPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97711C2934640012EDA9 /* SectionPlayer.swift */; };
 		766E977B1C2934640012EDA9 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97721C2934640012EDA9 /* SoundPlayer.swift */; };
 		766E977C1C2934640012EDA9 /* ImageTableContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97731C2934640012EDA9 /* ImageTableContentController.swift */; };
@@ -87,9 +89,11 @@
 		761D03361C171DAF00BF37A2 /* Episode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		761D03371C171DAF00BF37A2 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayLaterItems.swift; sourceTree = "<group>"; };
+		7626AD6E1C49382600685B67 /* PlaySoundVC+Page.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PlaySoundVC+Page.swift"; sourceTree = "<group>"; };
+		7626AD701C4969C100685B67 /* CurrentUserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentUserProfileVC.swift; sourceTree = "<group>"; };
+		7626AD721C496AF800685B67 /* OtherUserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherUserProfileVC.swift; sourceTree = "<group>"; };
 		7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarPlayButton.swift; sourceTree = "<group>"; };
 		764C43031C156F68009F29E8 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
-		764C43071C161222009F29E8 /* UITabBar+Buttons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITabBar+Buttons.swift"; sourceTree = "<group>"; };
 		764C43091C16B7C7009F29E8 /* mkbhd.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mkbhd.jpg; sourceTree = "<group>"; };
 		764C430B1C16B821009F29E8 /* testim.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testim.jpg; sourceTree = "<group>"; };
 		766E97641C289AEA0012EDA9 /* NumTypes+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NumTypes+Conversion.swift"; sourceTree = "<group>"; };
@@ -97,7 +101,7 @@
 		766E976D1C2934640012EDA9 /* AudioMerger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioMerger.swift; sourceTree = "<group>"; };
 		766E976E1C2934640012EDA9 /* PostEpisodeTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostEpisodeTVC.swift; sourceTree = "<group>"; };
 		766E976F1C2934640012EDA9 /* PlaySoundViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaySoundViewController.swift; sourceTree = "<group>"; };
-		766E97701C2934640012EDA9 /* PlaySoundVC+Buttons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PlaySoundVC+Buttons.swift"; sourceTree = "<group>"; };
+		766E97701C2934640012EDA9 /* PlaySoundVC+Funcs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PlaySoundVC+Funcs.swift"; sourceTree = "<group>"; };
 		766E97711C2934640012EDA9 /* SectionPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionPlayer.swift; sourceTree = "<group>"; };
 		766E97721C2934640012EDA9 /* SoundPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
 		766E97731C2934640012EDA9 /* ImageTableContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableContentController.swift; sourceTree = "<group>"; };
@@ -182,6 +186,8 @@
 			isa = PBXGroup;
 			children = (
 				76017D7C1C1E17F800E9693B /* ProfileViewController.swift */,
+				7626AD701C4969C100685B67 /* CurrentUserProfileVC.swift */,
+				7626AD721C496AF800685B67 /* OtherUserProfileVC.swift */,
 				76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */,
 				76F717581C1E3F4C00B79AC1 /* FollowCell.swift */,
 				76017D7A1C1E12D800E9693B /* ChannelViewController.swift */,
@@ -205,7 +211,6 @@
 		7647BC5B1C1B95010092E96D /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
-				764C43071C161222009F29E8 /* UITabBar+Buttons.swift */,
 				764C43031C156F68009F29E8 /* CustomTabBarController.swift */,
 				76F717561C1E376400B79AC1 /* CustomTabBar.swift */,
 				7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */,
@@ -232,7 +237,8 @@
 				766E976D1C2934640012EDA9 /* AudioMerger.swift */,
 				766E976E1C2934640012EDA9 /* PostEpisodeTVC.swift */,
 				766E976F1C2934640012EDA9 /* PlaySoundViewController.swift */,
-				766E97701C2934640012EDA9 /* PlaySoundVC+Buttons.swift */,
+				766E97701C2934640012EDA9 /* PlaySoundVC+Funcs.swift */,
+				7626AD6E1C49382600685B67 /* PlaySoundVC+Page.swift */,
 				766E97711C2934640012EDA9 /* SectionPlayer.swift */,
 				766E97721C2934640012EDA9 /* SoundPlayer.swift */,
 				766E97731C2934640012EDA9 /* ImageTableContentController.swift */,
@@ -273,10 +279,10 @@
 				7687069B1C1563AB00D1A457 /* AppDelegate.swift */,
 				76F7175C1C1F228500B79AC1 /* AppSettings.swift */,
 				7687069F1C1563AB00D1A457 /* Main.storyboard */,
-				76F7175E1C1F307800B79AC1 /* Record */,
 				76017D791C1CFF5C00E9693B /* Login */,
 				7647BC5B1C1B95010092E96D /* TabBar */,
 				76F8FC4E1C16E026009B7E81 /* Home */,
+				76F7175E1C1F307800B79AC1 /* Record */,
 				76F717671C20F2E000B79AC1 /* Discover */,
 				766E97901C2AFC5C0012EDA9 /* Notifications */,
 				76017D7E1C1E17FE00E9693B /* Profile */,
@@ -398,7 +404,7 @@
 				766E978A1C2934990012EDA9 /* BarChartView.swift in Sources */,
 				766E97851C2934990012EDA9 /* RecordSoundViewController.swift in Sources */,
 				766E978F1C2AFC570012EDA9 /* NotifViewController.swift in Sources */,
-				766E97791C2934640012EDA9 /* PlaySoundVC+Buttons.swift in Sources */,
+				766E97791C2934640012EDA9 /* PlaySoundVC+Funcs.swift in Sources */,
 				766E97891C2934990012EDA9 /* RecordedSoundCell.swift in Sources */,
 				766E977B1C2934640012EDA9 /* SoundPlayer.swift in Sources */,
 				766E97871C2934990012EDA9 /* RecordedBundle.swift in Sources */,
@@ -411,8 +417,8 @@
 				76F717601C1F331A00B79AC1 /* PostingViewController.swift in Sources */,
 				769A262F1C16D748007A2EDA /* HomeFeedController.swift in Sources */,
 				76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */,
+				7626AD6F1C49382600685B67 /* PlaySoundVC+Page.swift in Sources */,
 				76DEA0821C2C8D9B00207DF9 /* EpisodeInParse.swift in Sources */,
-				764C43081C161222009F29E8 /* UITabBar+Buttons.swift in Sources */,
 				761D033B1C1723E200BF37A2 /* PlayLaterItems.swift in Sources */,
 				761D03391C171DAF00BF37A2 /* Channel.swift in Sources */,
 				766E977D1C2934640012EDA9 /* ImageTableContentCell.swift in Sources */,
@@ -428,6 +434,8 @@
 				766E977A1C2934640012EDA9 /* SectionPlayer.swift in Sources */,
 				7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */,
 				761D03381C171DAF00BF37A2 /* Episode.swift in Sources */,
+				7626AD731C496AF800685B67 /* OtherUserProfileVC.swift in Sources */,
+				7626AD711C4969C100685B67 /* CurrentUserProfileVC.swift in Sources */,
 				76F7175D1C1F228500B79AC1 /* AppSettings.swift in Sources */,
 				766E97861C2934990012EDA9 /* RecordSoundVC+Edit.swift in Sources */,
 				76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */,

@@ -49,6 +49,8 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         customTabBar = CustomTabBar(frame: rect)
         customTabBar.backgroundColor = TabBarSettings.tabsNormalBackgroundColor
         view.addSubview(customTabBar)
+        //let vc = ProfileViewController()
+        //self.addChildViewController(vc)
         
         addButtons(customTabBar)
         currentTab = tabs[TabBarSettings.appStartControllerIndex]

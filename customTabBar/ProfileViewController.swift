@@ -31,13 +31,16 @@ class ProfileViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.clearsSelectionOnViewWillAppear = true
-        profileView.frame.size.height = UITableViewAutomaticDimension
         
+        
+        //profileView.frame.size.height = UITableViewAutomaticDimension
+        //tableView.tableHeaderView = profileView //        
+        //tableView.tableHeaderView?.frame.size.height = UITableViewAutomaticDimension
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        isFollowing.setTitle(Options.followText, forState: .Normal)
+        isFollowing.setTitle(Options.followText, forState: .Normal) //TODO: unwrap an optinal value?????
         isFollowing.enabled = false
         isFollowing.hidden = Options.hideFollowing
         if !isFollowing.hidden {
@@ -75,8 +78,6 @@ class ProfileViewController: UITableViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        //TODO: check if UITableViewAutomaticDimension work
-        print(profileView.frame)
     }
     
     override func viewWillDisappear(animated: Bool) {

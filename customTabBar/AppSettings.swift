@@ -16,7 +16,6 @@ struct AppSettings {
     static let reallySmallNumber: Double = 0.000001
     static let tabBarHeight: CGFloat = 38.0
     
-    
 }
 
 struct RecordSettings {
@@ -33,11 +32,12 @@ struct RecordSettings {
         return inset
     }
     
-    
     static let addedImageCornerRadius: CGFloat = 5.0
     static let selectedPhotoCellHeight: CGFloat = 80.0
     static let imageDeleteButtonWidth: CGFloat = 30.0
+    
     static let defaultImageLimit: CGSize = CGSize(width: 720, height: 2000)
+    static let thumbImageSize: CGSize = CGSize(width: 165, height: 165)
     
     //for iphone only, iphone is mono input
     static let numberOfChannels:Int = 1
@@ -50,7 +50,6 @@ struct PlaySoundSetting {
     static let progressBarHeight: CGFloat = 30.0
     
 }
-
 
 enum PlayingSpeed: Float {
     case x100 = 1.0
@@ -77,7 +76,7 @@ class ImageUtils: NSObject {
         let s = image.size
         let ratio = s.height/s.width
         
-        // fill the targetSize
+        // fit the targetSize
         let h = min(targetRect.width * ratio, targetRect.height)
         let w = min(targetRect.height / ratio, targetRect.width)
         let x = (targetRect.width - w) / 2
@@ -87,9 +86,8 @@ class ImageUtils: NSObject {
         return CGRect(x: x, y: y, width: w, height: h)
     }
     
-    
-    
-    class func createFitImageFromSize(image: UIImage, targetSize: CGSize) -> UIImage? {
+    class func createFitImageFromSize(image: UIImage, targetSize: CGSize = RecordSettings.defaultImageLimit) -> UIImage {
+        
         let s = image.size
         let ratio = s.height/s.width
         
@@ -103,21 +101,40 @@ class ImageUtils: NSObject {
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         //resize finished
-        
+        return newImage
         // crop to center
-        let (orgx, orgy) = (h > targetSize.height) ? (0, (h - targetSize.height)/2) : ((w - targetSize.width)/2, 0)
-        // Correct rect size based on the device screen scale
-        let scaledRect = CGRectMake(orgx * newImage.scale, orgy * newImage.scale, targetSize.width * newImage.scale, targetSize.height * newImage.scale);
-        // New CGImage reference based on the input image (self) and the specified rect
-        let imageRef = CGImageCreateWithImageInRect(newImage.CGImage, scaledRect)
-        // Gets an UIImage from the CGImage
-        if let tmp = imageRef {
-            return UIImage(CGImage: tmp, scale: newImage.scale, orientation: newImage.imageOrientation)
-        }
-        else {
-            return nil
-        }
+//        let (orgx, orgy) = (h > targetSize.height) ? (0, (h - targetSize.height)/2) : ((w - targetSize.width)/2, 0)
+//        // Correct rect size based on the device screen scale
+//        let scaledRect = CGRectMake(orgx * newImage.scale, orgy * newImage.scale, targetSize.width * newImage.scale, targetSize.height * newImage.scale);
+//        // New CGImage reference based on the input image (self) and the specified rect
+//        let imageRef = CGImageCreateWithImageInRect(newImage.CGImage, scaledRect)
+//        // Gets an UIImage from the CGImage
+//        if let tmp = imageRef {
+//            return UIImage(CGImage: tmp, scale: newImage.scale, orientation: newImage.imageOrientation)
+//        }
+//        else {
+//            return nil
+//        }
         
+    }
+    
+    class func createCropImageFromSize(image: UIImage?, targetSize: CGSize = RecordSettings.thumbImageSize) -> UIImage? {
+        guard let image = image else {return nil}
+        let s = image.size
+        let ratio = s.height/s.width
+        
+        // fill the targetSize
+        let h = max(targetSize.width * ratio, targetSize.height)
+        let w = max(targetSize.height / ratio, targetSize.width)
+        let (orgx, orgy) = (h > targetSize.height) ? (0, -(h - targetSize.height)/2) : (-(w - targetSize.width)/2, 0)
+        //context to get new image
+        UIGraphicsBeginImageContext(CGSizeMake(targetSize.width, targetSize.height))  //UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.drawInRect(CGRectMake(orgx, orgy, w, h))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        //resize finished
+
+        return newImage
     }
     
 }
