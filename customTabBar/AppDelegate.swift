@@ -55,13 +55,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
         if event?.subtype == UIEventSubtype.RemoteControlPlay {
             print("received remote play")
-            SectionPlayer.sharedInstance.play()
+            SectionAudioPlayer.sharedInstance.play()
         }
         else if event?.subtype == UIEventSubtype.RemoteControlPause {
             print("received remote play")
+            SectionAudioPlayer.sharedInstance.pause()
         } else if event?.subtype == UIEventSubtype.RemoteControlTogglePlayPause {
             print("received toggle")
-            SectionPlayer.sharedInstance.playPauseToggle()
+            SectionAudioPlayer.sharedInstance.playPauseToggle()
+        } else if event?.subtype == UIEventSubtype.RemoteControlNextTrack {
+            print("received next")
+            SectionAudioPlayer.sharedInstance.playPauseToggle()
+        } else if event?.subtype == UIEventSubtype.RemoteControlPreviousTrack {
+            print("received previous")
+            SectionAudioPlayer.sharedInstance.playPauseToggle()
         }
     }
     

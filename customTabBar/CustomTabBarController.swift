@@ -10,7 +10,10 @@ import UIKit
 import Parse
 
 //TODO: add snapkit to custom tab bar for auto layout http://snapkit.io/
-class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
+class CustomTabBarController: UITabBarController {
+    
+    @IBOutlet weak var recordButton: UIBarButtonItem!
+    
     var tabs: [UIButton] = [UIButton]()
     var currentTab: UIButton!{
         didSet {
@@ -27,18 +30,9 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     var customTabBar: CustomTabBar!
     let playPauseButton = TabBarPlayButton()
     let audioTitleButton = UIButton()
+    weak var audioPlayer = SectionAudioPlayer.sharedInstance
     
     //player delegate
-    func sectionPlayerDidChangeRate(rate: Float) {
-        if rate == 0 {
-            //TODO: change play button status
-            let im = UIImage(named: "play")?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
-            playPauseButton.setImage(im, forState: .Normal)
-        } else if rate == 1 {
-            let im = UIImage(named: "pause")?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
-            playPauseButton.setImage(im, forState: .Normal)
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,29 +43,68 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         customTabBar = CustomTabBar(frame: rect)
         customTabBar.backgroundColor = TabBarSettings.tabsNormalBackgroundColor
         view.addSubview(customTabBar)
-        //let vc = ProfileViewController()
-        //self.addChildViewController(vc)
         
-        addButtons(customTabBar)
+        addTabs(customTabBar)
         currentTab = tabs[TabBarSettings.appStartControllerIndex]
         addPlayerViewToTabBar()
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "AudioPlayerRateChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
+
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         let customTabFrame = CGRect(x: 0, y: view.bounds.height - TabBarSettings.height, width: view.bounds.width, height: TabBarSettings.height)
         customTabBar.frame = customTabFrame
+        //layoutButtons()
+        
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerRateChanged", object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerTimeChanged", object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerTimeChanged", object: nil)
+
+    }
+    
+    func sectionPlayerDidChangeRate(notification: NSNotification) {
+        if let rate = notification.userInfo?["rate"] as? Float {
+            if rate == 0 {
+                //TODO: change play button status
+                let im = UIImage(named: "play")?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
+                playPauseButton.setImage(im, forState: .Normal)
+            } else if rate > 0 {
+                let im = UIImage(named: "pause")?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
+                playPauseButton.setImage(im, forState: .Normal)
+            }
+        }
+    }
+    func sectionPlayerDidChangeTime(notification: NSNotification) {
+        if let time = notification.userInfo?["time"] as? Double {
+            if let dur = audioPlayer?.currentDuration {
+                playPauseButton.progress = CGFloat(time / dur)
+            } else {
+                playPauseButton.progress = 0
+            }
+        }
     }
     
     var buttonNames = ["home 1","539","bell","901"]
-    func addButtons(barView: UIView) {
+    func addTabs(barView: UIView) {
         if let vcs = viewControllers {
             for i in 0 ..< vcs.count {
                 let button = UIButton()
                 
-                let x = CGFloat(i) * TabBarSettings.tabWidth
-                button.frame = CGRect(x: x, y: 0, width: TabBarSettings.tabWidth, height: barView.bounds.height)
-                button.autoresizingMask = [.FlexibleLeftMargin, .FlexibleRightMargin, .None, .None]
+                //let x = CGFloat(i) * TabBarSettings.tabWidth
+                //button.frame = CGRect(x: x, y: 0, width: TabBarSettings.tabWidth, height: barView.bounds.height)
                 
                 let normalImage = UIImage(named: buttonNames[i])?.imageWithRenderingMode(TabBarSettings.tabsColorStyle)
                 button.setImage(normalImage, forState: .Normal)
@@ -110,27 +143,34 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         selectedIndex = button.tag
     }
     
-    //TODO: need add this when start working on real audio
-    func layoutButtons(buttonNumber bn: Int, buttonSize: CGFloat) { // input should be
+    func layoutButtons() { // input should be
         // TODO: change to autolayout in code
+        var tabWid = TabBarSettings.tabWidth
         
-        for i in 0 ..< tabs.count {
-            let x = CGFloat(i) * TabBarSettings.tabWidth
-            tabs[i].frame = CGRect(x: x, y: 0, width: TabBarSettings.tabWidth, height: customTabBar.bounds.height)
+        if SectionAudioPlayer.sharedInstance.currentEpisode == nil {
+            tabWid = view.bounds.width / CGFloat(tabs.count)
+            audioTitleButton.hidden = true
+            
+        } else {
+            audioTitleButton.frame = TabBarSettings.audioTitleFrame(customTabBar.bounds, tabNum: tabs.count)
+            playPauseButton.frame = CGRect(x: audioTitleButton.bounds.width - TabBarSettings.playButtonWidth, y: 0, width: TabBarSettings.playButtonWidth, height: audioTitleButton.bounds.height)
         }
         
-        if playPauseButton.hidden {
-            
+        for i in 0 ..< tabs.count {
+            let x = CGFloat(i) * tabWid
+            tabs[i].frame = CGRect(x: x, y: 0, width: tabWid, height: customTabBar.bounds.height)
         }
     }
     
+    func changeEpisode() {
+        audioTitleButton.setTitle(SectionAudioPlayer.sharedInstance.currentEpisode?.episodeTitle, forState: .Normal)
+    }
+    
+    //TODO: add notifications and then change the layout
+    
+    
+    
     func addPlayerViewToTabBar() {
-        //TODO: title should be fixed width not determine by tabs width, have a min width and a max width
-        //let tabsWidth = CGFloat(tabs.count) * TabBarSettings.tabWidth
-        
-        //let w = customTabBar.bounds.width - tabsWidth
-        audioTitleButton.frame = TabBarSettings.audioTitleFrame(customTabBar.bounds, tabNum: tabs.count) //CGRect(x: tabsWidth, y: 0, width: w, height: customTabBar.bounds.height)
-        audioTitleButton.setTitle("Sony Xperia Z5 Premium: A 4K SmartPhone! #4k #sony", forState: .Normal)
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor.colorWithAlphaComponent(0.2), forState: .Highlighted)
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor, forState: .Normal)
         audioTitleButton.titleLabel?.lineBreakMode = .ByTruncatingTail
@@ -142,31 +182,23 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         audioTitleButton.addTarget(self, action: "openPlayer", forControlEvents: .TouchUpInside)
         customTabBar.addSubview(audioTitleButton)
         
-        playPauseButton.frame = CGRect(x: customTabBar.bounds.width - TabBarSettings.playButtonWidth, y: 0, width: TabBarSettings.playButtonWidth, height: customTabBar.bounds.height)
         playPauseButton.tintColor = UIColor.whiteColor()
         playPauseButton.imageView?.contentMode = .ScaleAspectFit
         playPauseButton.addTarget(self, action: "playPauseAudio", forControlEvents: .TouchUpInside)
+        playPauseButton.progress = 0
         
-        ////////////////////////////////////////////////////////
-        ///////////////     THIS IS TEMPORARY     !!!!!!!!!!!!!!
-        ////////////////////////////////////////////////////////
-        sectionPlayerDidChangeRate(1)
-        playPauseButton.progress = 0.85
-        
-        
-        
-        customTabBar.addSubview(playPauseButton)
-        //TODO: custom tab bar (4 tabs) need refresh
+        audioTitleButton.addSubview(playPauseButton)
     }
     
     
     //TODO: make sure if audio was interrepted, can correctly display
     func playPauseAudio() {
-        SectionPlayer.sharedInstance.playPauseToggle()
+        SectionAudioPlayer.sharedInstance.playPauseToggle()
     }
     
     func openPlayer() {
-        let playerVC = storyboard!.instantiateViewControllerWithIdentifier("SectionPlayer") as! PlaySoundViewController
+        let playerVC = storyboard!.instantiateViewControllerWithIdentifier("SectionAudioPlayer") as! PlaySoundViewController
+        playerVC.episode = SectionAudioPlayer.sharedInstance.currentEpisode
         
         if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
             playerVC.modalPresentationStyle = .OverFullScreen
@@ -174,14 +206,6 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         self.presentViewController(playerVC, animated: true, completion: nil)
     }
     
-    
-    
-    
-    //TODO: add delegate for profile delegate
-    
-    func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
-        print("tab changed \(self.selectedIndex)")
-    }
     
     
     

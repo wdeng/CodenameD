@@ -16,9 +16,10 @@ import AVFoundation
 
 class AudioMerger: NSObject {
     
+    var episode = EpisodeToPlay()
     
     private var audios: [RecordedAudio] = []
-    var imageSets: [AddedImageSet] = [AddedImageSet()]
+    private var imageSets: [AddedImageSet] = [AddedImageSet()]
     var outputAudio: NSURL?
     var exportSession: AVAssetExportSession?
     
@@ -27,13 +28,10 @@ class AudioMerger: NSObject {
     var assetReader: AVAssetReader?
     var assetQueue: dispatch_queue_t?
     
-    //let exportSession = AVAssetExportSession(asset: AVMutableComposition(), presetName: AVAssetExportPresetAppleM4A)
-    
-    private func bundleToSetions(items: [AnyObject]) {
+    //TODO: This should be changed to dynamic in recording scene                       will need a placeholder image if no image
+    private func getImageSetions(items: [AnyObject]) {
         
         var currentSecionIndex = 0
-        
-        //TODO: will need a placeholder image if no image
         for i in 0 ..< items.count {
             if let item = items[i] as? AddedImageSet {
                 if audios.last?.itemIndex == imageSets.last!.itemIndex { /// this also solves the first item as audio
@@ -61,7 +59,6 @@ class AudioMerger: NSObject {
         
     }
     
-    
     override init() {
         super.init()
     }
@@ -70,21 +67,35 @@ class AudioMerger: NSObject {
     init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
         super.init()
         
-        bundleToSetions(items)
-        var mergerAudios: [NSURL] = []
+        if imageSets.count == 0 {
+            if let d = (items.first as? RecordedAudio) {
+                episode.sectionDurations.append(d.duration)
+                episode.episodeURL = d.filePathURL
+                return
+            }
+        }
+        getImageSetions(items)
+        for i in imageSets {
+            episode.sectionDurations.append(i.sectionDuration)
+            episode.imageSets.append(i.images)
+        }
+        episode.thumb = ImageUtils.createCropImageFromSize((episode.imageSets).first?.first as? UIImage)
         
+        var mergerAudios: [NSURL] = []
         for i in audios {
             mergerAudios.append(i.filePathURL)
         }
         
-        outputAudio = merger(mergerAudios, toOneAudioName: toNewAudio)
+        
+        
+        episode.episodeURL = merge(mergerAudios, toOneAudioName: toNewAudio)
     }
     
         
     
     var delegate: AudioMergerDelegate?
     
-    func stopMerger() {
+    func stopMerge() {
         if let q = assetQueue {
             dispatch_async(q) {
                 self.assetWriter?.cancelWriting()
@@ -93,9 +104,8 @@ class AudioMerger: NSObject {
         }
     }
     
-    func merger (audioURLs: [NSURL], toOneAudioName audio: String) -> NSURL? {
+    func merge (audioURLs: [NSURL], toOneAudioName audio: String) -> NSURL? {
         //var error: NSError?
-        //TODO:  how to check the quality exportSession and change to lower
         let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
         
         var nextClipStartTime = kCMTimeZero
@@ -120,7 +130,6 @@ class AudioMerger: NSObject {
             nextClipStartTime = CMTimeAdd(nextClipStartTime, timeRangeInAsset.duration)
         }
         
-        //TODO: change the setting for AVAssetWriter, export session doesn't resize
         //http://www.rockhoppertech.com/blog/ios-trimming-audio-files/  trimming
         
         
@@ -128,12 +137,11 @@ class AudioMerger: NSObject {
             AVFormatIDKey: NSNumber(unsignedInt:kAudioFormatMPEG4AAC),
             AVEncoderBitRateKey : 64000,
             AVNumberOfChannelsKey: 1,
-            AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key, if cannot change export session in the
+            AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key
         
         let resultPath = dirPath + "/" + audio
         deleteDuplication(resultPath)
         let resultURL = NSURL.fileURLWithPath(resultPath)
-        
         
         do{
             assetWriter = try AVAssetWriter(URL: resultURL, fileType: AVFileTypeAppleM4A)

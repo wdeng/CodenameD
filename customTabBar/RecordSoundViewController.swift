@@ -280,7 +280,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         // audio cell
         if let audio = addedItems[indexPath.row] as? RecordedAudio {
             //audio.itemIndex = indexPath.row
-            let audioCell = tableView.dequeueReusableCellWithIdentifier("RecordedAudioCell") as! RecordedSoundCell
+            let audioCell = tableView.dequeueReusableCellWithIdentifier("RecordedAudioCell", forIndexPath: indexPath) as! RecordedSoundCell
             audioCell.audio = audio
             
             let duration = Int(audio.duration)
@@ -306,7 +306,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
         else if let imageSet = addedItems[indexPath.row] as? AddedImageSet {
             //imageSet.itemIndex = indexPath.row
             
-            let photoCell = tableView.dequeueReusableCellWithIdentifier("SelectedPhotoCell") as! SelectedPhotoCell
+            let photoCell = tableView.dequeueReusableCellWithIdentifier("SelectedPhotoCell", forIndexPath: indexPath) as! SelectedPhotoCell
             photoCell.showsReorderControl = true
             //print(photoCell.photoButtons[0].hidden)
             for i in 0 ..< 4 {

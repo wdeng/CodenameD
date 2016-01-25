@@ -138,6 +138,7 @@ class SectionSlider: UIControl {
             self.delegate?.sliderSelectedStatusDidChanged?(oldValue, newVal: sectionSelectedByUser)
         }
     }
+    var sliderIsTracking: Bool = false
     var currentSection: Int = 0 {
         didSet {
             if oldValue != currentSection {
@@ -147,7 +148,31 @@ class SectionSlider: UIControl {
             }
         }
     }
+    var value: Double = 0.0 {
+        // value changes in two situations: one is dragging, the other is sound playing
+        didSet {
+            if value > maximumValue {
+                value = maximumValue
+            }
+            else if value < minimumValue {
+                value = minimumValue
+            }
+            let thumbCenter = positionForValue(value)
+            if !sectionSelectedByUser {
+                currentSection = sectionForLocation(thumbCenter)
+            }
+            
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            progressTrackLayer.setNeedsDisplay()
+            thumbLayer.frame = CGRect(x: thumbCenter - thumbSize.width/2.0, y: 0.0, width: thumbSize.width, height: thumbSize.height)
+            thumbLayer.setNeedsDisplay()
+            CATransaction.commit()
+            
+        }
+    }
     
+    //TODO: min and max value is not correct
     var minimumValue: Double = 0.0 {
         didSet {
             if maximumValue < minimumValue {
@@ -175,31 +200,6 @@ class SectionSlider: UIControl {
     private(set) var startOfSectionsInFrame: [CGFloat]!
     
     private var touchableFrame: CGRect!
-    
-    var value: Double = 0.0 {
-        // value changes in two situations: one is dragging, the other is sound playing
-        didSet {
-            if value > maximumValue {
-                value = maximumValue
-            }
-            else if value < minimumValue {
-                value = minimumValue
-            }
-            
-            let thumbCenter = positionForValue(value)
-            if !sectionSelectedByUser {
-                currentSection = sectionForLocation(thumbCenter)
-            }
-            
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            progressTrackLayer.setNeedsDisplay()
-            thumbLayer.frame = CGRect(x: thumbCenter - thumbSize.width/2.0, y: 0.0, width: thumbSize.width, height: thumbSize.height)
-            thumbLayer.setNeedsDisplay()
-            CATransaction.commit()
-            
-        }
-    }
     
     var valueShouldUpdate = false
     
@@ -339,6 +339,7 @@ class SectionSlider: UIControl {
         //if thumbLayer.frame.contains(previousLocation) {
             thumbLayer.highlighted = true
             delegate?.sectionSliderThumbDidBeginTrack?()
+            sliderIsTracking = true
             return true
         }
         else if backgroundTrackLayer.frame.contains(previousLocation){
@@ -383,7 +384,46 @@ class SectionSlider: UIControl {
         //sendActionsForControlEvents(.ValueChanged)
         if thumbLayer.highlighted {
             delegate?.sectionSliderThumbDidEndTrack?()
+            sliderIsTracking = false
             thumbLayer.highlighted = false
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

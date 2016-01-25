@@ -7,39 +7,46 @@
 //
 
 import UIKit
+import Parse
 
 class ImageTableContentController: UITableViewController {
     //TODO: need to test the marigin and make sure correct image ratio
-    let imageMarigin = 16
+    let imageMarigin: CGFloat = 16
     var itemIndex = 0
-    var imageNames: [String] = []
-    var images = [UIImage]()
-
+    var images: [UIImage] = []
+    let activityIndicator = UIActivityIndicatorView(frame: UIScreen.mainScreen().bounds)
+    
+    override func awakeFromNib() {
+        //print("awake from nib")
+        super.awakeFromNib()
+    }
+    
+    override func loadView() {
+        //print("loading view")
+        super.loadView()
+    }
+    
     override func viewDidLoad() {
+        //print("view did load")
         super.viewDidLoad()
         tableView.contentInset.bottom = 20
     }
 
     // MARK: - Table view data source
-
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return images.count
-        }
-        return 0
+        return images.count
     }
-
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("ImageContentCell", forIndexPath: indexPath) as! ImageTableContentCell
-        cell.contentImageView.image = images[indexPath.row] //UIImage(named: imageNames[indexPath.row])
+        cell.contentImageView.image = images[indexPath.row]
         return cell
     }
 
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let contentImage = images[indexPath.row]
-        return contentImage.size.height / contentImage.size.width * view.frame.width + CGFloat(imageMarigin)
+        return images[indexPath.row].size.height / images[indexPath.row].size.width * view.frame.width + imageMarigin
     }
 
 }

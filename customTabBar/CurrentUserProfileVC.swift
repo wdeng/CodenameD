@@ -37,5 +37,4 @@ class CurrentUserProfileVC: ProfileViewController {
         print("ok")
     }
 
-
 }

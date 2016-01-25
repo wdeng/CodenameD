@@ -20,6 +20,34 @@ enum ActivityType {
 class ParseActions: NSObject {
     //func signUpLogin(isSignUp: Bool, withUsername username: String, andPassword password: String) {}
     
+    class func fetchImages(names: [AnyObject], finished: ([UIImage]) -> Void) {
+        var images: [UIImage] = []
+        
+        let queue = dispatch_queue_create("com.customtabbar.getimages", DISPATCH_QUEUE_SERIAL)
+        
+        if let names = names as? [PFFile] {
+            for fileName in names {
+                //TODO: should check if images are correct sequence
+                dispatch_async(queue){
+                    do {
+                        let data = try fileName.getData()
+                        if let image = UIImage(data: data) {
+                            images.append(image)
+                        }
+                    } catch _ {}
+                }
+            }
+            dispatch_async(queue){
+                dispatch_async(dispatch_get_main_queue()){
+                    finished(images)
+                }
+            }
+        } else if let names = names as? [UIImage] {
+            finished(names)
+        }
+        
+    }
+    
     // Find followers, following, comments, and likes
     class func fetchActivities(type: ActivityType, finished:([PFObject]) -> Void ) {
         let query = PFQuery(className: "Activities")
@@ -216,39 +244,6 @@ class ParseActions: NSObject {
     
     
     
-    
-    // Abandoned
-    var episode = EpisodeInParse()
-    func fetchFollowingPosts(skip: Int = 0) {
-        let query = PFQuery(className: "Activities")
-        query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-        query.whereKey("type", equalTo: "following")
-        query.orderByDescending("updatedAt")
-        query.skip = skip
-        query.limit = 6
-        query.findObjectsInBackgroundWithBlock { (users, error) in
-            // While normally there should only be one follow activity returned, we can't guarantee that.
-            if error == nil {
-                for u: PFObject in users! as [PFObject] {
-                    
-                    let q = PFQuery(className: "Episode")
-                    q.whereKey("userId", equalTo: u["toUser"])
-                    q.orderByDescending("UpdatedAt")
-                    q.limit = 3
-                    q.findObjectsInBackgroundWithBlock{ (posts, error) in
-                        if posts == nil {
-                            //AppUtils.displayAlert("Fetching Feed Failed", message: "Please try again later", onViewController: (self as? UIViewController)!)
-                            print("couldn't fetch home")
-                            return
-                        }
-                        
-                    }
-                    
-                }
-            }
-        }
-
-    }
     
     
     

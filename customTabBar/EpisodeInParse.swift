@@ -10,18 +10,24 @@ import Foundation
 import AVFoundation
 import Parse
 
-class EpisodeInParse {
+class EpisodeToPlay {
     var episodeTitle: String?
     var episodeURL: NSURL?
-    var imageSets: [PFFile]?
-    var thumb: UIImage?
-    var sectionDurations: [Double]?
+    var imageSets: [[AnyObject]] = []
+    var thumb: AnyObject?
+    var sectionDurations: [Double] = []
 }
 
 class ChannelFeed {
     var username: String?
-    var userThumb: UIImage?
-    var episodes: [EpisodeInParse] = []
+    var userThumb: PFFile?
+    var userId: String?
+    var episodes: [EpisodeToPlay] = []
+}
+
+enum LoadType {
+    case AddOn
+    case Reload
 }
 
 class HomeFeedFromParse: NSObject {
@@ -35,7 +41,7 @@ class HomeFeedFromParse: NSObject {
     
     
     
-    class func fetchFollowingPosts(skip: Int, size: Int, finished:([ChannelFeed]) -> Void ) {
+    class func fetchFollowingPosts(skip: Int, size: Int = HomeFeedsSettings.sectionsInPage, finished:([ChannelFeed]) -> Void ) {
         var feeds = [ChannelFeed]()
         
         let query = PFQuery(className: "Activities")
@@ -44,31 +50,27 @@ class HomeFeedFromParse: NSObject {
         query.orderByDescending("updatedAt")
         query.skip = skip
         query.limit = size
-        query.findObjectsInBackgroundWithBlock { (us, error) in
+        query.findObjectsInBackgroundWithBlock { (users, error) in
             if (error != nil) {
                 print("couldn't find following users")
                 return
             }
+            //TODO: if us is []
+            guard let us = users else {return}
+            if us.count == 0{
+                finished(feeds)
+            }
             
-            guard let us = us else {return}
-            // TODO: if channel 
-//            var following = [String]()
-//            for u in us {
-//                if let userId = u["toUser"] as? String {
-//                    following.append(userId)
-//                }
-//            }
-//            let q = PFQuery(className: "Episode")
-//            q.whereKey("userId", containedIn: following)
-//            q.orderByDescending("updatedAt")
-            
-            
+            var counter = 0
             
             for u: PFObject in us as [PFObject] {
-                
                 let ch = ChannelFeed()
-                ch.username = u["toUsername"] as? String
                 
+                ch.username = u["toUsername"] as? String
+                ch.userThumb = u["thumb"] as? PFFile
+                ch.userId = u["toUser"] as? String
+                
+                feeds.append(ch)
                 let q = PFQuery(className: "Episode")
                 q.whereKey("userId", equalTo: u["toUser"])
                 q.orderByDescending("updatedAt")
@@ -80,29 +82,28 @@ class HomeFeedFromParse: NSObject {
                     }
                     
                     for p in posts! {
-                        let e = EpisodeInParse()
+                        let e = EpisodeToPlay()
                         if let urlString = (p["audio"] as? PFFile)?.url {
                             e.episodeURL = NSURL(string: urlString)
                         }
                         e.episodeTitle = p["title"] as? String
-                        e.imageSets = p["images"] as? [PFFile]
-                        print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
+                        e.thumb = p["thumb"]
+                        e.imageSets = (p["images"] as? [[AnyObject]]) ?? []
+                        e.sectionDurations = (p["durations"] as? [Double]) ?? []
+                        
+                        //print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
                         ch.episodes.append(e)
                     }
-                    
-                    feeds.append(ch)
-                    
-                    if feeds.count == us.count {
+                     // shouldn't only be like this, doesn't load this one when all feeds loaded, us is []
+                    if (++counter) == us.count {
                         finished(feeds)
                     }
                 }
                 
-                
-                
             }
         }
+        
     }
-    
     
     
     

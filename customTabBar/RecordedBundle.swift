@@ -26,20 +26,6 @@ class RecordedAudio {
     var title: String = ""
     var duration: Double = 0.0
     var itemIndex: Int = -2
-    
-    
-    class func durationToClockTime(duration: Double) ->String {
-        //let h = Int(duration) / 3600
-        //let m = (Int(duration) % 3600) / 60
-        //let s = (Int(duration) % 3600) / 60
-        if duration < 3600 {
-            return String(format: "%d:%02d", Int(duration) / 60, Int(duration) % 60)
-        }
-        else {
-            return String(format: "%d:%02d:%02d", Int(duration) / 3600, (Int(duration) % 3600) / 60, (Int(duration) % 3600) % 60)
-        }
-        
-    }
 }
 
 

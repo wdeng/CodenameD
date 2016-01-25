@@ -161,6 +161,7 @@ struct TabBarSettings {
     static let audioTitleLines: Int = 2 // TODO: how many lines we need
     static let audioButtonBackgroundColor: UIColor = UIColor.grayColor()
     
+    // TODO: what is this????
     static func audioTitleFrame(viewBound: CGRect, tabNum: Int) -> CGRect {
         let tabsWidth = CGFloat(tabNum) * tabWidth
         var frame = viewBound
@@ -183,13 +184,31 @@ struct GeneralSettings {
 
 
 class AppUtils: NSObject {
+    class func durationToClockTime(duration: Double?) ->String? {
+        //let h = Int(duration) / 3600
+        //let m = (Int(duration) % 3600) / 60
+        //let s = (Int(duration) % 3600) / 60
+        guard let duration = duration else { return nil}
+        if duration < 3600 {
+            return String(format: "%d:%02d", Int(duration) / 60, Int(duration) % 60)
+        }
+        else {
+            return String(format: "%d:%02d:%02d", Int(duration) / 3600, (Int(duration) % 3600) / 60, (Int(duration) % 3600) % 60)
+        }
+        
+    }
+    
     class func switchOnActivityIndicator(activityIndicator: UIActivityIndicatorView, forView view: UIView, ignoreUser: Bool) {
         //activityIndicator = UIActivityIndicatorView(frame: view.bounds)
         activityIndicator.center = view.center
-        activityIndicator.backgroundColor = UIColor(white: 0.2, alpha: 0.2)
+        activityIndicator.backgroundColor = UIColor(white: 0.2, alpha: 0.3)
         activityIndicator.hidesWhenStopped = true
-        activityIndicator.activityIndicatorViewStyle = .Gray
-        view.addSubview(activityIndicator)
+        activityIndicator.activityIndicatorViewStyle = .White
+        if let tableView = view as? UITableView {
+            tableView.backgroundView = activityIndicator
+        } else{
+            view.addSubview(activityIndicator)
+        }
         activityIndicator.startAnimating()
         if ignoreUser {
             UIApplication.sharedApplication().beginIgnoringInteractionEvents()

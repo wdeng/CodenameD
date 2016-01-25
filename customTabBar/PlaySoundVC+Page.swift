@@ -7,15 +7,16 @@
 //
 
 import UIKit
+import Parse
 
 extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewControllerDelegate {
-    //TODO: 可以变成 一个独立的vc
+    //TODO: 可以变成 一个独立的vc probably need to check what is needed
     func createPageViewController() {
         pageViewController = storyboard!.instantiateViewControllerWithIdentifier("PageController") as! UIPageViewController
         pageViewController.dataSource = self
         pageViewController.delegate = self
         
-        let firstController = (playingSections.imageSets.count > progressBar.currentSection) ? viewControllerAtIndex(progressBar.currentSection) : viewControllerAtIndex(0)
+        let firstController = (sectionNum > progressBar.currentSection) ? viewControllerAtIndex(progressBar.currentSection) : viewControllerAtIndex(0)
         let startingViewControllers = [firstController]
         
         pageViewController.setViewControllers(startingViewControllers, direction: .Forward, animated: false, completion: nil)
@@ -26,19 +27,29 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
         print(progressBar.currentSection)
     }
     
-    func resetCurrentContentController(index: Int, direction dir: UIPageViewControllerNavigationDirection) {
-        let currentVC = (playingSections.imageSets.count > index) ? viewControllerAtIndex(index) : viewControllerAtIndex(0)
-        pageViewController.setViewControllers([currentVC], direction: dir, animated: true, completion: nil)
+    func resetCurrentContentController(index: Int, direction dir: UIPageViewControllerNavigationDirection, animated: Bool) {
+        let currentVC = (sectionNum > index) ? viewControllerAtIndex(index) : viewControllerAtIndex(0)
+        pageViewController.setViewControllers([currentVC], direction: dir, animated: animated, completion: nil)
         
     }
     
     func viewControllerAtIndex(index: Int) -> ImageTableContentController {
-        if index < playingSections.imageSets.count {
+        //print(index)
+        if index < sectionNum {
             let vc = storyboard?.instantiateViewControllerWithIdentifier("ImageTableVC") as! ImageTableContentController
-            vc.images = playingSections.imageSets[index].images
             vc.itemIndex = index
+            //vc.images = []
+            AppUtils.switchOnActivityIndicator(vc.activityIndicator, forView: vc.tableView, ignoreUser:  false)
+            ParseActions.fetchImages(episode.imageSets[index]) { (images) -> Void in
+                vc.images = images
+                vc.activityIndicator.stopAnimating()
+                vc.tableView.reloadData()
+                
+            }
             
             return vc
+        } else {
+            
         }
         
         return ImageTableContentController()
@@ -46,7 +57,6 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
     }
     
     //MARK: UIPageViewController DataSource and Delegate
-
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
         let itemController = viewController as! ImageTableContentController
@@ -60,7 +70,7 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
         let itemController = viewController as! ImageTableContentController
         
-        if itemController.itemIndex + 1 < playingSections.imageSets.count {
+        if itemController.itemIndex + 1 < sectionNum {
             return viewControllerAtIndex(itemController.itemIndex+1)
         }
         return nil

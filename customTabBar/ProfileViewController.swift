@@ -112,7 +112,6 @@ class ProfileViewController: UITableViewController {
 
         return cell
     }
-
     
     // show following followers
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

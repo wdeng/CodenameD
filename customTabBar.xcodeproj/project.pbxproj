@@ -40,8 +40,8 @@
 		766E97771C2934640012EDA9 /* PostEpisodeTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E976E1C2934640012EDA9 /* PostEpisodeTVC.swift */; };
 		766E97781C2934640012EDA9 /* PlaySoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E976F1C2934640012EDA9 /* PlaySoundViewController.swift */; };
 		766E97791C2934640012EDA9 /* PlaySoundVC+Funcs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97701C2934640012EDA9 /* PlaySoundVC+Funcs.swift */; };
-		766E977A1C2934640012EDA9 /* SectionPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97711C2934640012EDA9 /* SectionPlayer.swift */; };
-		766E977B1C2934640012EDA9 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97721C2934640012EDA9 /* SoundPlayer.swift */; };
+		766E977A1C2934640012EDA9 /* SectionAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97711C2934640012EDA9 /* SectionAudioPlayer.swift */; };
+		766E977B1C2934640012EDA9 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97721C2934640012EDA9 /* AudioEngine.swift */; };
 		766E977C1C2934640012EDA9 /* ImageTableContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97731C2934640012EDA9 /* ImageTableContentController.swift */; };
 		766E977D1C2934640012EDA9 /* ImageTableContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97741C2934640012EDA9 /* ImageTableContentCell.swift */; };
 		766E977E1C2934640012EDA9 /* SectionSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97751C2934640012EDA9 /* SectionSlider.swift */; };
@@ -61,7 +61,6 @@
 		76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717561C1E376400B79AC1 /* CustomTabBar.swift */; };
 		76F717591C1E3F4C00B79AC1 /* FollowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717581C1E3F4C00B79AC1 /* FollowCell.swift */; };
 		76F7175D1C1F228500B79AC1 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F7175C1C1F228500B79AC1 /* AppSettings.swift */; };
-		76F717601C1F331A00B79AC1 /* PostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F7175F1C1F331A00B79AC1 /* PostingViewController.swift */; };
 		76F717661C20F2DA00B79AC1 /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717651C20F2DA00B79AC1 /* DiscoverViewController.swift */; };
 		76F717691C211B2800B79AC1 /* ParseBasedActivities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */; };
 		76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */; };
@@ -102,8 +101,8 @@
 		766E976E1C2934640012EDA9 /* PostEpisodeTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostEpisodeTVC.swift; sourceTree = "<group>"; };
 		766E976F1C2934640012EDA9 /* PlaySoundViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaySoundViewController.swift; sourceTree = "<group>"; };
 		766E97701C2934640012EDA9 /* PlaySoundVC+Funcs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PlaySoundVC+Funcs.swift"; sourceTree = "<group>"; };
-		766E97711C2934640012EDA9 /* SectionPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionPlayer.swift; sourceTree = "<group>"; };
-		766E97721C2934640012EDA9 /* SoundPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		766E97711C2934640012EDA9 /* SectionAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionAudioPlayer.swift; sourceTree = "<group>"; };
+		766E97721C2934640012EDA9 /* AudioEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		766E97731C2934640012EDA9 /* ImageTableContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableContentController.swift; sourceTree = "<group>"; };
 		766E97741C2934640012EDA9 /* ImageTableContentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableContentCell.swift; sourceTree = "<group>"; };
 		766E97751C2934640012EDA9 /* SectionSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionSlider.swift; sourceTree = "<group>"; };
@@ -125,7 +124,6 @@
 		76F717561C1E376400B79AC1 /* CustomTabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		76F717581C1E3F4C00B79AC1 /* FollowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowCell.swift; sourceTree = "<group>"; };
 		76F7175C1C1F228500B79AC1 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
-		76F7175F1C1F331A00B79AC1 /* PostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostingViewController.swift; sourceTree = "<group>"; };
 		76F717651C20F2DA00B79AC1 /* DiscoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
 		76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseBasedActivities.swift; sourceTree = "<group>"; };
 		76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
@@ -221,7 +219,6 @@
 		766E97631C289AD70012EDA9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				76F7175F1C1F331A00B79AC1 /* PostingViewController.swift */,
 				768706A21C1563AB00D1A457 /* Assets.xcassets */,
 				766E97641C289AEA0012EDA9 /* NumTypes+Conversion.swift */,
 				766E97651C289AEA0012EDA9 /* MeterTable.swift */,
@@ -231,21 +228,13 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		766E976C1C29344B0012EDA9 /* SectionPlayer */ = {
+		766E976C1C29344B0012EDA9 /* PostEpisode */ = {
 			isa = PBXGroup;
 			children = (
-				766E976D1C2934640012EDA9 /* AudioMerger.swift */,
 				766E976E1C2934640012EDA9 /* PostEpisodeTVC.swift */,
-				766E976F1C2934640012EDA9 /* PlaySoundViewController.swift */,
-				766E97701C2934640012EDA9 /* PlaySoundVC+Funcs.swift */,
-				7626AD6E1C49382600685B67 /* PlaySoundVC+Page.swift */,
-				766E97711C2934640012EDA9 /* SectionPlayer.swift */,
-				766E97721C2934640012EDA9 /* SoundPlayer.swift */,
-				766E97731C2934640012EDA9 /* ImageTableContentController.swift */,
-				766E97741C2934640012EDA9 /* ImageTableContentCell.swift */,
-				766E97751C2934640012EDA9 /* SectionSlider.swift */,
+				766E976D1C2934640012EDA9 /* AudioMerger.swift */,
 			);
-			name = SectionPlayer;
+			name = PostEpisode;
 			sourceTree = "<group>";
 		};
 		766E97901C2AFC5C0012EDA9 /* Notifications */ = {
@@ -282,6 +271,7 @@
 				76017D791C1CFF5C00E9693B /* Login */,
 				7647BC5B1C1B95010092E96D /* TabBar */,
 				76F8FC4E1C16E026009B7E81 /* Home */,
+				76D0AC2F1C4B23C2000EA60A /* SectionPlayer */,
 				76F7175E1C1F307800B79AC1 /* Record */,
 				76F717671C20F2E000B79AC1 /* Discover */,
 				766E97901C2AFC5C0012EDA9 /* Notifications */,
@@ -290,6 +280,20 @@
 				766E97631C289AD70012EDA9 /* Resources */,
 			);
 			path = customTabBar;
+			sourceTree = "<group>";
+		};
+		76D0AC2F1C4B23C2000EA60A /* SectionPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				766E976F1C2934640012EDA9 /* PlaySoundViewController.swift */,
+				766E97701C2934640012EDA9 /* PlaySoundVC+Funcs.swift */,
+				7626AD6E1C49382600685B67 /* PlaySoundVC+Page.swift */,
+				766E97731C2934640012EDA9 /* ImageTableContentController.swift */,
+				766E97741C2934640012EDA9 /* ImageTableContentCell.swift */,
+				766E97751C2934640012EDA9 /* SectionSlider.swift */,
+				766E97711C2934640012EDA9 /* SectionAudioPlayer.swift */,
+			);
+			name = SectionPlayer;
 			sourceTree = "<group>";
 		};
 		76F7175E1C1F307800B79AC1 /* Record */ = {
@@ -301,7 +305,8 @@
 				766E97821C2934980012EDA9 /* SelectedPhotoCell.swift */,
 				766E97831C2934980012EDA9 /* RecordedSoundCell.swift */,
 				766E97841C2934980012EDA9 /* BarChartView.swift */,
-				766E976C1C29344B0012EDA9 /* SectionPlayer */,
+				766E97721C2934640012EDA9 /* AudioEngine.swift */,
+				766E976C1C29344B0012EDA9 /* PostEpisode */,
 			);
 			name = Record;
 			sourceTree = "<group>";
@@ -406,7 +411,7 @@
 				766E978F1C2AFC570012EDA9 /* NotifViewController.swift in Sources */,
 				766E97791C2934640012EDA9 /* PlaySoundVC+Funcs.swift in Sources */,
 				766E97891C2934990012EDA9 /* RecordedSoundCell.swift in Sources */,
-				766E977B1C2934640012EDA9 /* SoundPlayer.swift in Sources */,
+				766E977B1C2934640012EDA9 /* AudioEngine.swift in Sources */,
 				766E97871C2934990012EDA9 /* RecordedBundle.swift in Sources */,
 				76017D5F1C1C772000E9693B /* LoginViewController.swift in Sources */,
 				766E97671C289AEA0012EDA9 /* MeterTable.swift in Sources */,
@@ -414,7 +419,6 @@
 				766E977E1C2934640012EDA9 /* SectionSlider.swift in Sources */,
 				766E97661C289AEA0012EDA9 /* NumTypes+Conversion.swift in Sources */,
 				76F8FC521C16E089009B7E81 /* ChannelCell.swift in Sources */,
-				76F717601C1F331A00B79AC1 /* PostingViewController.swift in Sources */,
 				769A262F1C16D748007A2EDA /* HomeFeedController.swift in Sources */,
 				76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */,
 				7626AD6F1C49382600685B67 /* PlaySoundVC+Page.swift in Sources */,
@@ -431,7 +435,7 @@
 				76F717691C211B2800B79AC1 /* ParseBasedActivities.swift in Sources */,
 				766E977C1C2934640012EDA9 /* ImageTableContentController.swift in Sources */,
 				76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */,
-				766E977A1C2934640012EDA9 /* SectionPlayer.swift in Sources */,
+				766E977A1C2934640012EDA9 /* SectionAudioPlayer.swift in Sources */,
 				7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */,
 				761D03381C171DAF00BF37A2 /* Episode.swift in Sources */,
 				7626AD731C496AF800685B67 /* OtherUserProfileVC.swift in Sources */,

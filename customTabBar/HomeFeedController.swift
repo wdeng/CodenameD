@@ -10,137 +10,124 @@ import UIKit
 import Parse
 
 class HomeFeedController: UITableViewController {
-    var items:[MyItem] = []
     var feeds: [ChannelFeed] = []
+    var allItemsLoaded = false
+    let loadOffset: CGFloat = 100
+    var isLoadingItems = false
     
-    let loadOffset: CGFloat = 200
-    var canLoadNewItems = false
     //for infinite scrolling
     @IBOutlet var refreshView : UIView!
     @IBOutlet weak var refreshIndicator: UIActivityIndicatorView!
     @IBOutlet weak var refreshButton: UIButton!
-    
     @IBOutlet weak var noInternetLabel: UILabel!
-    var pullRefresher = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         noInternetLabel.hidden = true
         refreshButton.hidden = true
+        
         tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
         tableView.contentInset.bottom = TabBarSettings.height
         
-        //TODO: change to persistence
-        //loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
+        refreshControl = UIRefreshControl()
+        refreshControl!.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
         
-        pullRefresher.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-        
-        self.tableView.addSubview(pullRefresher)
+        //self.tableView.addSubview(pullRefresher)
         
         
     }
     
-    func refresh() {
+    func refresh(refresher: UIRefreshControl) {
+        if !refresher.refreshing {
+            refresher.beginRefreshing()
+        }
         
-        tableView.reloadData()
-        pullRefresher.endRefreshing()
+        allItemsLoaded = false
+        loadFeed(.Reload, size: HomeFeedsSettings.sectionsInPage)
+        performSelector("refreshShouldStop:", withObject: refresher, afterDelay: 5.0)
+    }
+    
+    func refreshShouldStop(refresher: UIRefreshControl) {
+        if refresher.refreshing { /// Refreshing failed
+            refresher.endRefreshing()
+            tableView.tableHeaderView = refreshView
+            
+            // add refresh view with cannot connect to top of view
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        //pullRefresher.beginRefreshing()
-        
-        //TODO: put these in Parse with refresh indicator on
-        //loadSegment(0, size: HomeFeedsSettings.sectionsInPage)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Home"
-        canLoadNewItems = true
         
         //TODO: When posting, make nav bar right item as indicator
         //activityIndicator = UIActivityIndicatorView(frame: view.bounds)
         //AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser: true)
     }
     
-    func getRandomNumberBetween (From: Int , To: Int) -> Int {
-        return From + Int(arc4random_uniform(UInt32(To - From + 1)))
-    }
+//    func requestData(offset:Int, size:Int, listener:([MyItem]) -> ()) {
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+//            dispatch_async(dispatch_get_main_queue()) {喵} } }
     
-    class MyItem : CustomStringConvertible {
-        let name:String!
+    //
+    func loadFeed(type: LoadType, size:Int) {
+        if isLoadingItems || allItemsLoaded {
+            return
+        }
+        isLoadingItems = true
         
-        init(name:String) {
-            self.name = name
+        var start: Int!
+        if type == .Reload {
+            start = 0
         }
-        var description: String {
-            return name
+        else {
+            self.tableView.tableFooterView = refreshView
+            start = feeds.count
         }
-    }
-    
-    class DataManager {
-        func requestData(offset:Int, size:Int, listener:([MyItem]) -> ()) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                //Sleep the Process
-                if offset != 0 {
-                    sleep(2)
-                }
-                //generate items
-                var arr:[MyItem] = []
-                for i in offset ..< (offset + size) {
-                    arr.append(MyItem(name: "Item " + String(i)))
-                }
-                
-                //call listener in main thread
-                dispatch_async(dispatch_get_main_queue()) {
-                    listener(arr)
-                }
-            }
-        }
-    }
-    
-    func loadSegment(offset:Int, size:Int) {
-        canLoadNewItems = false
-        self.refreshView.hidden = (offset==0) ? true : false
-        let manager = DataManager()
-        manager.requestData(offset, size: size,
-            listener: {(items:[HomeFeedController.MyItem]) -> () in
-                self.items += items
-                
-                let r = NSRange(location: offset, length: items.count)
-                let i = NSIndexSet(indexesInRange: r)
-                self.tableView?.insertSections(i, withRowAnimation: .None)
-                self.canLoadNewItems = true
-                self.refreshView.hidden = true
-            }
-        )
-    }
-    
-    func loadFeed(start:Int, size:Int) {
-        canLoadNewItems = false
-        refreshView.hidden = false
         
         HomeFeedFromParse.fetchFollowingPosts(start, size: size) { (newItems) -> Void in
-            self.feeds += newItems
-            // TODO: is very likely not the exact number
-            let r = NSRange(location: start, length: newItems.count)
-            let i = NSIndexSet(indexesInRange: r)
-            self.tableView?.insertSections(i, withRowAnimation: .None)
+            self.refreshControl?.endRefreshing()
+            self.tableView.tableFooterView = nil
+            
+            if newItems.count == 0 {
+                self.allItemsLoaded = true
+                if self.feeds.count == 0 {
+                    self.tableView.reloadData()
+                    //TODO: Show place holder View, background view
+                }
+            } else {
+                let range = NSRange(location: start, length: newItems.count)
+                let indexRange = NSIndexSet(indexesInRange: range)
+                if start == 0 {
+                    self.feeds = newItems
+                    //self.tableView.reloadSections(indexRange, withRowAnimation: .Automatic)
+                    self.tableView.reloadData()
+                    // If there is background view, set to nil
+                } else {
+                    
+                    self.feeds += newItems
+                    self.tableView.insertSections(indexRange, withRowAnimation: .None)
+                }
+                
+            }
+            
+            self.isLoadingItems = false
         }
-        
-        
-        
     }
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
+        //TODO: will crash after pull request, because feeds has been set to []
         let offset = scrollView.contentOffset.y
-        let maxOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        if (maxOffset-offset < loadOffset) && canLoadNewItems {
-            //loadSegment(items.count, size: HomeFeedsSettings.sectionsInPage - 1)
-            
-            loadFeed(feeds.count, size: HomeFeedsSettings.sectionsInPage)
+        let maxOffset = scrollView.contentSize.height - scrollView.frame.size.height + scrollView.contentInset.bottom
+        // this runs when scrolling started !!!!!!!!!!!!!!!!
+        
+        if (maxOffset-offset < loadOffset) && (!allItemsLoaded) {
+            loadFeed(.AddOn, size: HomeFeedsSettings.sectionsInPage)
         }
     }
     
@@ -149,7 +136,7 @@ class HomeFeedController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView?, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return feeds[section].episodes.count+1
     }
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.row == 0 {
@@ -162,37 +149,66 @@ class HomeFeedController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell") as! ChannelCell
+            let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell", forIndexPath: indexPath) as! ChannelCell
             
-            //let imagename = getRandomNumberBetween(1, To: 10).description + ".png"
-            //chCell.photo.image = UIImage(named:imagename)! as UIImage
-            //chCell.name.text = items[section].name as String
-            //chCell.name.text = "abcd"
-            //print(chCell.contentView.subviews)
-            
+            chCell.name.text = feeds[indexPath.section].username
+            feeds[indexPath.section].userThumb?.getDataInBackgroundWithBlock { (data, error) -> Void in
+                guard let data = data else {return}
+                if let thumb = UIImage(data: data) {
+                    chCell.photo.image = thumb
+                }
+            }
             return chCell
         }
         else {
-        
             let epCell = tableView.dequeueReusableCellWithIdentifier("contentCell", forIndexPath: indexPath) as! EpisodeCell
         
-        /*
             //Image Files are PFFile type
-            imageFiles[indexPath.row].getDataInBackgroundWithBlock { (data, error) -> Void in
-                if let downloadedImage = UIImage(data: data!) {
-                    myCell.postedImage.image = downloadedImage
+            let episode = feeds[indexPath.section].episodes[indexPath.row-1]
+            episode.thumb?.getDataInBackgroundWithBlock { (data, error) -> Void in
+                guard let data = data else {return}
+                if let thumb = UIImage(data: data) {
+                    epCell.episodeThumb.image = thumb
                 }
             }
-        */
-        
-        
-        
-        
-        
+            
+            epCell.title.text = episode.episodeTitle
+            epCell.duration.text = AppUtils.durationToClockTime(episode.sectionDurations.reduce(0, combine: +))
+            
             return epCell
         }
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let idx = tableView.indexPathForCell(sender as! UITableViewCell) else {return}
+        if segue.identifier == "showUserProfile" {
+            
+            //TODO: how to and when to put userinfo in the feed?????
+            
+            ProfileViewController.Options.followText = "Following"
+            ProfileViewController.Options.hideFollowing = false
+            ProfileViewController.Options.username = feeds[idx.section].username
+            ProfileViewController.Options.userId = feeds[idx.section].userId
+            ProfileViewController.Options.profileName = "Profile Name"
+            
+            //vc.tableView.reloadData()
+        } else if segue.identifier == "openPlayer" {
+            let playVC = segue.destinationViewController as! PlaySoundViewController
+            let episode = feeds[idx.section].episodes[idx.row - 1] ///// first row is user cell
+            if SectionAudioPlayer.sharedInstance.currentEpisode?.episodeURL != episode.episodeURL {
+                SectionAudioPlayer.sharedInstance.setupPlayerWithEpisode(episode)
+            }
+            playVC.episode = episode
+            SectionAudioPlayer.sharedInstance.play()
+            
+            //TODO: set title should be in  sectionaudio player   nsnotification
+            //(tabBarController as? CustomTabBarController)?.audioTitleButton.setTitle(episode.episodeTitle, forState: .Normal)
+        }
+    }
     
 }
 

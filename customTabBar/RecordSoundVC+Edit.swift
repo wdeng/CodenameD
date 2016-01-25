@@ -17,14 +17,14 @@ extension RecordSoundViewController {
         if self.editing {
             setEditing(false, animated: true)
             navigationItem.rightBarButtonItem = closeButton
-            self.recordedTableView.reloadRowsAtIndexPaths(idx, withRowAnimation: .None)
+            recordedTableView.reloadRowsAtIndexPaths(idx, withRowAnimation: .None)
             recordedTableView.setEditing(false, animated: true)
         }
         else {
             setEditing(true, animated: true)
             deleteButton.enabled = false
             navigationItem.rightBarButtonItem = deleteButton
-            self.recordedTableView.reloadRowsAtIndexPaths(idx, withRowAnimation: .None)
+            recordedTableView.reloadRowsAtIndexPaths(idx, withRowAnimation: .None)
             recordedTableView.setEditing(true, animated: true)
         }
         
@@ -69,7 +69,6 @@ extension RecordSoundViewController {
     @IBAction func deleteAction(sender: AnyObject) {
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-        
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
             
         }

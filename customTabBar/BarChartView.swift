@@ -115,11 +115,11 @@ class BarChartView: UIView {
             let rect = CGRect(x: Double(i) * (bw.0+bw.1), y: midy - bins[i] / 2, width: bw.0, height: bins[i])
             CGPathAddRect(path, nil, rect)
             //UIBezierPath(rect: rect).CGPath
-            //barChartLayer.fillColor =
         }
         barChartLayer.path = path
         //let rect = CGRect(x: 10, y: 5, width: 30, height: 20)
         //barChartLayer.path = UIBezierPath(rect: rect).CGPath
+        //barChartLayer.fillColor =
     }
     
     func average(nums: [Double]) -> Double {
@@ -131,10 +131,7 @@ class BarChartView: UIView {
         return result / Double(nums.count)
     }
     
-    //TODO: Use drawRect to change background layer????
-    
-    
-    //TODO: recording progress and playing back progress can be added an extra layer
+    //TODO: Use CAShapeLayer to build
     
 }
 
