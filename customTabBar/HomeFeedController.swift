@@ -35,7 +35,7 @@ class HomeFeedController: UITableViewController {
         
         //self.tableView.addSubview(pullRefresher)
         
-        
+        print(NSUserDefaults.standardUserDefaults().doubleForKey(PlaySoundSetting.currentEpisodeTime))
     }
     
     func refresh(refresher: UIRefreshControl) {
@@ -52,8 +52,6 @@ class HomeFeedController: UITableViewController {
         if refresher.refreshing { /// Refreshing failed
             refresher.endRefreshing()
             tableView.tableHeaderView = refreshView
-            
-            // add refresh view with cannot connect to top of view
         }
     }
     
@@ -70,11 +68,6 @@ class HomeFeedController: UITableViewController {
         //AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser: true)
     }
     
-//    func requestData(offset:Int, size:Int, listener:([MyItem]) -> ()) {
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-//            dispatch_async(dispatch_get_main_queue()) {喵} } }
-    
-    //
     func loadFeed(type: LoadType, size:Int) {
         if isLoadingItems || allItemsLoaded {
             return
@@ -93,9 +86,8 @@ class HomeFeedController: UITableViewController {
         HomeFeedFromParse.fetchFollowingPosts(start, size: size) { (newItems) -> Void in
             self.refreshControl?.endRefreshing()
             self.tableView.tableFooterView = nil
-            
+            print(newItems)
             if newItems.count == 0 {
-                self.allItemsLoaded = true
                 if self.feeds.count == 0 {
                     self.tableView.reloadData()
                     //TODO: Show place holder View, background view
@@ -116,6 +108,9 @@ class HomeFeedController: UITableViewController {
                 
             }
             
+            if newItems.count < size {
+                self.allItemsLoaded = true
+            }
             self.isLoadingItems = false
         }
     }
@@ -199,6 +194,7 @@ class HomeFeedController: UITableViewController {
         } else if segue.identifier == "openPlayer" {
             let playVC = segue.destinationViewController as! PlaySoundViewController
             let episode = feeds[idx.section].episodes[idx.row - 1] ///// first row is user cell
+            
             if SectionAudioPlayer.sharedInstance.currentEpisode?.episodeURL != episode.episodeURL {
                 SectionAudioPlayer.sharedInstance.setupPlayerWithEpisode(episode)
             }

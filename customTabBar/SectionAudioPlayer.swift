@@ -8,8 +8,12 @@
 
 import UIKit
 import AVFoundation
+import Parse
 
-
+struct PlayerInfo {
+    static var playerSpeed: Float = 1.0
+    
+}
 
 public class SectionAudioPlayer: NSObject {
     static let sharedInstance = SectionAudioPlayer()
@@ -69,12 +73,18 @@ public class SectionAudioPlayer: NSObject {
     
     override init() {
         super.init()
-        
+        if let data = NSUserDefaults.standardUserDefaults().objectForKey(PlaySoundSetting.currentEpisodeKey) as? NSData {
+            let episode = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? EpisodeToPlay
+            
+        }
     }
     
     func setupPlayerWithEpisode(episode: EpisodeToPlay) {
-        currentEpisode = episode
-        if let url = currentEpisode?.episodeURL {
+        if let url = episode.episodeURL {
+            currentEpisode = episode
+            
+            let data = NSKeyedArchiver.archivedDataWithRootObject(episode)
+            NSUserDefaults.standardUserDefaults().setObject(data, forKey: PlaySoundSetting.currentEpisodeKey)
             setPlayerItemWithURL(url)
         }
     }
@@ -92,7 +102,7 @@ public class SectionAudioPlayer: NSObject {
         // probably check the NSUserDefault for current playList
         if let url = url {
             player = AVPlayer(URL: url)
-            NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerDidSet", object: nil, userInfo: ["title": (currentEpisode?.episodeTitle)!])
+            NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerEpisodeDidSet", object: nil, userInfo: ["title": (currentEpisode?.episodeTitle)!])
             
             player!.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(), context: nil)
             
@@ -116,7 +126,7 @@ public class SectionAudioPlayer: NSObject {
             let item = AVPlayerItem(URL: url)
             if let player = player {
                 player.replaceCurrentItemWithPlayerItem(item)
-                NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerDidSet", object: nil, userInfo: ["title": (currentEpisode?.episodeTitle)!])
+                NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerEpisodeDidSet", object: nil, userInfo: ["title": (currentEpisode?.episodeTitle)!])
             }
         }
     }
@@ -145,20 +155,6 @@ public class SectionAudioPlayer: NSObject {
         currentTime! -= time
     }
     
-    func shouldNotBeUsedFunction(items: [AVPlayerItem]) {
-        //check how to use queueplayer and
-        
-//        NSArray *theItems = [NSArray arrayWithObjects:thePlayerItemA, thePlayerItemB, thePlayerItemC, thePlayerItemD, nil];
-//        theQueuePlayer = [AVQueuePlayer queuePlayerWithItems:theItems];
-//        
-//        [[NSNotificationCenter defaultCenter] addObserver:self
-//            selector:@selector(playerItemDidReachEnd:)
-//        name:AVPlayerItemDidPlayToEndTimeNotification
-//        object:[theItems lastObject]];
-//        [theQueuePlayer play];
-        
-    }
-    
     func setPlaySpeed(targetSpeed: PlayingSpeed) {
         player?.rate = targetSpeed.rawValue
     }
@@ -172,6 +168,7 @@ public class SectionAudioPlayer: NSObject {
         
         // probably dont need to remove all the observers
         print("finished playing \(notification.object)")  ///  notification.object is player!.currentItem
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(PlaySoundSetting.currentEpisodeKey)
         currentTime = 0
     }
     

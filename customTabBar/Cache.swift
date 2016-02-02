@@ -12,6 +12,10 @@ class ImageCache {
     
     private var inMemoryCache = NSCache()
     
+    init() {
+        inMemoryCache.countLimit = 500
+    }
+    
     // MARK: - Retreiving images
     
     func imageWithIdentifier(identifier: String?) -> UIImage? {

@@ -19,7 +19,7 @@ class AudioMerger: NSObject {
     var episode = EpisodeToPlay()
     
     private var audios: [RecordedAudio] = []
-    private var imageSets: [AddedImageSet] = [AddedImageSet()]
+    private var imageSets: [AddedImageSet] = []
     var outputAudio: NSURL?
     var exportSession: AVAssetExportSession?
     
@@ -63,7 +63,7 @@ class AudioMerger: NSObject {
         super.init()
     }
     
-    
+    //TODO: change to convenience init
     init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
         super.init()
         

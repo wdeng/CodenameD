@@ -20,8 +20,8 @@ enum ActivityType {
 class ParseActions: NSObject {
     //func signUpLogin(isSignUp: Bool, withUsername username: String, andPassword password: String) {}
     
-    class func fetchImages(names: [AnyObject], finished: ([UIImage]) -> Void) {
-        var images: [UIImage] = []
+    class func fetchImages(names: [AnyObject], finished: ([AnyObject]) -> Void) {
+        var imagesData: [NSData] = []
         
         let queue = dispatch_queue_create("com.customtabbar.getimages", DISPATCH_QUEUE_SERIAL)
         
@@ -31,19 +31,19 @@ class ParseActions: NSObject {
                 dispatch_async(queue){
                     do {
                         let data = try fileName.getData()
-                        if let image = UIImage(data: data) {
-                            images.append(image)
-                        }
+                        imagesData.append(data)
                     } catch _ {}
                 }
             }
             dispatch_async(queue){
                 dispatch_async(dispatch_get_main_queue()){
-                    finished(images)
+                    finished(imagesData)
                 }
             }
-        } else if let names = names as? [UIImage] {
-            finished(names)
+        } else if let data = names as? [NSData] {
+            finished(data)
+        } else if let images = names as? [UIImage] {
+            finished(images)
         }
         
     }

@@ -30,10 +30,9 @@ class CustomTabBarController: UITabBarController {
     var customTabBar: CustomTabBar!
     let playPauseButton = TabBarPlayButton()
     let audioTitleButton = UIButton()
-    weak var audioPlayer = SectionAudioPlayer.sharedInstance
+    let audioPlayer = SectionAudioPlayer.sharedInstance
     
     //player delegate
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         //replace tab bar with new tab bars
@@ -55,15 +54,16 @@ class CustomTabBarController: UITabBarController {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "AudioPlayerRateChanged", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
-
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidSetEpisode:", name: "AudioPlayerEpisodeDidSet", object: nil)
+        
+        
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         let customTabFrame = CGRect(x: 0, y: view.bounds.height - TabBarSettings.height, width: view.bounds.width, height: TabBarSettings.height)
         customTabBar.frame = customTabFrame
-        //layoutButtons()
+        layoutTabBar()
         
     }
     
@@ -71,7 +71,7 @@ class CustomTabBarController: UITabBarController {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerRateChanged", object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerTimeChanged", object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerTimeChanged", object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerEpisodeDidSet", object: nil)
 
     }
     
@@ -89,7 +89,7 @@ class CustomTabBarController: UITabBarController {
     }
     func sectionPlayerDidChangeTime(notification: NSNotification) {
         if let time = notification.userInfo?["time"] as? Double {
-            if let dur = audioPlayer?.currentDuration {
+            if let dur = audioPlayer.currentDuration {
                 playPauseButton.progress = CGFloat(time / dur)
             } else {
                 playPauseButton.progress = 0
@@ -125,7 +125,6 @@ class CustomTabBarController: UITabBarController {
         
     func selectTab(button: UIButton) {
         self.currentTab = button
-        // TODO: should put these in a subclass if necessary
         if selectedIndex == button.tag {
             if let vc = viewControllers![selectedIndex] as? UITableViewController {
                 if (vc.tableView.numberOfSections < 1) || (vc.tableView.numberOfRowsInSection(0)) < 1 { return }
@@ -133,6 +132,7 @@ class CustomTabBarController: UITabBarController {
                 vc.tableView.scrollToRowAtIndexPath(i, atScrollPosition: .Top, animated: true)
             }
         } else if let _ = viewControllers![button.tag] as? ProfileViewController {
+            // TODO: put into a function for init user data
             ProfileViewController.Options.followText = "Follow"
             ProfileViewController.Options.hideFollowing = true
             ProfileViewController.Options.username = PFUser.currentUser()?.username
@@ -143,15 +143,15 @@ class CustomTabBarController: UITabBarController {
         selectedIndex = button.tag
     }
     
-    func layoutButtons() { // input should be
+    func layoutTabBar() {
         // TODO: change to autolayout in code
         var tabWid = TabBarSettings.tabWidth
         
-        if SectionAudioPlayer.sharedInstance.currentEpisode == nil {
+        if audioPlayer.currentEpisode == nil {
             tabWid = view.bounds.width / CGFloat(tabs.count)
             audioTitleButton.hidden = true
-            
         } else {
+            audioTitleButton.hidden = false
             audioTitleButton.frame = TabBarSettings.audioTitleFrame(customTabBar.bounds, tabNum: tabs.count)
             playPauseButton.frame = CGRect(x: audioTitleButton.bounds.width - TabBarSettings.playButtonWidth, y: 0, width: TabBarSettings.playButtonWidth, height: audioTitleButton.bounds.height)
         }
@@ -162,8 +162,11 @@ class CustomTabBarController: UITabBarController {
         }
     }
     
-    func changeEpisode() {
-        audioTitleButton.setTitle(SectionAudioPlayer.sharedInstance.currentEpisode?.episodeTitle, forState: .Normal)
+    func sectionPlayerDidSetEpisode(notification: NSNotification) {
+        if let title = notification.userInfo?["title"] as? String {
+            audioTitleButton.setTitle(title, forState: .Normal)
+            view.setNeedsLayout()
+        }
     }
     
     //TODO: add notifications and then change the layout
@@ -193,12 +196,12 @@ class CustomTabBarController: UITabBarController {
     
     //TODO: make sure if audio was interrepted, can correctly display
     func playPauseAudio() {
-        SectionAudioPlayer.sharedInstance.playPauseToggle()
+        audioPlayer.playPauseToggle()
     }
     
     func openPlayer() {
         let playerVC = storyboard!.instantiateViewControllerWithIdentifier("SectionAudioPlayer") as! PlaySoundViewController
-        playerVC.episode = SectionAudioPlayer.sharedInstance.currentEpisode
+        playerVC.episode = audioPlayer.currentEpisode
         
         if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
             playerVC.modalPresentationStyle = .OverFullScreen
@@ -209,21 +212,7 @@ class CustomTabBarController: UITabBarController {
     
     
     
-    
-    
-    
-    func viewDidLoad2() {
-        let newView = UIView()
-        newView.backgroundColor = UIColor.redColor()
-        newView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(newView)
-        let views = ["view": view, "newView": newView]
-        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:[view]-(<=0)-[newView(100)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views)
-        view.addConstraints(horizontalConstraints)
-        let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[view]-(<=0)-[newView(100)]", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: views)
-        view.addConstraints(verticalConstraints)
-    }
-    
+  
     
     
     

@@ -113,7 +113,19 @@ class ProfileViewController: UITableViewController {
         return cell
     }
     
+    
     // show following followers
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        if identifier == "editProfile" {
+            if isFollowing.titleLabel?.text == "Edit Profile" { return true}
+            else {return false}
+        }
+        else {
+            return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)
+        }
+    }
+    
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let vc = segue.destinationViewController as! FollowingFollowerVC
         if segue.identifier == "showFollowing" {

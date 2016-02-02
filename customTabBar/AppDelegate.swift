@@ -29,7 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         defaultACL.publicWriteAccess = false
         PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
         
-        
 //        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 //        
 //        // Load Main App Screen
@@ -92,9 +91,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(application: UIApplication) {
+        if let currentTime = SectionAudioPlayer.sharedInstance.currentTime {
+            NSUserDefaults.standardUserDefaults().setDouble(currentTime, forKey: PlaySoundSetting.currentEpisodeTime)
+            let speed = SectionAudioPlayer.sharedInstance.rate > 0 ? SectionAudioPlayer.sharedInstance.rate : 1  //TODO: delete this after, and the speed should be a sharedInstance set playing speed
+            NSUserDefaults.standardUserDefaults().setFloat(speed, forKey: PlaySoundSetting.currentEpisodePlaySpeed)
+        }
+        
+        
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

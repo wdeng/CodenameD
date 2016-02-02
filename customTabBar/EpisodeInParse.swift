@@ -10,12 +10,61 @@ import Foundation
 import AVFoundation
 import Parse
 
-class EpisodeToPlay {
+class EpisodeToPlay: NSObject, NSCoding {
     var episodeTitle: String?
     var episodeURL: NSURL?
     var imageSets: [[AnyObject]] = []
     var thumb: AnyObject?
     var sectionDurations: [Double] = []
+    var episodeId: String?
+    
+    struct Keys {
+        static let title = "title"
+        static let url = "url"
+        static let imsets = "imagesets"
+        static let thumb = "thumb"
+        static let durs = "durations"
+        static let id = "id"
+    }
+    
+    // MARK: - NSCoding
+    
+    func encodeWithCoder(archiver: NSCoder) {
+        archiver.encodeObject(episodeTitle, forKey: Keys.title)
+        archiver.encodeObject(episodeURL, forKey: Keys.url)
+        archiver.encodeObject(sectionDurations, forKey: Keys.durs)
+        if let thumbData = thumb as? NSData {
+            archiver.encodeObject(thumbData, forKey: Keys.thumb)
+            archiver.encodeObject(imageSets, forKey: Keys.imsets)
+        }
+        else {
+            print("hello")
+            archiver.encodeObject(episodeId, forKey: Keys.id)
+            print("from other side")
+        }
+        
+    }
+    
+    override init() {
+        super.init()
+    }
+    
+    required init(coder unarchiver: NSCoder) {
+        super.init()
+        // Unarchive the data, one property at a time
+        episodeTitle = unarchiver.decodeObjectForKey(Keys.title) as? String
+        episodeURL = unarchiver.decodeObjectForKey(Keys.url) as? NSURL
+        sectionDurations = (unarchiver.decodeObjectForKey(Keys.durs) as? [Double]) ?? []
+        if let thumbData = unarchiver.decodeObjectForKey(Keys.thumb) as? NSData {
+            imageSets = (unarchiver.decodeObjectForKey(Keys.imsets) as? [[AnyObject]]) ?? []
+            thumb = thumbData
+        } else {
+            episodeId = unarchiver.decodeObjectForKey(Keys.id) as? String
+        }
+        
+    }
+    
+    
 }
 
 class ChannelFeed {
@@ -51,6 +100,7 @@ class HomeFeedFromParse: NSObject {
         query.skip = skip
         query.limit = size
         query.findObjectsInBackgroundWithBlock { (users, error) in
+            //print(users)
             if (error != nil) {
                 print("couldn't find following users")
                 return
@@ -90,6 +140,7 @@ class HomeFeedFromParse: NSObject {
                         e.thumb = p["thumb"]
                         e.imageSets = (p["images"] as? [[AnyObject]]) ?? []
                         e.sectionDurations = (p["durations"] as? [Double]) ?? []
+                        e.episodeId = p.objectId
                         
                         //print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
                         ch.episodes.append(e)

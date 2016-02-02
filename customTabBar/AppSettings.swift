@@ -49,6 +49,9 @@ struct RecordSettings {
 struct PlaySoundSetting {
     static let progressBarHeight: CGFloat = 30.0
     
+    static let currentEpisodeKey: String = "CurrentPlayingEpisode"
+    static let currentEpisodeTime: String = "CurrentPlayingTime"
+    static let currentEpisodePlaySpeed: String = "CurrentPlaybackSpeed"
 }
 
 enum PlayingSpeed: Float {
@@ -185,9 +188,6 @@ struct GeneralSettings {
 
 class AppUtils: NSObject {
     class func durationToClockTime(duration: Double?) ->String? {
-        //let h = Int(duration) / 3600
-        //let m = (Int(duration) % 3600) / 60
-        //let s = (Int(duration) % 3600) / 60
         guard let duration = duration else { return nil}
         if duration < 3600 {
             return String(format: "%d:%02d", Int(duration) / 60, Int(duration) % 60)
