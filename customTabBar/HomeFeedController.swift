@@ -21,6 +21,12 @@ class HomeFeedController: UITableViewController {
     @IBOutlet weak var refreshButton: UIButton!
     @IBOutlet weak var noInternetLabel: UILabel!
     
+    var homeFeedFilePath : String {
+        let manager = NSFileManager.defaultManager()
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+        return url.URLByAppendingPathComponent("homeFeedFilePath").path!
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,10 +38,7 @@ class HomeFeedController: UITableViewController {
         
         refreshControl = UIRefreshControl()
         refreshControl!.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
-        
-        //self.tableView.addSubview(pullRefresher)
-        
-        print(NSUserDefaults.standardUserDefaults().doubleForKey(PlaySoundSetting.currentEpisodeTime))
+        //feeds = NSKeyedUnarchiver.unarchiveObjectWithFile(homeFeedFilePath) as? [ChannelFeed] ?? [homeFeedFilePath]()
     }
     
     func refresh(refresher: UIRefreshControl) {
@@ -45,18 +48,14 @@ class HomeFeedController: UITableViewController {
         
         allItemsLoaded = false
         loadFeed(.Reload, size: HomeFeedsSettings.sectionsInPage)
-        performSelector("refreshShouldStop:", withObject: refresher, afterDelay: 5.0)
+        performSelector("refreshShouldStop:", withObject: refresher, afterDelay: 10.0)
     }
     
     func refreshShouldStop(refresher: UIRefreshControl) {
         if refresher.refreshing { /// Refreshing failed
             refresher.endRefreshing()
-            tableView.tableHeaderView = refreshView
+            //tableView.tableHeaderView = refreshView  //TODO: make it show cannot fresh
         }
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -86,7 +85,6 @@ class HomeFeedController: UITableViewController {
         HomeFeedFromParse.fetchFollowingPosts(start, size: size) { (newItems) -> Void in
             self.refreshControl?.endRefreshing()
             self.tableView.tableFooterView = nil
-            print(newItems)
             if newItems.count == 0 {
                 if self.feeds.count == 0 {
                     self.tableView.reloadData()
@@ -112,6 +110,8 @@ class HomeFeedController: UITableViewController {
                 self.allItemsLoaded = true
             }
             self.isLoadingItems = false
+            
+            //NSKeyedArchiver.archiveRootObject(self.feeds, toFile: homeFeedFilePath)
         }
     }
     
@@ -170,6 +170,8 @@ class HomeFeedController: UITableViewController {
             epCell.title.text = episode.episodeTitle
             epCell.duration.text = AppUtils.durationToClockTime(episode.sectionDurations.reduce(0, combine: +))
             
+            epCell.otherOptions.addTarget(self, action: Selector("otherFunctions:"), forControlEvents: .TouchUpInside)
+
             return epCell
         }
     }
@@ -182,15 +184,17 @@ class HomeFeedController: UITableViewController {
         guard let idx = tableView.indexPathForCell(sender as! UITableViewCell) else {return}
         if segue.identifier == "showUserProfile" {
             
-            //TODO: how to and when to put userinfo in the feed?????
+            let options : [String : AnyObject?] = [
+                UserProfileKeys.UserID : feeds[idx.section].userId,
+                UserProfileKeys.Username : feeds[idx.section].username,
+                UserProfileKeys.Name : "Profile Name",
+                UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
+                UserProfileKeys.Weblink : "www.facebook.com",
+                //UserProfileKeys.UserID : feeds[idx.section].userId
+            ]
+            let profileVC = segue.destinationViewController as! ProfileViewController
+            profileVC.options = options
             
-            ProfileViewController.Options.followText = "Following"
-            ProfileViewController.Options.hideFollowing = false
-            ProfileViewController.Options.username = feeds[idx.section].username
-            ProfileViewController.Options.userId = feeds[idx.section].userId
-            ProfileViewController.Options.profileName = "Profile Name"
-            
-            //vc.tableView.reloadData()
         } else if segue.identifier == "openPlayer" {
             let playVC = segue.destinationViewController as! PlaySoundViewController
             let episode = feeds[idx.section].episodes[idx.row - 1] ///// first row is user cell
@@ -201,11 +205,38 @@ class HomeFeedController: UITableViewController {
             playVC.episode = episode
             SectionAudioPlayer.sharedInstance.play()
             
-            //TODO: set title should be in  sectionaudio player   nsnotification
-            //(tabBarController as? CustomTabBarController)?.audioTitleButton.setTitle(episode.episodeTitle, forState: .Normal)
         }
     }
     
+    
+    func otherFunctions(sender: AnyObject) {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        let shareAct = UIAlertAction(title: "Share...", style: .Default) { (action) in
+            
+        }
+        alertController.addAction(shareAct)
+        
+        let laterAct = UIAlertAction(title: "Add to Play Later", style: .Default) { (action) in
+            
+        }
+        alertController.addAction(laterAct)
+        laterAct.enabled = false
+        let listAct = UIAlertAction(title: "Add to playlist", style: .Default) { (action) in
+            
+        }
+        alertController.addAction(listAct)
+        
+        let reportAct = UIAlertAction(title: "Report", style: .Destructive) { (action) in
+            
+        }
+        alertController.addAction(reportAct)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
 }
 
 

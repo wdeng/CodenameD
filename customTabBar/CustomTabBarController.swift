@@ -131,7 +131,18 @@ class CustomTabBarController: UITabBarController {
                 let i = NSIndexPath(forRow: 0, inSection: 0)
                 vc.tableView.scrollToRowAtIndexPath(i, atScrollPosition: .Top, animated: true)
             }
-        } else if let _ = viewControllers![button.tag] as? ProfileViewController {
+        } else if let vc = viewControllers![button.tag] as? ProfileViewController {
+            
+            let options : [String : AnyObject?] = [
+                UserProfileKeys.UserID : PFUser.currentUser()?.objectId,
+                UserProfileKeys.Username : PFUser.currentUser()?.username,
+                //UserProfileKeys.Name : "Profile Name",
+                UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
+                UserProfileKeys.Weblink : "www.facebook.com",
+                //UserProfileKeys.UserID : feeds[idx.section].userId
+            ]
+            vc.options = options
+            
             // TODO: put into a function for init user data
             ProfileViewController.Options.followText = "Follow"
             ProfileViewController.Options.hideFollowing = true

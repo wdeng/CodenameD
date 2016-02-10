@@ -40,9 +40,7 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
             vc.itemIndex = index
             //vc.images = []
             AppUtils.switchOnActivityIndicator(vc.activityIndicator, forView: vc.tableView, ignoreUser:  false)
-            print("initing")
             ParseActions.fetchImages(episode.imageSets[index]) { (imagesData) -> Void in
-                
                 if let images = imagesData as? [UIImage] {
                     vc.images = images
                 } else if let datas = imagesData as? [NSData] {

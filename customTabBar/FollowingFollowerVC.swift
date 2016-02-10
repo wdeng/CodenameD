@@ -47,6 +47,7 @@ class FollowingFollowerVC: UITableViewController {
         return cell
     }
     
+    //TODO: remove all the following tag
     func followUnfollow(b: UIButton) {
         let id = userids[b.tag]
         let username = usernames[b.tag]
@@ -59,7 +60,6 @@ class FollowingFollowerVC: UITableViewController {
     }
     
     
-    //TODO: add prepare for segue for this
     
     
     

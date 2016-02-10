@@ -25,10 +25,11 @@ class EpisodeCell: UITableViewCell {
         super.awakeFromNib()
         episodeThumb.contentMode = .ScaleAspectFill
         episodeThumb.clipsToBounds = true
-        playLater.contentMode = .ScaleAspectFill
-        playLater.clipsToBounds = true
-        save.contentMode = .ScaleAspectFit
-        otherOptions.contentMode = .ScaleAspectFit
+        
+        playLater.imageView?.contentMode = .ScaleAspectFit
+        save.imageView?.contentMode = .ScaleAspectFit
+        
+        otherOptions.imageView?.contentMode = .ScaleAspectFit
         
         self.separatorInset = UIEdgeInsets(top: 0, left: bounds.width, bottom: 0, right: 0)
         

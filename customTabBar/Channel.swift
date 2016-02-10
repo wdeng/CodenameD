@@ -9,8 +9,21 @@ import UIKit
 
 // NOTE: - The Person class now extends NSObject, and conforms to NSCoding
 
+struct UserProfileKeys {
+    static let Name = "ProfileName"
+    static let Username = "Username"
+    static let FollowerNum = "FollowerNum"
+    static let FollowingNum = "FollowingNum"
+    static let IsFollowing = "IsFollowing"
+    static let ProfilePhoto = "ProfilePhoto"
+    static let Intro = "Intro"
+    static let Weblink = "Weblink"
+    static let IsCurrentUser = "IsCurrentUser"
+    static let UserID = "UserID"
+}
+
 class Channel : NSObject, NSCoding {
- 
+    
     struct Keys {
         static let Name = "name"
         static let ProfilePath = "profile_path" //// optional profile image

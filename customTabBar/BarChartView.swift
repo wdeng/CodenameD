@@ -18,8 +18,6 @@ class BarChartView: UIView {
     }
     */
     
-    // TODO: sound wave doesn't seems right
-    
     //init setttings
     struct Settings {
         static let Round            = "barchart_round_corner"

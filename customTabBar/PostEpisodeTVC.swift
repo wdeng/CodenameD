@@ -120,20 +120,14 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
                 return
             }
             
+            // Need to change updatedAt
+            for i in 0 ..< objects!.count {
+                objects![i]["type"] = "following"
+            }
+            
             // TODO: change into only use save() to change updatedAt remove postUpdatedAt
             PFObject.saveAllInBackground(objects)
             self.self.dismissViewControllerAnimated(true, completion: nil)
-            //guard let followers = objects else {return}
-            
-            
-//            for u in followers {
-//                u["postUpdatedAt"] = d
-//                u.saveInBackgroundWithBlock{(success, error) -> Void in
-//                    if success{
-//                        //self.dismissViewControllerAnimated(true, completion: nil)
-//                    }
-//                }
-//            }
         }
     }
     

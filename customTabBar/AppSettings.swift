@@ -61,6 +61,27 @@ enum PlayingSpeed: Float {
     case x200 = 2.0
 }
 
+class NumUtils: NSObject {
+    class func abbreviateNum(num: Int?) -> String {
+        guard let num = num else {return ""}
+        guard let n = Double(String(format: "%.3g", Double(num))) else {return ""}
+        let digitNum = floor(log10(n))
+        
+        if num <= 0 {
+            return "0"
+        } else if digitNum < 4 {
+            return "\(num)"
+        } else if digitNum < 6 {
+            return String(format: "%.3gk", n/pow(10.0, 3))
+        } else if digitNum < 9 {
+            return String(format: "%.3gm", n/pow(10.0, 6))
+        } else {
+            let outputNum = Int(Double(num)/pow(10.0,6))
+            return "\(outputNum)m"
+        }
+    }
+}
+
 class ImageUtils: NSObject {
     
     class func getFillSize(image: UIImage, targetSize: CGSize) -> CGSize {

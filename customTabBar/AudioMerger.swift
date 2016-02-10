@@ -30,7 +30,7 @@ class AudioMerger: NSObject {
     
     //TODO: This should be changed to dynamic in recording scene                       will need a placeholder image if no image
     private func getImageSetions(items: [AnyObject]) {
-        
+        //TODO: unexpectedly nil optional
         var currentSecionIndex = 0
         for i in 0 ..< items.count {
             if let item = items[i] as? AddedImageSet {

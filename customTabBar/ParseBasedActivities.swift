@@ -20,6 +20,23 @@ enum ActivityType {
 class ParseActions: NSObject {
     //func signUpLogin(isSignUp: Bool, withUsername username: String, andPassword password: String) {}
     
+    class func loadEpisode(inout episode: EpisodeToPlay, finished: () -> Void) {
+        let query = PFQuery(className: "Episode")
+        query.whereKey("objectId", equalTo: episode.episodeId!)
+        query.getFirstObjectInBackgroundWithBlock{(post, error) in
+            
+            if error != nil {
+                print("couldn't fetch episode")
+                return
+            }
+            if let post = post {
+                episode.imageSets = (post["images"] as? [[AnyObject]]) ?? []
+                episode.thumb = post["thumb"]
+            }
+            finished()
+        }
+    }
+    
     class func fetchImages(names: [AnyObject], finished: ([AnyObject]) -> Void) {
         var imagesData: [NSData] = []
         
@@ -49,19 +66,19 @@ class ParseActions: NSObject {
     }
     
     // Find followers, following, comments, and likes
-    class func fetchActivities(type: ActivityType, finished:([PFObject]) -> Void ) {
+    class func fetchActivities(type: ActivityType, forUserID userID: String, finished:([PFObject]) -> Void ) {
         let query = PFQuery(className: "Activities")
         switch type {
         case .Followers:
             query.whereKey("type", equalTo: "following")
-            query.whereKey("toUser", equalTo: PFUser.currentUser()!.objectId!)
+            query.whereKey("toUser", equalTo: userID)
         case .Following:
             query.whereKey("type", equalTo: "following")
-            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+            query.whereKey("fromUser", equalTo: userID)
         default:
             return
         }
-        query.limit = 100
+        query.limit = 200
         
         query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
             if error != nil {
@@ -133,7 +150,7 @@ class ParseActions: NSObject {
         default:
             return
         }
-        query.limit = 1000
+        //query.limit = 1000
         query.countObjectsInBackgroundWithBlock { (count, error) -> Void in
             if error != nil {
                 print("couldn't fetch Activities")
@@ -163,7 +180,7 @@ class ParseActions: NSObject {
                 }
             })
             
-        } else {
+        } else if b.titleLabel?.text == "Follow" {
             b.setTitle("Following", forState: .Normal)
             
             let following = PFObject(className: "Activities")
@@ -173,55 +190,8 @@ class ParseActions: NSObject {
             following["toUser"] = id
             following["toUsername"] = username
             
-            //TODO: change to NSDate
-            //following["postUpdatedAt"] = nil
             following.saveInBackground()
         }
-    }
-    
-    
-    
-    
-    // Down below are recycled
-    
-    func tmp() {
-        //photoCountLabel.text = "0 photos"
-        
-        let queryPhotoCount = PFQuery(className: "Photo")
-        queryPhotoCount.whereKey("user", equalTo: PFUser.currentUser()!.objectId!)
-        queryPhotoCount.cachePolicy = PFCachePolicy.CacheThenNetwork
-        queryPhotoCount.countObjectsInBackgroundWithBlock { (number, error) in
-        if error == nil {
-        //let appendS = (number == 1) ? "" : "s"
-        //photoCountLabel.text = "\(number) photo\(appendS)"
-        //PAPCache.sharedCache.setPhotoCount(Int(number), user: self.user!)
-        }
-        }
-        
-        
-        
-        
-        
-        
-        
-        let query = PFQuery(className: "Activities")
-        query.whereKey("photo", equalTo: PFObject())//self.photo!)   //PFObject
-        query.includeKey("fromUser")
-        query.whereKey("type", equalTo: "comment")
-        query.orderByAscending("createdAt")
-            
-            
-            
-        // PFUser query
-            
-        let queryA = PFUser.query()
-        let queryB = PFQuery(className: "Activities")
-        
-        queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-        queryB.whereKey("type", equalTo: "following")
-        queryA!.whereKey("objectId", doesNotMatchKey: "toUser", inQuery: queryB)
-    
-    
     }
     
     
@@ -238,8 +208,6 @@ class ParseActions: NSObject {
                 }
             }
         }
-        //TODO: cache thing sometime in the future
-        //PAPCache.sharedCache.setFollowStatus(false, user: user)
     }
     
     

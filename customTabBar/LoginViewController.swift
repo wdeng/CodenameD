@@ -9,6 +9,9 @@
 import UIKit
 import Parse
 
+//TODO: check if works even when this is not the first screeen
+var currentUserID = PFUser.currentUser()?.objectId
+
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var login_signupLabel: UILabel!
@@ -73,12 +76,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             user.password = password.text
             
             user.signUpInBackgroundWithBlock({ (success, error) -> Void in
-                
+                currentUserID = PFUser.currentUser()?.objectId
                 self.activityIndicator.stopAnimating()
                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
                 
                 if error == nil {
                     // Signed up
+                    
                     self.performSegueWithIdentifier("login", sender: self)
                     // TODO: could go back to
                 } else {
@@ -95,6 +99,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
                 if user != nil {
                     //Logged in
+                    currentUserID = PFUser.currentUser()?.objectId
                     self.performSegueWithIdentifier("login", sender: self)
                     //TODO: go to front page
                 } else {

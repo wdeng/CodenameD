@@ -38,9 +38,7 @@ class EpisodeToPlay: NSObject, NSCoding {
             archiver.encodeObject(imageSets, forKey: Keys.imsets)
         }
         else {
-            print("hello")
             archiver.encodeObject(episodeId, forKey: Keys.id)
-            print("from other side")
         }
         
     }
@@ -87,6 +85,39 @@ class HomeFeedFromParse: NSObject {
 //        super.init()
 //        
 //    }
+    
+    class func fetchProfilePosts(forUserID userId: String, skip: Int, size: Int = HomeFeedsSettings.sectionsInPage, finished:([EpisodeToPlay]) -> Void ) {
+        
+        var feeds = [EpisodeToPlay]()
+        
+        let q = PFQuery(className: "Episode")
+        q.whereKey("userId", equalTo: userId)
+        q.orderByDescending("updatedAt")
+        q.limit = HomeFeedsSettings.itemsInSection
+        q.findObjectsInBackgroundWithBlock{ (posts, error) in
+            if error != nil {
+                print("couldn't fetch episodes")
+                return
+            }
+            
+            for p in posts! {
+                let e = EpisodeToPlay()
+                if let urlString = (p["audio"] as? PFFile)?.url {
+                    e.episodeURL = NSURL(string: urlString)
+                }
+                e.episodeTitle = p["title"] as? String
+                e.thumb = p["thumb"]
+                e.imageSets = (p["images"] as? [[AnyObject]]) ?? []
+                e.sectionDurations = (p["durations"] as? [Double]) ?? []
+                e.episodeId = p.objectId
+                
+                feeds.append(e)
+            }
+            
+            finished(feeds)
+        }
+        
+    }
     
     
     
@@ -145,7 +176,7 @@ class HomeFeedFromParse: NSObject {
                         //print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
                         ch.episodes.append(e)
                     }
-                     // shouldn't only be like this, doesn't load this one when all feeds loaded, us is []
+                    // shouldn't only be like this, doesn't load this one when all feeds loaded, us is []
                     if (++counter) == us.count {
                         finished(feeds)
                     }
@@ -155,10 +186,6 @@ class HomeFeedFromParse: NSObject {
         }
         
     }
-    
-    
-    
-    
     
     
 }

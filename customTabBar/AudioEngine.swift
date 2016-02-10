@@ -10,7 +10,6 @@ import UIKit
 import AVFoundation
 
 
-// TODO: should be an extension, or a NSObject
 class SoundPlayer: NSObject {
     var audioPlayer: AVAudioPlayer!
 }

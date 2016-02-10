@@ -28,8 +28,6 @@
 		761D03391C171DAF00BF37A2 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03371C171DAF00BF37A2 /* Channel.swift */; };
 		761D033B1C1723E200BF37A2 /* PlayLaterItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */; };
 		7626AD6F1C49382600685B67 /* PlaySoundVC+Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7626AD6E1C49382600685B67 /* PlaySoundVC+Page.swift */; };
-		7626AD711C4969C100685B67 /* CurrentUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7626AD701C4969C100685B67 /* CurrentUserProfileVC.swift */; };
-		7626AD731C496AF800685B67 /* OtherUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7626AD721C496AF800685B67 /* OtherUserProfileVC.swift */; };
 		7647BC5D1C1B95AD0092E96D /* TabBarPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */; };
 		764C43041C156F68009F29E8 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764C43031C156F68009F29E8 /* CustomTabBarController.swift */; };
 		764C430A1C16B7C7009F29E8 /* mkbhd.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 764C43091C16B7C7009F29E8 /* mkbhd.jpg */; };
@@ -53,6 +51,8 @@
 		766E978A1C2934990012EDA9 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97841C2934980012EDA9 /* BarChartView.swift */; };
 		766E978F1C2AFC570012EDA9 /* NotifViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E978E1C2AFC570012EDA9 /* NotifViewController.swift */; };
 		767659F91C5600D20078CFF4 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659F81C5600D20078CFF4 /* EditProfileController.swift */; };
+		767659FD1C62B0F50078CFF4 /* CustomHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659FC1C62B0F50078CFF4 /* CustomHeaderView.swift */; };
+		767659FF1C62C7190078CFF4 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659FE1C62C7190078CFF4 /* ProfileHeaderView.swift */; };
 		7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7687069B1C1563AB00D1A457 /* AppDelegate.swift */; };
 		768706A11C1563AB00D1A457 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7687069F1C1563AB00D1A457 /* Main.storyboard */; };
 		768706A31C1563AB00D1A457 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 768706A21C1563AB00D1A457 /* Assets.xcassets */; };
@@ -90,8 +90,6 @@
 		761D03371C171DAF00BF37A2 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayLaterItems.swift; sourceTree = "<group>"; };
 		7626AD6E1C49382600685B67 /* PlaySoundVC+Page.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PlaySoundVC+Page.swift"; sourceTree = "<group>"; };
-		7626AD701C4969C100685B67 /* CurrentUserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentUserProfileVC.swift; sourceTree = "<group>"; };
-		7626AD721C496AF800685B67 /* OtherUserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherUserProfileVC.swift; sourceTree = "<group>"; };
 		7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarPlayButton.swift; sourceTree = "<group>"; };
 		764C43031C156F68009F29E8 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		764C43091C16B7C7009F29E8 /* mkbhd.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mkbhd.jpg; sourceTree = "<group>"; };
@@ -115,6 +113,8 @@
 		766E97841C2934980012EDA9 /* BarChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		766E978E1C2AFC570012EDA9 /* NotifViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifViewController.swift; sourceTree = "<group>"; };
 		767659F81C5600D20078CFF4 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
+		767659FC1C62B0F50078CFF4 /* CustomHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomHeaderView.swift; sourceTree = "<group>"; };
+		767659FE1C62C7190078CFF4 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 		768706981C1563AB00D1A457 /* customTabBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = customTabBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7687069B1C1563AB00D1A457 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		768706A01C1563AB00D1A457 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -186,8 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				76017D7C1C1E17F800E9693B /* ProfileViewController.swift */,
-				7626AD701C4969C100685B67 /* CurrentUserProfileVC.swift */,
-				7626AD721C496AF800685B67 /* OtherUserProfileVC.swift */,
+				767659FE1C62C7190078CFF4 /* ProfileHeaderView.swift */,
 				767659F81C5600D20078CFF4 /* EditProfileController.swift */,
 				76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */,
 				76F717581C1E3F4C00B79AC1 /* FollowCell.swift */,
@@ -200,10 +199,10 @@
 			isa = PBXGroup;
 			children = (
 				761D03341C171D8100BF37A2 /* Cache.swift */,
+				761D03371C171DAF00BF37A2 /* Channel.swift */,
 				761D03361C171DAF00BF37A2 /* Episode.swift */,
 				76DEA0811C2C8D9B00207DF9 /* EpisodeInParse.swift */,
 				76F717681C211B2800B79AC1 /* ParseBasedActivities.swift */,
-				761D03371C171DAF00BF37A2 /* Channel.swift */,
 				761D033A1C1723E200BF37A2 /* PlayLaterItems.swift */,
 			);
 			name = Model;
@@ -244,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				766E978E1C2AFC570012EDA9 /* NotifViewController.swift */,
+				767659FC1C62B0F50078CFF4 /* CustomHeaderView.swift */,
 			);
 			name = Notifications;
 			sourceTree = "<group>";
@@ -439,11 +439,11 @@
 				76F717691C211B2800B79AC1 /* ParseBasedActivities.swift in Sources */,
 				766E977C1C2934640012EDA9 /* ImageTableContentController.swift in Sources */,
 				76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */,
+				767659FD1C62B0F50078CFF4 /* CustomHeaderView.swift in Sources */,
 				766E977A1C2934640012EDA9 /* SectionAudioPlayer.swift in Sources */,
 				7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */,
 				761D03381C171DAF00BF37A2 /* Episode.swift in Sources */,
-				7626AD731C496AF800685B67 /* OtherUserProfileVC.swift in Sources */,
-				7626AD711C4969C100685B67 /* CurrentUserProfileVC.swift in Sources */,
+				767659FF1C62C7190078CFF4 /* ProfileHeaderView.swift in Sources */,
 				76F7175D1C1F228500B79AC1 /* AppSettings.swift in Sources */,
 				766E97861C2934990012EDA9 /* RecordSoundVC+Edit.swift in Sources */,
 				76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */,

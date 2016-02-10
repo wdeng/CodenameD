@@ -11,8 +11,7 @@ import AVFoundation
 import Parse
 
 struct PlayerInfo {
-    static var playerSpeed: Float = 1.0
-    
+    static var playSpeed: Float = 1.0
 }
 
 public class SectionAudioPlayer: NSObject {
@@ -20,7 +19,6 @@ public class SectionAudioPlayer: NSObject {
     private var player: AVPlayer?
     private var periodicTimeObserver: AnyObject?
     
-    //TODO: how to do this
     var currentEpisode: EpisodeToPlay?
     var currentSpeed: Float?
     var currentDuration: Double? {
@@ -64,18 +62,28 @@ public class SectionAudioPlayer: NSObject {
                 self.playerIsSeekingTime = false
                 NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": newValue!])
             }
-            
-            //timeScale = self.player.currentItem.asset.duration.timescale;
-            //CMTime time = CMTimeMakeWithSeconds(77.000000, timeScale);
-            //[self.player seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         }
     }
     
     override init() {
         super.init()
         if let data = NSUserDefaults.standardUserDefaults().objectForKey(PlaySoundSetting.currentEpisodeKey) as? NSData {
-            let episode = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? EpisodeToPlay
-            
+            if var episode = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? EpisodeToPlay {
+                
+                ParseActions.loadEpisode(&episode) {
+                    self.currentEpisode = episode
+                    self.setPlayerItemWithURL(episode.episodeURL)
+                    
+                    if let time: Double = NSUserDefaults.standardUserDefaults().doubleForKey(PlaySoundSetting.currentEpisodeTime) {
+                        //NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": time])
+                        self.player?.seekToTime(CMTime(seconds: time, preferredTimescale: 1000))
+                        //self.playerIsSeekingTime = false
+                    }
+                }
+                
+                //currentTime = NSUserDefaults.standardUserDefaults().doubleForKey(PlaySoundSetting.currentEpisodeTime)
+                //TODO: set up the Downloaded episode
+            }
         }
     }
     
@@ -114,7 +122,7 @@ public class SectionAudioPlayer: NSObject {
             if periodicTimeObserver == nil {
                 periodicTimeObserver = player!.addPeriodicTimeObserverForInterval(CMTime(seconds: 0.1, preferredTimescale: 10), queue: nil, usingBlock: {(time) in
                     if !self.playerIsSeekingTime {
-                    NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": time.seconds])
+                        NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": time.seconds])
                     }
                 })
             }
@@ -133,7 +141,6 @@ public class SectionAudioPlayer: NSObject {
     
     override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if (keyPath == "rate") && (player != nil) {
-            //print("player rate: \(player!.rate)")
             
             NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerRateChanged", object: nil, userInfo: ["rate": player!.rate])
             
@@ -157,11 +164,11 @@ public class SectionAudioPlayer: NSObject {
     
     func setPlaySpeed(targetSpeed: PlayingSpeed) {
         player?.rate = targetSpeed.rawValue
+        PlayerInfo.playSpeed = targetSpeed.rawValue
     }
     
     func play() {
-        //TODO: may set rate to what was remembered from last play
-        player?.play()
+        player?.rate = PlayerInfo.playSpeed
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
