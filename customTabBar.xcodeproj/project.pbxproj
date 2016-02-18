@@ -22,7 +22,9 @@
 		76017D771C1CD4A000E9693B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D761C1CD4A000E9693B /* libsqlite3.tbd */; };
 		76017D7B1C1E12D800E9693B /* ChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7A1C1E12D800E9693B /* ChannelViewController.swift */; };
 		76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7C1C1E17F800E9693B /* ProfileViewController.swift */; };
-		76017D801C1E19BD00E9693B /* FollowingFollowerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */; };
+		76017D801C1E19BD00E9693B /* FollowingFollowerTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7F1C1E19BD00E9693B /* FollowingFollowerTVC.swift */; };
+		761984C71C6F96680004D3AC /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659F81C5600D20078CFF4 /* EditProfileController.swift */; };
+		761984C91C7175A20004D3AC /* SearchResultTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761984C81C7175A20004D3AC /* SearchResultTVC.swift */; };
 		761D03351C171D8100BF37A2 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03341C171D8100BF37A2 /* Cache.swift */; };
 		761D03381C171DAF00BF37A2 /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03361C171DAF00BF37A2 /* Episode.swift */; };
 		761D03391C171DAF00BF37A2 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03371C171DAF00BF37A2 /* Channel.swift */; };
@@ -50,7 +52,6 @@
 		766E97891C2934990012EDA9 /* RecordedSoundCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97831C2934980012EDA9 /* RecordedSoundCell.swift */; };
 		766E978A1C2934990012EDA9 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97841C2934980012EDA9 /* BarChartView.swift */; };
 		766E978F1C2AFC570012EDA9 /* NotifViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E978E1C2AFC570012EDA9 /* NotifViewController.swift */; };
-		767659F91C5600D20078CFF4 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659F81C5600D20078CFF4 /* EditProfileController.swift */; };
 		767659FD1C62B0F50078CFF4 /* CustomHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659FC1C62B0F50078CFF4 /* CustomHeaderView.swift */; };
 		767659FF1C62C7190078CFF4 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659FE1C62C7190078CFF4 /* ProfileHeaderView.swift */; };
 		7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7687069B1C1563AB00D1A457 /* AppDelegate.swift */; };
@@ -59,6 +60,7 @@
 		768706A61C1563AB00D1A457 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 768706A41C1563AB00D1A457 /* LaunchScreen.storyboard */; };
 		769A262F1C16D748007A2EDA /* HomeFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769A262E1C16D748007A2EDA /* HomeFeedController.swift */; };
 		76DEA0821C2C8D9B00207DF9 /* EpisodeInParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DEA0811C2C8D9B00207DF9 /* EpisodeInParse.swift */; };
+		76F370961C719A1800D92C95 /* DiscoverTVC+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F370951C719A1800D92C95 /* DiscoverTVC+Search.swift */; };
 		76F717571C1E376400B79AC1 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717561C1E376400B79AC1 /* CustomTabBar.swift */; };
 		76F717591C1E3F4C00B79AC1 /* FollowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F717581C1E3F4C00B79AC1 /* FollowCell.swift */; };
 		76F7175D1C1F228500B79AC1 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F7175C1C1F228500B79AC1 /* AppSettings.swift */; };
@@ -84,7 +86,8 @@
 		76017D761C1CD4A000E9693B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		76017D7A1C1E12D800E9693B /* ChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewController.swift; sourceTree = "<group>"; };
 		76017D7C1C1E17F800E9693B /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingFollowerVC.swift; sourceTree = "<group>"; };
+		76017D7F1C1E19BD00E9693B /* FollowingFollowerTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingFollowerTVC.swift; sourceTree = "<group>"; };
+		761984C81C7175A20004D3AC /* SearchResultTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultTVC.swift; sourceTree = "<group>"; };
 		761D03341C171D8100BF37A2 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		761D03361C171DAF00BF37A2 /* Episode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		761D03371C171DAF00BF37A2 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
@@ -123,6 +126,7 @@
 		768706A71C1563AB00D1A457 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		769A262E1C16D748007A2EDA /* HomeFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeFeedController.swift; sourceTree = "<group>"; };
 		76DEA0811C2C8D9B00207DF9 /* EpisodeInParse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeInParse.swift; sourceTree = "<group>"; };
+		76F370951C719A1800D92C95 /* DiscoverTVC+Search.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiscoverTVC+Search.swift"; sourceTree = "<group>"; };
 		76F717561C1E376400B79AC1 /* CustomTabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		76F717581C1E3F4C00B79AC1 /* FollowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowCell.swift; sourceTree = "<group>"; };
 		76F7175C1C1F228500B79AC1 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
@@ -188,7 +192,7 @@
 				76017D7C1C1E17F800E9693B /* ProfileViewController.swift */,
 				767659FE1C62C7190078CFF4 /* ProfileHeaderView.swift */,
 				767659F81C5600D20078CFF4 /* EditProfileController.swift */,
-				76017D7F1C1E19BD00E9693B /* FollowingFollowerVC.swift */,
+				76017D7F1C1E19BD00E9693B /* FollowingFollowerTVC.swift */,
 				76F717581C1E3F4C00B79AC1 /* FollowCell.swift */,
 				76017D7A1C1E12D800E9693B /* ChannelViewController.swift */,
 			);
@@ -318,6 +322,8 @@
 			isa = PBXGroup;
 			children = (
 				76F717651C20F2DA00B79AC1 /* DiscoverViewController.swift */,
+				76F370951C719A1800D92C95 /* DiscoverTVC+Search.swift */,
+				761984C81C7175A20004D3AC /* SearchResultTVC.swift */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -430,8 +436,8 @@
 				761D03391C171DAF00BF37A2 /* Channel.swift in Sources */,
 				766E977D1C2934640012EDA9 /* ImageTableContentCell.swift in Sources */,
 				766E97771C2934640012EDA9 /* PostEpisodeTVC.swift in Sources */,
-				76017D801C1E19BD00E9693B /* FollowingFollowerVC.swift in Sources */,
-				767659F91C5600D20078CFF4 /* EditProfileController.swift in Sources */,
+				76017D801C1E19BD00E9693B /* FollowingFollowerTVC.swift in Sources */,
+				761984C71C6F96680004D3AC /* EditProfileController.swift in Sources */,
 				7647BC5D1C1B95AD0092E96D /* TabBarPlayButton.swift in Sources */,
 				766E97881C2934990012EDA9 /* SelectedPhotoCell.swift in Sources */,
 				76F717591C1E3F4C00B79AC1 /* FollowCell.swift in Sources */,
@@ -440,12 +446,14 @@
 				766E977C1C2934640012EDA9 /* ImageTableContentController.swift in Sources */,
 				76F8FC501C16E053009B7E81 /* EpisodeCell.swift in Sources */,
 				767659FD1C62B0F50078CFF4 /* CustomHeaderView.swift in Sources */,
+				76F370961C719A1800D92C95 /* DiscoverTVC+Search.swift in Sources */,
 				766E977A1C2934640012EDA9 /* SectionAudioPlayer.swift in Sources */,
 				7687069C1C1563AB00D1A457 /* AppDelegate.swift in Sources */,
 				761D03381C171DAF00BF37A2 /* Episode.swift in Sources */,
 				767659FF1C62C7190078CFF4 /* ProfileHeaderView.swift in Sources */,
 				76F7175D1C1F228500B79AC1 /* AppSettings.swift in Sources */,
 				766E97861C2934990012EDA9 /* RecordSoundVC+Edit.swift in Sources */,
+				761984C91C7175A20004D3AC /* SearchResultTVC.swift in Sources */,
 				76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */,
 				76F717661C20F2DA00B79AC1 /* DiscoverViewController.swift in Sources */,
 				76017D7B1C1E12D800E9693B /* ChannelViewController.swift in Sources */,

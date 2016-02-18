@@ -31,10 +31,14 @@ class AudioMerger: NSObject {
     //TODO: This should be changed to dynamic in recording scene                       will need a placeholder image if no image
     private func getImageSetions(items: [AnyObject]) {
         //TODO: unexpectedly nil optional
+        print(items)
         var currentSecionIndex = 0
         for i in 0 ..< items.count {
             if let item = items[i] as? AddedImageSet {
-                if audios.last?.itemIndex == imageSets.last!.itemIndex { /// this also solves the first item as audio
+                if i == 0 {
+                    imageSets.append(AddedImageSet())
+                }
+                else if audios.last?.itemIndex == imageSets.last!.itemIndex { /// this also solves the first item as audio
                     currentSecionIndex++
                     imageSets.append(AddedImageSet())
                 }
@@ -48,7 +52,7 @@ class AudioMerger: NSObject {
             }
             else
             {
-                print("something else added in recordedBundle")
+                debugPrint("something else added in recordedBundle")
             }
         }
         
@@ -67,13 +71,14 @@ class AudioMerger: NSObject {
     init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
         super.init()
         
-        if imageSets.count == 0 {
-            if let d = (items.first as? RecordedAudio) {
-                episode.sectionDurations.append(d.duration)
-                episode.episodeURL = d.filePathURL
-                return
-            }
-        }
+//        if imageSets.count == 0 {
+//            if let d = (items.first as? RecordedAudio) {
+//                episode.sectionDurations.append(d.duration)
+//                episode.episodeURL = d.filePathURL
+//                return
+//            }
+//        }
+        
         getImageSetions(items)
         for i in imageSets {
             episode.sectionDurations.append(i.sectionDuration)

@@ -20,6 +20,7 @@ struct UserProfileKeys {
     static let Weblink = "Weblink"
     static let IsCurrentUser = "IsCurrentUser"
     static let UserID = "UserID"
+    static let ShouldHideNavOfTabBar = "ShouldHideNavOfTabBar"
 }
 
 class Channel : NSObject, NSCoding {

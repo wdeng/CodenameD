@@ -77,7 +77,6 @@ public class SectionAudioPlayer: NSObject {
                     if let time: Double = NSUserDefaults.standardUserDefaults().doubleForKey(PlaySoundSetting.currentEpisodeTime) {
                         //NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": time])
                         self.player?.seekToTime(CMTime(seconds: time, preferredTimescale: 1000))
-                        //self.playerIsSeekingTime = false
                     }
                 }
                 

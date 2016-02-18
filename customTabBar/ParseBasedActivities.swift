@@ -138,15 +138,17 @@ class ParseActions: NSObject {
         }
         
     }
-    class func fetchFollowingFollowerNumber(type: ActivityType, finished:(Int) -> Void ) {
+    
+    class func fetchFollowingFollowerNumber(forUserID userId: String?, type: ActivityType, finished:(Int) -> Void ) {
         let query = PFQuery(className: "Activities")
+        guard let userId = userId else { return }
         switch type {
         case .Followers:
             query.whereKey("type", equalTo: "following")
-            query.whereKey("toUser", equalTo: PFUser.currentUser()!.objectId!)
+            query.whereKey("toUser", equalTo: userId)
         case .Following:
             query.whereKey("type", equalTo: "following")
-            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+            query.whereKey("fromUser", equalTo: userId)
         default:
             return
         }

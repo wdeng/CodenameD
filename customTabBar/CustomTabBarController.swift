@@ -139,16 +139,9 @@ class CustomTabBarController: UITabBarController {
                 //UserProfileKeys.Name : "Profile Name",
                 UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
                 UserProfileKeys.Weblink : "www.facebook.com",
-                //UserProfileKeys.UserID : feeds[idx.section].userId
+                UserProfileKeys.ShouldHideNavOfTabBar : false
             ]
             vc.options = options
-            
-            // TODO: put into a function for init user data
-            ProfileViewController.Options.followText = "Follow"
-            ProfileViewController.Options.hideFollowing = true
-            ProfileViewController.Options.username = PFUser.currentUser()?.username
-            ProfileViewController.Options.userId = PFUser.currentUser()?.objectId
-            ProfileViewController.Options.profileName = "Profile Name"
         }
         
         selectedIndex = button.tag

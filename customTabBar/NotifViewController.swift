@@ -24,7 +24,8 @@ class NotifViewController: UITableViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         //sizeHeaderToFit()
-        print("viewwilllayout")
+        //print("viewwilllayout")
+        
     }
     
     func sizeHeaderToFit() {

@@ -9,19 +9,11 @@
 import UIKit
 import Parse
 
-class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
+class DiscoverViewController: UITableViewController, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, SearchResultsDelegate {
     
-    var searchedData = ["One","Two","Three","Twenty-One"]
-    var filteredTableData = [String]()
-    var searchingString: String! = ""
-    
-    var usernames = [String]()
-    var userids = [String]()
-    var isFollowing = [String: Bool]()
-    let searchBar = UISearchBar()
+    //var searchedData = ["One","Two","Three","Twenty-One"]
+    var fetchedUsers = [PFUser]()
     var searchController: UISearchController!
-    weak var tmpViewToStoreNav: UIView?
-    var tmpItem: [UIBarButtonItem]?
     
     //var leftBarButton: UIBarButtonItem!
     
@@ -32,113 +24,86 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         
         // TODO: custom search controller with segment controls
         searchController = {
-            let controller = UISearchController(searchResultsController: nil)
+            let searchResultsController = storyboard!.instantiateViewControllerWithIdentifier("SearchResultTVCIdentifier") as! SearchResultTVC
+            let controller = UISearchController(searchResultsController: searchResultsController)
+            searchResultsController.delegate = self
+            
             controller.searchResultsUpdater = self
+            controller.delegate = self;
+            controller.searchResultsUpdater = self
+            controller.searchBar.delegate = self
+            
+            controller.searchBar.autocorrectionType = .No
+            controller.searchBar.autocapitalizationType = .None
+            controller.searchBar.spellCheckingType = .No
+            //controller.searchBar.searchBarStyle = .Minimal
+            
             controller.hidesNavigationBarDuringPresentation = false
             controller.dimsBackgroundDuringPresentation = false
             controller.searchBar.placeholder = "Search"
-            controller.searchBar.sizeToFit()
+            //controller.searchBar.sizeToFit()
             
             return controller}()
         
+        self.definesPresentationContext = true    //// WHY??
         
-        
+        navigationItem.titleView = searchController.searchBar
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        tmpViewToStoreNav = tabBarController?.navigationItem.titleView
-        tmpItem = tabBarController?.navigationItem.rightBarButtonItems
-        
-        tabBarController?.navigationItem.titleView = searchController.searchBar
-        tabBarController?.navigationItem.rightBarButtonItems = []
-        
-        
-        
+        tabBarController?.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        // set it back
-        tabBarController?.navigationItem.titleView = tmpViewToStoreNav
-        if tmpItem?.count > 0 {
-            tabBarController?.navigationItem.rightBarButtonItems?.insert(tmpItem![0], atIndex: 0)
-        }
-        //if tabBarController?.navigationItem.rightBarButtonItems?.count > 0 {/*don't insert current*/}
-        tmpItem = nil
+        tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
     }
-    
-    func fetchSearchData() {
-        //Parse
-        //searchedData.removeAll()  //TODO: put to search bar did become first responder
-        guard let query = PFUser.query() else {return}
-        query.whereKey("username", containsString: searchingString)
-        query.limit = 100
-        query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-            if error != nil {
-                print("couldn't search")
-                return
-            }
-            
-            guard let users = objects else {return}
-            for object in users {
-                guard let u = object as? PFUser else {return}
-                if u.objectId! == PFUser.currentUser()?.objectId {continue}
-                self.searchedData.append(u.username!)
-            }
-        }
-    }
-    
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        filteredTableData.removeAll()
-        //TODO: remove all, use Parse
-        let searchPredicate = NSPredicate(format: "SELF CONTAINS[c] %@", searchController.searchBar.text!)
-        
-        let array = (searchedData as NSArray).filteredArrayUsingPredicate(searchPredicate)
-        filteredTableData = array as! [String]
-        
-        tableView.reloadData()
-    }
-    
-    
     
     
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60
     }
-
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        
-        if searchController.active {
-            return self.filteredTableData.count
-        } else {
-            return usernames.count
-        }
-        
-        
+        return fetchedUsers.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("discoverCell", forIndexPath: indexPath)
         
-        if searchController.active {
-            cell.textLabel?.text = filteredTableData[indexPath.row]
-        } else {
-            cell.textLabel?.text = usernames[indexPath.row]
+        let item = fetchedUsers[indexPath.row]
+        
+        cell.textLabel?.text = (item["profileName"] as? String) ?? (item["username"] as! String)
+        cell.detailTextLabel?.text = "@" + (item["username"] as! String)
+        
+        if let text = item["intro"] as? String {
+            if cell.detailTextLabel?.text != nil {
+                cell.detailTextLabel!.text! += (" ● " + text)
+            }
         }
         
-
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let vc = storyboard!.instantiateViewControllerWithIdentifier("UserProfileTVCIdentifier") as! ProfileViewController
+        
+        vc.options = [
+            UserProfileKeys.UserID : fetchedUsers[indexPath.row].objectId!,
+            UserProfileKeys.Username : fetchedUsers[indexPath.row].username!,
+            //UserProfileKeys.Intro : searchedUsers[indexPath.row]["intro"] as? String,
+            //UserProfileKeys.Weblink : searchedUsers[indexPath.row]["weblink"] as? String
+            UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
+            UserProfileKeys.Weblink : "www.facebook.com"
+        ]
+        
+        shouldPushViewController(vc)
+        
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
-    
     
     
     // MARK: following users
@@ -151,6 +116,7 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
         queryB.whereKey("type", equalTo: "following")
         queryA.whereKey("objectId", doesNotMatchKey: "toUser", inQuery: queryB)
         
+        queryA.limit = 100
         queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
             if error != nil {
                 if let errorString = error!.userInfo["error"] as? String {
@@ -162,89 +128,16 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating {
             
             guard let users = objects else {return}
             
+            //var searchedUsers = [PFUser]()
             for object in users {
                 guard let u = object as? PFUser else {return}
-                if u.objectId! == PFUser.currentUser()?.objectId {continue}
-                self.userids.append(u.objectId!)
-                self.usernames.append(u.username!)
-                self.isFollowing[u.objectId!] = false
+                if (u.objectId! == PFUser.currentUser()?.objectId) || (u.username == nil) {continue}
+                
+                self.fetchedUsers.append(u)
             }
             self.tableView.reloadData()
         }
         
-    }
-    
-    func followUser(aUser: PFUser) {
-        let activities = PFObject(className:"Activities")
-        
-        guard let currentUser = PFUser.currentUser() else {return}
-        
-        let follow : String = "following"
-        
-        activities.setObject(currentUser, forKey: "fromUser")
-        activities.setObject(aUser, forKey: "toUser") // user is a another PFUser in my app
-        
-        activities.setObject(follow, forKey: "type")
-        
-        activities.saveEventually()
-    }
-    
-    
-    var followingUserList = [PFUser]()
-    func loadFollowingUsers() {
-        followingUserList.removeAll()
-        //followingUserList.removeAllObjects()
-        
-        let findUserObjectId = PFQuery(className: "Activities")
-        findUserObjectId.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-        findUserObjectId.whereKey("type", equalTo: "following")
-        
-        
-        findUserObjectId.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-            if let users = objects  {
-                // The find succeeded.
-                print("succesfully loaded the fromUser  in Activity class")
-                // Do something with the found objects
-                for user in users {
-                    
-                    guard let user = user["toUser"] as? PFUser else {return}
-                    
-                    guard let queryUsers = PFUser.query() else {return}
-                    queryUsers.getObjectInBackgroundWithId(user.objectId!, block: { (userGet ,error) -> Void in
-                        
-                        if let result = userGet as? PFUser {
-                            self.followingUserList.append(result)
-                            self.tableView.reloadData()
-                        }
-                    })
-                    
-                    
-                } } else {
-                // Log details of the failure
-                print("error loadind user ")
-                print(error)
-            }
-        }
-    }
-    
-    // MARK: - show user profile
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "showUserProfile" {
-            guard let i = tableView.indexPathForCell(sender as! UITableViewCell)?.row else {return}
-            
-            ProfileViewController.Options.followText = "Follow"
-            ProfileViewController.Options.hideFollowing = false
-            ProfileViewController.Options.username = usernames[i]
-            ProfileViewController.Options.userId = userids[i]
-            ProfileViewController.Options.profileName = "Profile Name"
-            
-            
-            
-            
-            //vc.tableView.reloadData()
-        }
     }
     
     

@@ -65,6 +65,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             //displayAlert("Password too short", message: "Please enter password longer than 8 charactors")
             //return }
         
+        //TODO: should check username is legal, without spaces and special characters
+        
         activityIndicator = UIActivityIndicatorView(frame: view.bounds)
         AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser:  true)
         //turnOnActivityIndicator(true)
@@ -72,7 +74,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         if signUpActived {
             // Parse
             let user = PFUser()
-            user.username = username.text
+            user.username = username.text?.lowercaseString
             user.password = password.text
             
             user.signUpInBackgroundWithBlock({ (success, error) -> Void in
@@ -94,7 +96,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             })
         }
         else {
-            PFUser.logInWithUsernameInBackground(username.text!, password: password.text!, block: { (user, error) -> Void in
+            PFUser.logInWithUsernameInBackground(username.text!.lowercaseString, password: password.text!, block: { (user, error) -> Void in
                 self.activityIndicator.stopAnimating()
                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
                 if user != nil {
@@ -120,7 +122,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
-        let name = textField.text
+        let name = textField.text?.lowercaseString
         if name == "" {
             return
         }

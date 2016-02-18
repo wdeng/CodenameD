@@ -20,23 +20,28 @@ class ProfileViewController: UITableViewController {
         static var profileName = "Profile Name"
     }
     
-    var options: [String : AnyObject?]!
+    var options = [String : AnyObject?]()
     
     
     //TODO: change this to something else
     func setupProfile(withOptions options: [String: AnyObject?]) {
         profileView.setupProfile(withOptions: options)
-        tabBarController?.navigationItem.title = profileView.profileName.text
+        
+        if let shouldHide = options[UserProfileKeys.ShouldHideNavOfTabBar] as? Bool {
+            tabBarController?.navigationController?.setNavigationBarHidden(shouldHide, animated: false)
+        } else {
+            tabBarController?.navigationController?.setNavigationBarHidden(true, animated: false)
+        }
     }
     
     @IBOutlet weak var profileView: ProfileHeaderView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupProfile(withOptions: options)
-        
     }
+    
+    
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -48,6 +53,11 @@ class ProfileViewController: UITableViewController {
         
         tableView.tableHeaderView = headerView // everytime this was called, layout subviews will be called
         
+        tabBarController?.navigationItem.title = profileView.profileName.text
+        navigationItem.title = profileView.profileName.text
+        
+        
+        
         
         //tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
         //let item = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
@@ -57,18 +67,6 @@ class ProfileViewController: UITableViewController {
         //} else {
         //    tabBarController?.navigationItem.rightBarButtonItems = [item]
         //}
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -102,8 +100,7 @@ class ProfileViewController: UITableViewController {
         if identifier == "editProfile" {
             if profileView.isFollowing.titleLabel?.text == "Edit Profile" {return true}
             else {return false}
-        }
-        else {
+        } else {
             return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)
         }
     }
@@ -115,13 +112,11 @@ class ProfileViewController: UITableViewController {
         if segue.identifier == "showFollowing" || segue.identifier == "showFollowers" {
             
             let actiType = segue.identifier == "showFollowing" ? ActivityType.Following : ActivityType.Followers
-            
             let vc = segue.destinationViewController as! FollowingFollowerVC
             
-            ParseActions.fetchActivities(actiType, forUserID: userID, finished: { (followings: [PFObject]) -> Void in
-                
+            ParseActions.fetchActivities(actiType, forUserID: userID, finished: { (objs: [PFObject]) -> Void in
                 if actiType == .Following {
-                    for following in followings {
+                    for following in objs {
                         let id = following["toUser"] as! String
                         vc.userids.append(id)
                         vc.usernames.append(following["toUsername"] as! String)
@@ -129,10 +124,10 @@ class ProfileViewController: UITableViewController {
                         vc.navigationItem.title = "Following"
                     }
                 } else {
-                    for following in followings {
-                        let id = following["fromUser"] as! String
+                    for follower in objs {
+                        let id = follower["fromUser"] as! String
                         vc.userids.append(id)
-                        vc.usernames.append(following["fromUsername"] as! String)
+                        vc.usernames.append(follower["fromUsername"] as! String)
                         vc.isFollowing[id] = false
                         vc.navigationItem.title = "Followers"
                     }
@@ -143,43 +138,6 @@ class ProfileViewController: UITableViewController {
             
         }
         
-        
-//        if segue.identifier == "showFollowing" {
-//            let query = PFQuery(className: "Activities")
-//            query.whereKey("type", equalTo: "following")
-//            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-//            query.limit = 100
-//            
-//            query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-//                if error != nil {
-//                    print("couldn't fetch users")
-//                    return
-//                }
-//                
-//                guard let followings = objects else {return}
-//                
-//                for following in followings {
-//                    let id = following["toUser"] as! String
-//                    vc.userids.append(id)
-//                    vc.usernames.append(following["toUsername"] as! String)
-//                    vc.isFollowing[id] = true
-//                }
-//                vc.tableView.reloadData()
-//            }
-//            
-//        } else if segue.identifier == "showFollowers" {
-//            
-//            ParseActions.fetchActivities(.Followers, finished: { (followings: [PFObject]) -> Void in
-//                for following in followings {
-//                    let id = following["fromUser"] as! String
-//                    vc.userids.append(id)
-//                    vc.usernames.append(following["fromUsername"] as! String)
-//                    vc.isFollowing[id] = false
-//                }
-//                vc.tableView.reloadData()
-//            })
-//            
-//        }
     }
     
     @IBAction func followUnfollow(sender: UIButton) {

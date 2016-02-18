@@ -70,6 +70,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         post.saveInBackgroundWithBlock{(success, error) -> Void in
             if success {
                 print("images uploaded")
+                print(self.post.updatedAt)
                 //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
             } else {
                 AppUtils.displayAlert("Could not upload images", message: "Please try again later", onViewController: self)
@@ -83,6 +84,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         post["audio"] = PFFile(name: "audio.m4a", data: audioData)
         post.saveInBackgroundWithBlock{(success, error) -> Void in
             if success {
+                print(self.post.updatedAt)
                 //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
             } else {
                 AppUtils.displayAlert("Could not upload audio", message: "Please try again later", onViewController: self)

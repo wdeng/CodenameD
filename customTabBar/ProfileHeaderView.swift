@@ -48,20 +48,34 @@ class ProfileHeaderView: UIView {
         
     }
     
+    func setFollowButton(b: UIButton) {
+        if b.tag > 0 {
+            b.enabled = true
+        } else {
+            b.enabled = false
+        }
+    }
+    
     func setupProfile(withOptions options: [String: AnyObject?]) {
         //TODO: what if current ID is nil??????????????
         
         //following/follower num
         //followerNum.titleLabel.textAlignment = UITextAlignmentCenter;
-        
+        let profileUserId = (options[UserProfileKeys.UserID] as? String) //?? (currentUserID)
         
         followingNum.setAttributedTitle(setTitleWithNum(nil, withText: "FOLLOWING"), forState: .Normal)
         followerNum.setAttributedTitle(setTitleWithNum(nil, withText: "FOLLOWERS"), forState: .Normal)
-        
-        
-        
-        
-        
+        ParseActions.fetchFollowingFollowerNumber(forUserID: profileUserId, type: .Following) { followingCount in
+            self.followingNum.setAttributedTitle(self.setTitleWithNum(followingCount, withText: "FOLLOWING"), forState: .Normal)
+            self.followingNum.tag = followingCount
+            self.setFollowButton(self.followingNum)
+            
+        }
+        ParseActions.fetchFollowingFollowerNumber(forUserID: profileUserId, type: .Followers) { followersCount in
+            self.followerNum.setAttributedTitle(self.setTitleWithNum(followersCount, withText: "FOLLOWERS"), forState: .Normal)
+            self.followerNum.tag = followersCount
+            self.setFollowButton(self.followerNum)
+        }
         
         
         
@@ -95,14 +109,17 @@ class ProfileHeaderView: UIView {
         if let name = options[UserProfileKeys.Name] as? String {
             profileName.text = name
         } else {
-            profileName.text = (options[UserProfileKeys.Username] as? String) ?? "Profile Name"
+            profileName.text = (options[UserProfileKeys.Username] as? String)
         }
         
         //intro and weblink
-        userIntro.numberOfLines = 20
+        userIntro.numberOfLines = 15
         if let intro = options[UserProfileKeys.Intro] as? String {
             userIntro.text = intro.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        } else {
+            userIntro.text = ""
         }
+        
         if var link = options[UserProfileKeys.Weblink] as? String {
             link = link.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             
@@ -115,6 +132,8 @@ class ProfileHeaderView: UIView {
                 }
             }
             userLink.setTitle(link, forState: .Normal)
+        } else {
+            userLink.setTitle(nil, forState: .Normal)
         }
         
         //tabBarController?.navigationItem.title = profileView.profileName.text
