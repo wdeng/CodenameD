@@ -32,6 +32,8 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         
         openPlayer.setImage(UIImage(named: "play"), forState: .Normal)
         openPlayer.tintColor = UIColor.whiteColor()
+        
+        tableView.keyboardDismissMode = .OnDrag
     }
     
     //TODO: handle errors!!!
@@ -129,7 +131,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
             
             // TODO: change into only use save() to change updatedAt remove postUpdatedAt
             PFObject.saveAllInBackground(objects)
-            self.self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
     

@@ -9,6 +9,48 @@
 import UIKit
 
 
+class RecordingModel: NSObject {
+    var data = [AnyObject]()
+    var audioDurations = [Double]()
+}
+
+class ButtonUtils: NSObject {
+    class func addShadow(btn: UIView) {
+        btn.layer.shadowOffset = CGSize(width: 0, height: 0)
+        btn.layer.shadowRadius = 5.0
+        btn.layer.shadowOpacity = 0.7
+        btn.layer.shadowColor = UIColor.blackColor().CGColor
+    }
+    
+}
+
+extension Array {
+    
+    func photoBool() -> [Bool] {
+        var bool: [Bool] = []
+        for i in self {
+            bool.append(i is PhotoModel)
+        }
+        
+        return bool
+    }
+    
+    // the number Index of the photomodels in model array
+    func photoIdxList() -> [Int] {
+        var list = [Int]()
+        
+        for i in 0 ..< self.count {
+            if self[i] is PhotoModel {
+                list.append(i)
+            }
+        }
+        
+        return list
+    }
+    
+}
+
+
 struct AppSettings {
     static let DEBUG_LOG = true
     static let minDBValue: Float = -80.0
@@ -48,6 +90,7 @@ struct RecordSettings {
 
 struct PlaySoundSetting {
     static let progressBarHeight: CGFloat = 30.0
+    static let playbackTimerInterval: Double = 0.1
     
     static let currentEpisodeKey: String = "CurrentPlayingEpisode"
     static let currentEpisodeTime: String = "CurrentPlayingTime"
@@ -96,6 +139,16 @@ class ImageUtils: NSObject {
         
     }
     
+    class func getFillRect(image: UIImage, targetRect: CGRect) -> CGRect {
+        let size = ImageUtils.getFillSize(image, targetSize: targetRect.size)
+        let x = (targetRect.width - size.width) / 2 - targetRect.origin.x
+        let y = (targetRect.height - size.height) / 2 - targetRect.origin.y
+        let origin = CGPoint(x: x, y: y)
+        
+        return CGRect(origin: origin, size: size)
+        
+    }
+    
     class func getFitRect(image: UIImage, targetRect: CGRect) -> CGRect {
         let s = image.size
         let ratio = s.height/s.width
@@ -103,8 +156,8 @@ class ImageUtils: NSObject {
         // fit the targetSize
         let h = min(targetRect.width * ratio, targetRect.height)
         let w = min(targetRect.height / ratio, targetRect.width)
-        let x = (targetRect.width - w) / 2
-        let y = (targetRect.height - h) / 2
+        let x = (targetRect.width - w) / 2 + targetRect.origin.x
+        let y = (targetRect.height - h) / 2 + targetRect.origin.y
         
         // in targetRect's bounds
         return CGRect(x: x, y: y, width: w, height: h)
@@ -209,12 +262,14 @@ struct GeneralSettings {
 
 class AppUtils: NSObject {
     class func durationToClockTime(duration: Double?) ->String? {
+        
         guard let duration = duration else { return nil}
-        if duration < 3600 {
-            return String(format: "%d:%02d", Int(duration) / 60, Int(duration) % 60)
+        let dur = Int(floor(duration))
+        if dur <= 3600 {
+            return String(format: "%d:%02d", dur / 60, dur % 60)
         }
         else {
-            return String(format: "%d:%02d:%02d", Int(duration) / 3600, (Int(duration) % 3600) / 60, (Int(duration) % 3600) % 60)
+            return String(format: "%d:%02d:%02d", dur / 3600, (dur % 3600) / 60, (dur % 3600) % 60)
         }
         
     }

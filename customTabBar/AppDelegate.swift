@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         if let currentTime = SectionAudioPlayer.sharedInstance.currentTime {
             NSUserDefaults.standardUserDefaults().setDouble(currentTime, forKey: PlaySoundSetting.currentEpisodeTime)
-            let speed = SectionAudioPlayer.sharedInstance.rate > 0 ? SectionAudioPlayer.sharedInstance.rate : 1  //TODO: delete this after, and the speed should be a sharedInstance set playing speed
+            let speed = SectionAudioPlayer.sharedInstance.playbackSpeed > 0 ? SectionAudioPlayer.sharedInstance.playbackSpeed : 1
             NSUserDefaults.standardUserDefaults().setFloat(speed, forKey: PlaySoundSetting.currentEpisodePlaySpeed)
         }
         

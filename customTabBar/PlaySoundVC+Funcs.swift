@@ -23,7 +23,9 @@ extension PlaySoundViewController {
         btn.layer.shadowRadius = 5.0
         btn.layer.shadowOpacity = 0.7
         btn.layer.shadowColor = UIColor.blackColor().CGColor
-        
+        //button with image and text
+        //http://stackoverflow.com/questions/3903018/how-to-have-a-uibarbuttonitem-with-both-image-and-text
+        //http://stackoverflow.com/questions/11717219/uibutton-image-text-ios    set image as well as title
         return btn
     }
     
@@ -63,4 +65,42 @@ extension PlaySoundViewController {
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
+    
+    
+    
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

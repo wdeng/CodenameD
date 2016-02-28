@@ -28,6 +28,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         username.delegate = self
     }
     
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         login_signupButton.hidden = true

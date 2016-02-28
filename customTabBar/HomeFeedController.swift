@@ -67,6 +67,11 @@ class HomeFeedController: UITableViewController {
         //AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser: true)
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("home view did disappear")
+    }
+    
     func loadFeed(type: LoadType, size:Int) {
         if isLoadingItems || allItemsLoaded {
             return

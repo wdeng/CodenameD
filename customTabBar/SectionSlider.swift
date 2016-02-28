@@ -238,6 +238,7 @@ class SectionSlider: UIControl {
     private let progressTrackLayer = SectSliderProgressTrackLayer()
     private let thumbLayer = SectSliderThumbLayer()
     
+    
     private var thumbSize: CGSize {
         return CGSize(width: thumbConvexLevel.width, height: bounds.height)
     }

@@ -9,6 +9,17 @@
 import UIKit
 import Parse
 
+// disable all the rotations
+extension UINavigationController {
+    public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return (visibleViewController as? PlaySoundViewController)?.supportedInterfaceOrientations() ?? .Portrait
+    }
+    
+    public override func shouldAutorotate() -> Bool {
+        return true
+    }
+}
+
 //TODO: add snapkit to custom tab bar for auto layout http://snapkit.io/
 class CustomTabBarController: UITabBarController {
     

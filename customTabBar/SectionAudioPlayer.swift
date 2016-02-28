@@ -19,6 +19,8 @@ public class SectionAudioPlayer: NSObject {
     private var player: AVPlayer?
     private var periodicTimeObserver: AnyObject?
     
+    var playbackSpeed: Float = 1.0 // fast or slow playing
+    
     var currentEpisode: EpisodeToPlay?
     var currentSpeed: Float?
     var currentDuration: Double? {
@@ -119,7 +121,7 @@ public class SectionAudioPlayer: NSObject {
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: player!.currentItem)
             
             if periodicTimeObserver == nil {
-                periodicTimeObserver = player!.addPeriodicTimeObserverForInterval(CMTime(seconds: 0.1, preferredTimescale: 10), queue: nil, usingBlock: {(time) in
+                periodicTimeObserver = player!.addPeriodicTimeObserverForInterval(CMTime(seconds: PlaySoundSetting.playbackTimerInterval, preferredTimescale: 1000), queue: nil, usingBlock: {(time) in
                     if !self.playerIsSeekingTime {
                         NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": time.seconds])
                     }
@@ -163,11 +165,11 @@ public class SectionAudioPlayer: NSObject {
     
     func setPlaySpeed(targetSpeed: PlayingSpeed) {
         player?.rate = targetSpeed.rawValue
-        PlayerInfo.playSpeed = targetSpeed.rawValue
+        playbackSpeed = targetSpeed.rawValue
     }
     
     func play() {
-        player?.rate = PlayerInfo.playSpeed
+        player?.rate = playbackSpeed
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
