@@ -99,8 +99,9 @@ extension RecordingViewController {
             vc.currentParentIndexPath = collectionView.indexPathForCell(cell)!
             
             vc.placeHoldViewForAnimation = ImageCollectionViewController.placeHolderImageView(forImageView: cell.imageView, presentingView: view)
-            vc.placeHoldViewForAnimation.contentMode = .ScaleAspectFill
-            vc.placeHoldViewForAnimation.clipsToBounds = true
+            print(cell.imageView)
+            print(cell.subviews)
+            print(vc.placeHoldViewForAnimation)
         } else if (segue.identifier == "showPostEpisodeVC") {
             let postEpisodeVC = segue.destinationViewController as! PostEpisodeTVC
             postEpisodeVC.receivedBundles = sender as! [AnyObject]

@@ -2064,19 +2064,23 @@
                             </label>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="Wvs-x3-ET4" firstAttribute="leading" secondItem="JT1-sa-hW7" secondAttribute="leading" id="0YK-Ct-7Id"/>
-                            <constraint firstItem="Wvs-x3-ET4" firstAttribute="trailing" secondItem="JT1-sa-hW7" secondAttribute="trailing" id="4WE-yd-z7l"/>
+                            <constraint firstItem="Wvs-x3-ET4" firstAttribute="leading" secondItem="JT1-sa-hW7" secondAttribute="leading" id="42Y-xw-Zy7"/>
+                            <constraint firstItem="ORq-Uj-KRr" firstAttribute="top" secondItem="Wvs-x3-ET4" secondAttribute="bottom" id="FJ3-Rx-ge3"/>
                             <constraint firstItem="JT1-sa-hW7" firstAttribute="leading" secondItem="GDl-XV-RCX" secondAttribute="leading" id="FNZ-eq-MG3"/>
                             <constraint firstItem="NoZ-ad-xGV" firstAttribute="centerX" secondItem="GDl-XV-RCX" secondAttribute="centerX" id="HjQ-5T-Qvb"/>
+                            <constraint firstItem="Wvs-x3-ET4" firstAttribute="top" secondItem="GDl-XV-RCX" secondAttribute="topMargin" constant="-2" id="RuN-iy-OKY">
+                                <variation key="widthClass=compact" constant="0.0"/>
+                            </constraint>
                             <constraint firstAttribute="trailing" secondItem="JT1-sa-hW7" secondAttribute="trailing" id="Wkz-Z7-gkr"/>
+                            <constraint firstItem="Wvs-x3-ET4" firstAttribute="trailing" secondItem="JT1-sa-hW7" secondAttribute="trailing" id="XtF-RR-Lu0"/>
                             <constraint firstItem="NoZ-ad-xGV" firstAttribute="top" secondItem="mFk-O2-fPe" secondAttribute="bottom" id="cs2-qc-bOm"/>
-                            <constraint firstItem="ORq-Uj-KRr" firstAttribute="top" secondItem="NoZ-ad-xGV" secondAttribute="bottom" constant="55" id="hhG-x5-w8O"/>
-                            <constraint firstItem="Wvs-x3-ET4" firstAttribute="top" secondItem="GDl-XV-RCX" secondAttribute="top" id="hxB-Q4-A6V"/>
+                            <constraint firstItem="JT1-sa-hW7" firstAttribute="top" secondItem="NoZ-ad-xGV" secondAttribute="bottom" constant="20" id="ls1-iX-Tpw">
+                                <variation key="widthClass=compact" constant="25"/>
+                            </constraint>
                             <constraint firstItem="ORq-Uj-KRr" firstAttribute="top" secondItem="JT1-sa-hW7" secondAttribute="bottom" id="sQ7-39-fGO"/>
                             <constraint firstItem="mFk-O2-fPe" firstAttribute="centerX" secondItem="GDl-XV-RCX" secondAttribute="centerX" id="uMi-an-xRD">
-                                <variation key="widthClass=compact" constant="2"/>
+                                <variation key="widthClass=compact" constant="0.0"/>
                             </constraint>
-                            <constraint firstAttribute="bottom" secondItem="Wvs-x3-ET4" secondAttribute="bottom" id="zON-wd-F5H"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
@@ -2086,17 +2090,17 @@
                                 <exclude reference="mFk-O2-fPe"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="hhG-x5-w8O"/>
-                                <exclude reference="sQ7-39-fGO"/>
+                                <exclude reference="42Y-xw-Zy7"/>
+                                <exclude reference="RuN-iy-OKY"/>
+                                <exclude reference="XtF-RR-Lu0"/>
+                                <exclude reference="uMi-an-xRD"/>
                                 <exclude reference="HjQ-5T-Qvb"/>
                                 <exclude reference="cs2-qc-bOm"/>
-                                <exclude reference="uMi-an-xRD"/>
                                 <exclude reference="FNZ-eq-MG3"/>
                                 <exclude reference="Wkz-Z7-gkr"/>
-                                <exclude reference="0YK-Ct-7Id"/>
-                                <exclude reference="4WE-yd-z7l"/>
-                                <exclude reference="hxB-Q4-A6V"/>
-                                <exclude reference="zON-wd-F5H"/>
+                                <exclude reference="ls1-iX-Tpw"/>
+                                <exclude reference="FJ3-Rx-ge3"/>
+                                <exclude reference="sQ7-39-fGO"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -2107,17 +2111,17 @@
                                 <include reference="mFk-O2-fPe"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="hhG-x5-w8O"/>
-                                <include reference="sQ7-39-fGO"/>
+                                <include reference="42Y-xw-Zy7"/>
+                                <include reference="RuN-iy-OKY"/>
+                                <include reference="XtF-RR-Lu0"/>
+                                <include reference="uMi-an-xRD"/>
                                 <include reference="HjQ-5T-Qvb"/>
                                 <include reference="cs2-qc-bOm"/>
-                                <include reference="uMi-an-xRD"/>
                                 <include reference="FNZ-eq-MG3"/>
                                 <include reference="Wkz-Z7-gkr"/>
-                                <include reference="0YK-Ct-7Id"/>
-                                <include reference="4WE-yd-z7l"/>
-                                <include reference="hxB-Q4-A6V"/>
-                                <include reference="zON-wd-F5H"/>
+                                <include reference="ls1-iX-Tpw"/>
+                                <include reference="FJ3-Rx-ge3"/>
+                                <include reference="sQ7-39-fGO"/>
                             </mask>
                         </variation>
                     </view>

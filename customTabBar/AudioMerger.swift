@@ -75,6 +75,7 @@ class AudioMerger: NSObject {
     private func classifyAudioAndPhoto(fromModel items: [AnyObject]) {
         //var sectionIdx = 0
         var prevItemType = ItemType.Possible
+        
         var imagesSets = [[AnyObject]()]
         var sectDurations = [0.0]
         
@@ -82,14 +83,14 @@ class AudioMerger: NSObject {
         for i in  0 ..< items.count {
             if let photo = items[i] as? UIImage {
                 if prevItemType == .Audio {
-                    imagesSets.append([UIImage]())
+                    imagesSets.append([AnyObject]())
                     sectDurations.append(0.0)
                 }
-                imagesSets[imagesSets.count - 1].append(photo)
+                imagesSets[imagesSets.count-1].append(photo)
                 prevItemType = .Photo
             } else if let audio = items[i] as? AudioModel {
                 tmpAudios.append(audio)
-                sectDurations[imagesSets.count - 1] += audio.duration
+                sectDurations[imagesSets.count-1] += audio.duration
                 if prevItemType != .Possible {
                     prevItemType = .Audio
                 }
@@ -102,7 +103,7 @@ class AudioMerger: NSObject {
             imagesSets[imagesSets.count - 2] += imagesSets[imagesSets.count - 1]
             imagesSets.removeLast()
             sectDurations.removeLast()
-        } else if imagesSets.last?.count == 0{
+        } else if sectDurations.last == 0.0{
             imagesSets.removeLast()
             sectDurations.removeLast()
         }
