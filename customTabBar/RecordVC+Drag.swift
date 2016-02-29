@@ -159,8 +159,8 @@ extension RecordingViewController: UIGestureRecognizerDelegate {
                 
                 UIView.animateWithDuration(0.2, animations: {
                     Drag.placeholderView.center = point
-                    Drag.placeholderView.transform = CGAffineTransformMakeScale(1.05, 1.05)
-                    Drag.placeholderView.alpha = 0.9
+                    Drag.placeholderView.transform = CGAffineTransformMakeScale(1.2, 1.2)
+                    Drag.placeholderView.alpha = 0.8
                     }, completion: { (_) in
                         //cell.hidden = true
                 })

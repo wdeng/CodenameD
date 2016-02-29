@@ -11,7 +11,7 @@ import AVFoundation
 import Parse
 
 struct RecordCollectionSettings {
-    static let photoItemSize: CGSize = CGSize(width: 88, height: 288)
+    static let photoItemSize: CGSize = CGSize(width: 88, height: 188)
     static let audioItemSize: CGSize = CGSize(width: UIScreen.mainScreen().bounds.width - 82, height: 40)
     static let itemMinSpacing: CGFloat = 1.0
     static let itemSectInset: UIEdgeInsets = UIEdgeInsetsMake(4.0, 10.0, 4.0, 10.0)
@@ -80,7 +80,11 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     //var audioPlayerAnimateTargetRect: CGRect?
     
     let pickerController = UIImagePickerController()
-    var addedItems = RecordingModel()
+    var addedItems = RecordingModel() {
+        didSet {
+            audioPlayerShouldStop()
+        }
+    }
     
     var post = PFObject(className: "Episode")
     
@@ -111,7 +115,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         
         // record collection view
         //collectionView.allowsSelection = true
-        collectionView.contentInset = UIEdgeInsets(top: 10, left: 8, bottom: 50, right: 8)
+        collectionView.contentInset = UIEdgeInsets(top: 10, left: 8, bottom: 46, right: 8)
         let layout = collectionView.collectionViewLayout as! LeftAlignedLayout //collectionView.collectionViewLayout = LeftAlignedLayout()
         layout.delegate = self
         
@@ -233,14 +237,10 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
             recordingLengthAllowed = false
             
             recordingNameIndex++
-            addedItems.data.append(recordedAudio)
             postSceneButton.enabled = true
+
             
-            let idxPath = NSIndexPath(forItem: addedItems.data.count-1, inSection: 0)
-            collectionView.insertItemsAtIndexPaths([idxPath])
-            collectionView.scrollToItemAtIndexPath(idxPath, atScrollPosition: .Top, animated: true)
-            print("frame: \(collectionView.frame), bounds: \(collectionView.bounds), contentsize: \(collectionView.contentSize), conteninset: \(collectionView.contentInset), contentoffset: \(collectionView.contentOffset)")
-            //collectionView.setContentOffset(xxx, animated: true)
+            appendItemInCollectionView(withItem: recordedAudio)
         }
         else{
             debugPrint("not succussful")
@@ -276,17 +276,36 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         dispatch_async(dispatch_get_main_queue()) {
             if let im = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 let image = ImageUtils.createFitImageFromSize(im)
-                //let photo = PhotoModel(withImage: image)
-                self.addedItems.data.append(image)
-                
-                let idxPath = NSIndexPath(forItem: self.addedItems.data.count - 1, inSection: 0)
-                self.collectionView.insertItemsAtIndexPaths([idxPath])
-                self.collectionView.scrollToItemAtIndexPath(idxPath, atScrollPosition: .CenteredVertically, animated: true)
+                self.appendItemInCollectionView(withItem: image)
+//                self.addedItems.data.append(image)
+//                
+//                let idxPath = NSIndexPath(forItem: self.addedItems.data.count - 1, inSection: 0)
+//                self.collectionView.insertItemsAtIndexPaths([idxPath])
+//                self.collectionView.scrollToItemAtIndexPath(idxPath, atScrollPosition: .CenteredVertically, animated: true)
                 
             }
         }
         picker.dismissViewControllerAnimated(true) {}
         
+    }
+    
+    func appendItemInCollectionView(withItem item: AnyObject) {
+        addedItems.data.append(item)
+        
+        let idxPath = NSIndexPath(forItem: addedItems.data.count-1, inSection: 0)
+        
+        
+        
+        collectionView.performBatchUpdates( {
+            //TODO: change insert animation, put change offset into the animation
+            //need photo and audio item animations different
+            self.collectionView.insertItemsAtIndexPaths([idxPath])
+             }, completion: { _ in
+                let maxOffset = CGPoint(x: self.collectionView.contentOffset.x, y: (self.collectionView.contentSize.height + self.collectionView.contentInset.bottom) - self.collectionView.frame.size.height)  // otherwise collection view content size haven't changed yet
+                if maxOffset.y > -self.collectionView.contentInset.top { // larger than the min offset of collection view here
+                    self.collectionView.setContentOffset(maxOffset, animated: true)
+                }
+        })
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
@@ -378,9 +397,6 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         audioPlayerShouldStop()
     }
     
-    
-
-    
     @IBAction func closeRecordingController(sender: AnyObject) {
         
         if addedItems.data.count > 0 {
@@ -460,6 +476,7 @@ extension RecordingViewController: ImageViewerDelegate, LeftAlignedLayoutDelegat
     
     //MARK: Image Viewer Delegate
     func didDeleteModel(atParentIndex idx: Int) {
+        audioPlayerShouldStop()  //TODO: maybe use KVO of model data for audio player should stop
         collectionView.deleteItemsAtIndexPaths([NSIndexPath(forItem: idx, inSection: 0)])
     }
     

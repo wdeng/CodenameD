@@ -25,6 +25,7 @@ extension RecordingViewController {
             deleteButton.enabled = false
             navigationItem.rightBarButtonItem = deleteButton
             
+            audioPlayerShouldStop()//TODO: maybe use KVO of model data for audio player should stop
             collectionView.addGestureRecognizer(longPress)
             collectionView.allowsMultipleSelection = true
         }
@@ -99,9 +100,9 @@ extension RecordingViewController {
             vc.currentParentIndexPath = collectionView.indexPathForCell(cell)!
             
             vc.placeHoldViewForAnimation = ImageCollectionViewController.placeHolderImageView(forImageView: cell.imageView, presentingView: view)
-            print(cell.imageView)
-            print(cell.subviews)
-            print(vc.placeHoldViewForAnimation)
+//            print(cell.imageView)
+//            print(cell.subviews)
+//            print(vc.placeHoldViewForAnimation)
         } else if (segue.identifier == "showPostEpisodeVC") {
             let postEpisodeVC = segue.destinationViewController as! PostEpisodeTVC
             postEpisodeVC.receivedBundles = sender as! [AnyObject]
