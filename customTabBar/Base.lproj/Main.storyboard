@@ -2825,7 +2825,7 @@
         <!--View Controller-->
         <scene sceneID="i9T-c9-ILT">
             <objects>
-                <viewController id="t6S-lA-BT7" customClass="ViewController" customModule="DragNDropCollectionView" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="t6S-lA-BT7" customClass="ViewController" customModule="customTabBar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Lfh-3o-Yy1"/>
                         <viewControllerLayoutGuide type="bottom" id="lYe-mb-yWD"/>
@@ -2837,9 +2837,9 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="kje-V5-HsR">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <collectionViewLayout key="collectionViewLayout" id="xnA-Po-YLm" customClass="LeftAlignedLayout" customModule="DragNDropCollectionView" customModuleProvider="target"/>
+                                <collectionViewLayout key="collectionViewLayout" id="xnA-Po-YLm" customClass="LeftAlignedLayout" customModule="customTabBar" customModuleProvider="target"/>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoItem" id="7AQ-M6-ZwC" customClass="UIPhotoCell" customModule="DragNDropCollectionView" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoItem" id="7AQ-M6-ZwC" customClass="UIPhotoCell" customModule="customTabBar" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -2873,12 +2873,12 @@
                                                 <exclude reference="xos-0b-Xl5"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <exclude reference="Rlv-PO-QTW"/>
                                                 <exclude reference="MXK-fY-lWg"/>
+                                                <exclude reference="Rlv-PO-QTW"/>
                                                 <exclude reference="IAB-W1-HTw"/>
                                                 <exclude reference="YXd-Mq-L0a"/>
-                                                <exclude reference="zVE-dz-qPQ"/>
                                                 <exclude reference="ZAT-7Z-xTb"/>
+                                                <exclude reference="zVE-dz-qPQ"/>
                                             </mask>
                                         </variation>
                                         <variation key="widthClass=compact">
@@ -2887,12 +2887,12 @@
                                                 <include reference="xos-0b-Xl5"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <include reference="Rlv-PO-QTW"/>
                                                 <include reference="MXK-fY-lWg"/>
+                                                <include reference="Rlv-PO-QTW"/>
                                                 <include reference="IAB-W1-HTw"/>
                                                 <include reference="YXd-Mq-L0a"/>
-                                                <include reference="zVE-dz-qPQ"/>
                                                 <include reference="ZAT-7Z-xTb"/>
+                                                <include reference="zVE-dz-qPQ"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -2900,7 +2900,7 @@
                                             <outlet property="textLabel" destination="xos-0b-Xl5" id="f4R-jM-wLN"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AudioItem" id="hVm-e3-4s5" customClass="UIAudioCell" customModule="DragNDropCollectionView" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AudioItem" id="hVm-e3-4s5" customClass="UIAudioCell" customModule="customTabBar" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -2964,9 +2964,9 @@
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="bI6-MV-PKU"/>
-                                <exclude reference="kg2-eL-7uV"/>
-                                <exclude reference="ePb-Mb-5l9"/>
                                 <exclude reference="Cr3-hF-ke4"/>
+                                <exclude reference="ePb-Mb-5l9"/>
+                                <exclude reference="kg2-eL-7uV"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -2975,9 +2975,9 @@
                             </mask>
                             <mask key="constraints">
                                 <include reference="bI6-MV-PKU"/>
-                                <include reference="kg2-eL-7uV"/>
-                                <include reference="ePb-Mb-5l9"/>
                                 <include reference="Cr3-hF-ke4"/>
+                                <include reference="ePb-Mb-5l9"/>
+                                <include reference="kg2-eL-7uV"/>
                             </mask>
                         </variation>
                     </view>
@@ -3000,7 +3000,7 @@
         <!--Image Collection View Controller-->
         <scene sceneID="9IA-vo-t3T">
             <objects>
-                <viewController id="htv-B3-sOd" customClass="ImageCollectionViewController" customModule="DragNDropCollectionView" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="htv-B3-sOd" customClass="ImageCollectionViewController" customModule="customTabBar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="nD8-xr-HYQ"/>
                         <viewControllerLayoutGuide type="bottom" id="HGe-Uk-crF"/>
@@ -3017,7 +3017,7 @@
                                     <inset key="sectionInset" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="imageViewCell" id="Gzn-4e-47h" customClass="ImageViewCell" customModule="DragNDropCollectionView" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="imageViewCell" id="Gzn-4e-47h" customClass="ImageViewCell" customModule="customTabBar" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -3044,11 +3044,11 @@
                                                             <exclude reference="Pyq-gG-d9T"/>
                                                         </mask>
                                                         <mask key="constraints">
-                                                            <exclude reference="umW-Km-aFk"/>
-                                                            <exclude reference="ahc-iY-hbF"/>
-                                                            <exclude reference="oc9-oL-yPs"/>
                                                             <exclude reference="LxY-6L-4gE"/>
+                                                            <exclude reference="ahc-iY-hbF"/>
                                                             <exclude reference="f5i-qa-Uik"/>
+                                                            <exclude reference="oc9-oL-yPs"/>
+                                                            <exclude reference="umW-Km-aFk"/>
                                                             <exclude reference="wqq-Lb-w4d"/>
                                                         </mask>
                                                     </variation>
@@ -3057,11 +3057,11 @@
                                                             <include reference="Pyq-gG-d9T"/>
                                                         </mask>
                                                         <mask key="constraints">
-                                                            <include reference="umW-Km-aFk"/>
-                                                            <include reference="ahc-iY-hbF"/>
-                                                            <include reference="oc9-oL-yPs"/>
                                                             <include reference="LxY-6L-4gE"/>
+                                                            <include reference="ahc-iY-hbF"/>
                                                             <include reference="f5i-qa-Uik"/>
+                                                            <include reference="oc9-oL-yPs"/>
+                                                            <include reference="umW-Km-aFk"/>
                                                             <include reference="wqq-Lb-w4d"/>
                                                         </mask>
                                                     </variation>
@@ -3083,11 +3083,11 @@
                                                 <exclude reference="ycH-dU-yLr"/>
                                             </mask>
                                             <mask key="constraints">
+                                                <exclude reference="0Ay-yg-37Z"/>
+                                                <exclude reference="Zcj-Hd-64H"/>
                                                 <exclude reference="etb-Hb-kf7"/>
                                                 <exclude reference="mVV-JO-Cp8"/>
                                                 <exclude reference="yP9-l7-tAI"/>
-                                                <exclude reference="0Ay-yg-37Z"/>
-                                                <exclude reference="Zcj-Hd-64H"/>
                                             </mask>
                                         </variation>
                                         <variation key="widthClass=compact">
@@ -3095,11 +3095,11 @@
                                                 <include reference="ycH-dU-yLr"/>
                                             </mask>
                                             <mask key="constraints">
+                                                <include reference="0Ay-yg-37Z"/>
+                                                <include reference="Zcj-Hd-64H"/>
                                                 <include reference="etb-Hb-kf7"/>
                                                 <include reference="mVV-JO-Cp8"/>
                                                 <include reference="yP9-l7-tAI"/>
-                                                <include reference="0Ay-yg-37Z"/>
-                                                <include reference="Zcj-Hd-64H"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -3127,14 +3127,14 @@
                                 <state key="normal" title="Close"/>
                                 <variation key="default">
                                     <mask key="constraints">
-                                        <exclude reference="ixf-cS-KEI"/>
                                         <exclude reference="5dv-vr-yhL"/>
+                                        <exclude reference="ixf-cS-KEI"/>
                                     </mask>
                                 </variation>
                                 <variation key="widthClass=compact">
                                     <mask key="constraints">
-                                        <include reference="ixf-cS-KEI"/>
                                         <include reference="5dv-vr-yhL"/>
+                                        <include reference="ixf-cS-KEI"/>
                                     </mask>
                                 </variation>
                                 <connections>
@@ -3155,8 +3155,7 @@
                                         <exclude reference="heT-5W-dET"/>
                                     </mask>
                                 </variation>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="12" y="12" width="54" height="40"/>
+                                <variation key="widthClass=compact">
                                     <mask key="constraints">
                                         <include reference="heT-5W-dET"/>
                                     </mask>
@@ -3188,14 +3187,14 @@
                                 <exclude reference="9ba-Iy-4rL"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="Wl8-dg-9X8"/>
+                                <exclude reference="iWp-Ej-ozt"/>
                                 <exclude reference="OvC-gO-qET"/>
+                                <exclude reference="Wl8-dg-9X8"/>
                                 <exclude reference="hIp-76-INy"/>
                                 <exclude reference="cLn-Ht-9Vl"/>
                                 <exclude reference="rfr-25-biR"/>
-                                <exclude reference="rno-cq-XBR"/>
                                 <exclude reference="CtM-ar-x86"/>
-                                <exclude reference="iWp-Ej-ozt"/>
+                                <exclude reference="rno-cq-XBR"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -3205,14 +3204,14 @@
                                 <include reference="9ba-Iy-4rL"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="Wl8-dg-9X8"/>
+                                <include reference="iWp-Ej-ozt"/>
                                 <include reference="OvC-gO-qET"/>
+                                <include reference="Wl8-dg-9X8"/>
                                 <include reference="hIp-76-INy"/>
                                 <include reference="cLn-Ht-9Vl"/>
                                 <include reference="rfr-25-biR"/>
-                                <include reference="rno-cq-XBR"/>
                                 <include reference="CtM-ar-x86"/>
-                                <include reference="iWp-Ej-ozt"/>
+                                <include reference="rno-cq-XBR"/>
                             </mask>
                         </variation>
                     </view>
