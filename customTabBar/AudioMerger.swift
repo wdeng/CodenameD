@@ -14,11 +14,14 @@ import AVFoundation
     optional func mergingWillStart()
 }
 
+
+
 class AudioMerger: NSObject {
     
     var episode = EpisodeToPlay()
     
     private var audios: [RecordedAudio] = []
+    private var tmpAudios: [AudioModel] = []
     private var imageSets: [AddedImageSet] = []
     var outputAudio: NSURL?
     var exportSession: AVAssetExportSession?
@@ -61,6 +64,51 @@ class AudioMerger: NSObject {
             imageSets.removeLast()
         }
         
+    }
+    
+    private enum ItemType {
+        case Photo
+        case Audio
+        case Possible
+    }
+    
+    private func classifyAudioAndPhoto(fromModel items: [AnyObject]) {
+        //var sectionIdx = 0
+        var prevItemType = ItemType.Possible
+        var imagesSets = [[AnyObject]()]
+        var sectDurations = [0.0]
+        
+        imageSets.append(AddedImageSet())
+        for i in  0 ..< items.count {
+            if let photo = items[i] as? UIImage {
+                if prevItemType == .Audio {
+                    imagesSets.append([UIImage]())
+                    sectDurations.append(0.0)
+                }
+                imagesSets[imagesSets.count - 1].append(photo)
+                prevItemType = .Photo
+            } else if let audio = items[i] as? AudioModel {
+                tmpAudios.append(audio)
+                sectDurations[imagesSets.count - 1] += audio.duration
+                if prevItemType != .Possible {
+                    prevItemType = .Audio
+                }
+            } else {
+                debugPrint("something else added in recordedBundle Model")
+            }
+        }
+        
+        if (prevItemType == .Photo) && (imagesSets.count >= 2){
+            imagesSets[imagesSets.count - 2] += imagesSets[imagesSets.count - 1]
+            imagesSets.removeLast()
+            sectDurations.removeLast()
+        } else if imagesSets.last?.count == 0{
+            imagesSets.removeLast()
+            sectDurations.removeLast()
+        }
+        
+        episode.imageSets = imagesSets
+        episode.sectionDurations = sectDurations
     }
     
     override init() {

@@ -55,10 +55,10 @@ class BarChartView: UIView {
     
     
     func configs() {
-        layer.cornerRadius = roundCorner  // Round
-        backgroundColor = UIColor.grayColor() // BColor
-        layer.borderWidth = 0.5
-        layer.borderColor = UIColor.lightGrayColor().CGColor
+        //layer.cornerRadius = roundCorner  // Round
+        //backgroundColor = UIColor.grayColor() // BColor
+        //layer.borderWidth = 0.5
+        //layer.borderColor = UIColor.lightGrayColor().CGColor
         clipsToBounds = true
         
         //barChartLayer.frame = bounds
@@ -128,8 +128,6 @@ class BarChartView: UIView {
         
         return result / Double(nums.count)
     }
-    
-    //TODO: Use CAShapeLayer to build
     
 }
 

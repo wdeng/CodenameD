@@ -69,7 +69,6 @@ class HomeFeedController: UITableViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        print("home view did disappear")
     }
     
     func loadFeed(type: LoadType, size:Int) {

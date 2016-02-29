@@ -16,7 +16,6 @@ class ImageViewCell: UICollectionViewCell {
     var tapGesture = UITapGestureRecognizer()
     var doubleTap = UITapGestureRecognizer()
     
-    @IBOutlet weak var scrollViewSpacingHeight: NSLayoutConstraint!
     override func awakeFromNib() {
         super.awakeFromNib()
         //scrollView.minimumZoomScale = 1.0

@@ -43,7 +43,7 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate {
                 let currentIdxPath = collectionView.indexPathForCell(cell)!
                 currentParentIndexPath = NSIndexPath(forItem: model.data.photoIdxList()[currentIdxPath.item], inSection: 0)
                 let topView = view
-                view.layer.removeAllAnimations()
+                //view.layer.removeAllAnimations()
                 
                 placeHoldViewForAnimation = ImageCollectionViewController.placeHolderImageView(forImageView: cell.imageView, presentingView: topView)
                 placeHoldViewForAnimation.layer.masksToBounds = false

@@ -9,17 +9,6 @@
 import UIKit
 import Parse
 
-// disable all the rotations
-extension UINavigationController {
-    public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return (visibleViewController as? PlaySoundViewController)?.supportedInterfaceOrientations() ?? .Portrait
-    }
-    
-    public override func shouldAutorotate() -> Bool {
-        return true
-    }
-}
-
 //TODO: add snapkit to custom tab bar for auto layout http://snapkit.io/
 class CustomTabBarController: UITabBarController {
     
@@ -191,12 +180,16 @@ class CustomTabBarController: UITabBarController {
     func addPlayerViewToTabBar() {
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor.colorWithAlphaComponent(0.2), forState: .Highlighted)
         audioTitleButton.setTitleColor(TabBarSettings.audioTitleColor, forState: .Normal)
-        audioTitleButton.titleLabel?.lineBreakMode = .ByTruncatingTail
+        audioTitleButton.titleLabel?.lineBreakMode = .ByCharWrapping //.ByTruncatingTail //TODO: check which to use
         audioTitleButton.titleLabel?.numberOfLines = TabBarSettings.audioTitleLines
+        audioTitleButton.contentHorizontalAlignment = .Left
+        audioTitleButton.contentEdgeInsets.left = 6
+        audioTitleButton.contentEdgeInsets.right = TabBarSettings.playButtonWidth
         audioTitleButton.titleLabel?.font = TabBarSettings.audioTitleFont
         audioTitleButton.backgroundColor = TabBarSettings.audioButtonBackgroundColor
-        audioTitleButton.titleEdgeInsets.left = 2
-        audioTitleButton.titleEdgeInsets.right = TabBarSettings.playButtonWidth
+        //audioTitleButton.titleLabel?.textAlignment = .Left
+        //audioTitleButton.titleEdgeInsets.left = 4
+        //audioTitleButton.titleEdgeInsets.right = TabBarSettings.playButtonWidth
         audioTitleButton.addTarget(self, action: "openPlayer", forControlEvents: .TouchUpInside)
         customTabBar.addSubview(audioTitleButton)
         

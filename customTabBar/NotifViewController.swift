@@ -10,6 +10,11 @@ import UIKit
 
 class NotifViewController: UITableViewController {
     var headerHeight: CGFloat = 0
+    
+    
+    @IBOutlet weak var tmpLabel: UILabel!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,7 +51,8 @@ class NotifViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Notifications"
-        
+        print(tmpLabel.sizeThatFits(CGSize(width: view.bounds.width, height: CGFloat.max)))
+        print(tmpLabel.frame.height)
     }
 
     // MARK: - Table view data source

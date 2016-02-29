@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension ViewController: UIGestureRecognizerDelegate {
+extension RecordingViewController: UIGestureRecognizerDelegate {
     
     
     private struct Drag {
@@ -19,13 +19,13 @@ extension ViewController: UIGestureRecognizerDelegate {
     
     //The reordering rules between different types of cells
     func customIndexPath(fromIdx: NSIndexPath, toIdx: NSIndexPath, forPoint p: CGPoint) -> NSIndexPath {
-        if model.data[fromIdx.item].dynamicType == model.data[toIdx.item].dynamicType {
+        if addedItems.data[fromIdx.item].dynamicType == addedItems.data[toIdx.item].dynamicType {
             return toIdx
         }
         guard let toCell = collectionView.cellForItemAtIndexPath(toIdx) else {return toIdx}
         let midY = toCell.frame.midY
         
-        if model.data[toIdx.item] is AudioModel {
+        if addedItems.data[toIdx.item] is AudioModel {
             if p.y < midY { //pointInCell.y < toCell.bounds.midY {
                 if fromIdx.item < toIdx.item {
                     return NSIndexPath(forItem: toIdx.item - 1, inSection: toIdx.section)
@@ -39,13 +39,13 @@ extension ViewController: UIGestureRecognizerDelegate {
                     return NSIndexPath(forItem: toIdx.item + 1, inSection: toIdx.section)
                 }
             }
-        } else if model.data[toIdx.item] is PhotoModel {
+        } else if addedItems.data[toIdx.item] is PhotoModel {
             // get the whole line of photo cells
             var minIdxItem = toIdx.item, maxIdxItem = toIdx.item
             
             let checkingBlockBackward = { (inout idxItem: Int) -> Bool in
                 if idxItem >= 0 {
-                    let x = (self.model.data[idxItem] is PhotoModel)
+                    let x = (self.addedItems.data[idxItem] is PhotoModel)
                     if x {return true}
                 }
                 
@@ -64,8 +64,8 @@ extension ViewController: UIGestureRecognizerDelegate {
             }
             
             let checkingBlockForward = { (inout idxItem: Int) -> Bool in
-                if idxItem < self.model.data.count {
-                    let x = (self.model.data[idxItem] is PhotoModel)
+                if idxItem < self.addedItems.data.count {
+                    let x = (self.addedItems.data[idxItem] is PhotoModel)
                     if x {return true}
                 }
                 
@@ -121,7 +121,7 @@ extension ViewController: UIGestureRecognizerDelegate {
             if (idx != Drag.sourceIdx) {
                 //print("from path: \(Drag.sourceIdx.section),\(Drag.sourceIdx.item)    to path \(idx.section),\(idx.item)")
                 //print(collectionView.cellForItemAtIndexPath(idx))
-                model.data.moveItemAtIndex(Drag.sourceIdx.item, toIndex: idx.item)
+                addedItems.data.moveItemAtIndex(Drag.sourceIdx.item, toIndex: idx.item)
                 collectionView.moveItemAtIndexPath(Drag.sourceIdx, toIndexPath: idx)
                 //print(collectionView.cellForItemAtIndexPath(idx))
                 Drag.sourceIdx = idx
@@ -152,7 +152,7 @@ extension ViewController: UIGestureRecognizerDelegate {
                 guard let cell = collectionView.cellForItemAtIndexPath(indexPath) else {return}
                 Drag.sourceIdx = indexPath
                 Drag.sourceCellCenter = cell.center
-                Drag.placeholderView = ViewController.placeholderFromView(cell)
+                Drag.placeholderView = RecordingViewController.placeholderFromView(cell)
                 Drag.placeholderView.center = view.convertPoint(Drag.sourceCellCenter, fromView: collectionView)
                 view.addSubview(Drag.placeholderView)
                 cell.hidden = true
@@ -247,6 +247,29 @@ extension ViewController: UIGestureRecognizerDelegate {
             cell.hidden = true
         } else if cell.hidden {
             cell.hidden = false
+        }
+        
+        if indexPath == audioPlayerCurrentIdxPath {
+            if let c = cell as? UIAudioCell {
+                c.audioProgressLayer.hidden = false
+                if audioPlayer?.playing == true {
+                    resumeAnimation(inPlayer: audioPlayer!, forShapeLayer: c.audioProgressLayer, withTargetRect: c.bounds)
+                    //print("will resume \(c.audioProgressLayer.hidden), \(c.audioProgressLayer), \(c.audioProgressLayer.bounds)")
+                }
+            }
+        }
+        
+    }
+    
+    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+        if indexPath == audioPlayerCurrentIdxPath {
+            if let c = cell as? UIAudioCell {
+                if audioPlayer?.playing == true {
+                    pauseAnimation(inPlayer: audioPlayer!, forShapeLayer: c.audioProgressLayer, withTargetRect: c.bounds)
+                }
+                c.audioProgressLayer.hidden = true
+            }
+            
         }
     }
     

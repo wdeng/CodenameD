@@ -39,7 +39,9 @@ class LeftAlignedLayout: UICollectionViewLayout {
     
     override func prepareLayout() {
         //if cache.isEmpty {
-        // TODO: check if it works in insert scene, may need optimizations, check Pinterest from Ray wench
+        // check if it works in insert scene, may need optimizations, check Pinterest from Ray wench
+        //TODO: doesn't support screen rotate
+        //layout.invalidateLayout()  //  Snapshotting a view that has not been rendered results in an empty snapshot. Ensure your view has been rendered at least once before snapshotting or snapshot after screen updates.
         cache = []
         var xOffset: CGFloat = 0, yOffset: CGFloat = 0
         var rowHeight: CGFloat = 0

@@ -8,7 +8,7 @@
 
 import UIKit
 
-let placeHoldImage = "image2.jpg"
+let placeHoldImage = "image1.jpg"
 
 @objc protocol ImageViewerDelegate {
     func didDeleteModel(atParentIndex idx: Int)
@@ -28,7 +28,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDataSourc
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var model = RecordingModel()
+    weak var model: RecordingModel!// = RecordingModel()
     var placeHoldViewForAnimation: UIImageView!
     var currentParentIndexPath: NSIndexPath! = NSIndexPath(forItem: 0, inSection: 0)
     var currentIndexPath: NSIndexPath? {
@@ -52,6 +52,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDataSourc
         
         ButtonUtils.addShadow(closeButton)
         ButtonUtils.addShadow(deleteButton)
+        if model == nil {
+            debugPrint("model is not set")
+        }
     }
     
     
@@ -83,7 +86,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDataSourc
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("imageViewCell", forIndexPath: indexPath) as! ImageViewCell
         let modelIdx = model.data.photoIdxList()[indexPath.item]
-        if let image = model.data[modelIdx] as? UIImage {
+        if let image = model.data[modelIdx] as? PhotoModel { //TODO: as? UIImage
             cell.imageView.image = image
         } else {
             let image = UIImage(named: placeHoldImage)!
@@ -234,7 +237,6 @@ extension ImageCollectionViewController: UIViewControllerTransitioningDelegate {
         
         if let cell = currentCell {
             let topView = view
-            view.layer.removeAllAnimations()
             
             if placeHoldViewForAnimation == nil {
                 placeHoldViewForAnimation = ImageCollectionViewController.placeHolderImageView(forImageView: cell.imageView, presentingView: topView)

@@ -11,7 +11,7 @@ import UIKit
 
 class RecordingModel: NSObject {
     var data = [AnyObject]()
-    var audioDurations = [Double]()
+    var modelDescriptions = ""//[Double]()
 }
 
 class ButtonUtils: NSObject {
@@ -25,6 +25,21 @@ class ButtonUtils: NSObject {
 }
 
 extension Array {
+    
+    mutating func moveItemAtIndex(fromIndex: Int, toIndex: Int) {
+        let element = self.removeAtIndex(fromIndex)
+        self.insert(element, atIndex: toIndex)
+    }
+    
+    func audioCount() -> Int {
+        var count = 0
+        for i in self {
+            if i is AudioModel {
+                ++count
+            }
+        }
+        return count
+    }
     
     func photoBool() -> [Bool] {
         var bool: [Bool] = []
@@ -84,8 +99,8 @@ struct RecordSettings {
     //for iphone only, iphone is mono input
     static let numberOfChannels:Int = 1
     
-    static let minCellBlankWidth: CGFloat = 100.0
-    static let minAudioButtonWidth: CGFloat = 32.0
+    static let minCellBlankWidth: CGFloat = 36.0
+    static let minAudioButtonWidth: CGFloat = 40.0
 }
 
 struct PlaySoundSetting {

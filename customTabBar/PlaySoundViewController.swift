@@ -92,12 +92,6 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         return .AllButUpsideDown
     }
     
-    func orientationDidChange() {
-        let orientation = UIDevice.currentDevice().orientation
-        
-        print(orientation.rawValue)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
