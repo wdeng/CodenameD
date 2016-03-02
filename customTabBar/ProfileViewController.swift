@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class ProfileViewController: UITableViewController {
+class ProfileViewController: InfiniteTableViewController {
     //THIS IS MAINLY FOR DISPLAY OTHER USERS PROFILE
     
     struct Options {
@@ -36,13 +36,37 @@ class ProfileViewController: UITableViewController {
     
     @IBOutlet weak var profileView: ProfileHeaderView!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupProfile(withOptions: options)
+        
+        tableView.rowHeight = 100.0
+        tableView.registerNib(UINib(nibName: "TestEpisodeCell", bundle: nil), forCellReuseIdentifier: "TestEpisodeCell")
+        
+        tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
+        tableView.contentInset.bottom = TabBarSettings.height
     }
     
+    @IBAction func settings(sender: AnyObject) {
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+            
+        }
+        alertController.addAction(cancelAction)
+        
+        let destroyAction = UIAlertAction(title: "Logout", style: .Destructive) { (action) in
+            
+            PFUser.logOut()
+            //TODO: clear all the user defaults
+            let loginVC = self.storyboard!.instantiateViewControllerWithIdentifier("LoginVC") as! LoginViewController
+            self.presentViewController(loginVC, animated: true, completion: nil)
+        }
+        alertController.addAction(destroyAction)
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
     
-
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -55,7 +79,6 @@ class ProfileViewController: UITableViewController {
         
         tabBarController?.navigationItem.title = profileView.profileName.text
         navigationItem.title = profileView.profileName.text
-        
         
         
         
@@ -75,16 +98,19 @@ class ProfileViewController: UITableViewController {
             tabBarController?.navigationItem.rightBarButtonItems?.removeLast()
         }
     }
-
+    
     // MARK: - Table view data source
-
+    
+    
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return 20
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("episodeCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("TestEpisodeCell", forIndexPath: indexPath)
+        print(cell as? TestEpisodeCell)
 
         // Configure the cell...
 
@@ -104,7 +130,6 @@ class ProfileViewController: UITableViewController {
             return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)
         }
     }
-    
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         //let vc = segue.destinationViewController as! FollowingFollowerVC
@@ -135,9 +160,7 @@ class ProfileViewController: UITableViewController {
                 
                 vc.tableView.reloadData()
             })
-            
         }
-        
     }
     
     @IBAction func followUnfollow(sender: UIButton) {
@@ -145,7 +168,6 @@ class ProfileViewController: UITableViewController {
         guard let id = options[UserProfileKeys.UserID] as? String else {return}
         guard let username = options[UserProfileKeys.Username] as? String else {return}
         if (title == "following") || (title == "follow") {
-                        
             ParseActions.followUnfollow(sender, withID: id, andUsername: username)
         }
     }

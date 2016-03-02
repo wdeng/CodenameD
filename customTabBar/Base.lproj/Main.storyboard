@@ -379,6 +379,9 @@
                                                     <include reference="JX5-wz-Evp"/>
                                                 </mask>
                                             </variation>
+                                            <connections>
+                                                <action selector="settings:" destination="eXb-at-eEt" eventType="touchUpInside" id="Dlw-yc-dpB"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -575,7 +578,7 @@
                             </connections>
                         </view>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="episodeCell" rowHeight="100" id="ZJR-VC-aBc">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="100" id="ZJR-VC-aBc">
                                 <rect key="frame" x="0.0" y="220" width="600" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZJR-VC-aBc" id="I4I-xP-o37">
@@ -600,7 +603,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ko0-o2-zWg" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <barButtonItem image="settings 11" id="KRt-Cg-c1t"/>
             </objects>
-            <point key="canvasLocation" x="361.5" y="386"/>
+            <point key="canvasLocation" x="340.5" y="386"/>
         </scene>
         <!--home-->
         <scene sceneID="BFq-KX-JMd">
@@ -1003,7 +1006,7 @@
         <!--Login View Controller-->
         <scene sceneID="SOT-Nt-NN0">
             <objects>
-                <viewController id="siH-CQ-0Zh" customClass="LoginViewController" customModule="customTabBar" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginVC" id="siH-CQ-0Zh" customClass="LoginViewController" customModule="customTabBar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LU6-gd-ftu"/>
                         <viewControllerLayoutGuide type="bottom" id="7zw-zc-c3h"/>
@@ -1202,6 +1205,7 @@
                         <outlet property="password" destination="tn1-Wa-G4F" id="KDF-fk-Vm6"/>
                         <outlet property="username" destination="rHf-a8-zSr" id="35l-s7-t18"/>
                         <segue destination="zuw-Vg-t9K" kind="show" identifier="login" id="Bl0-2d-RmO"/>
+                        <segue destination="hbZ-lc-wwe" kind="show" identifier="showTheFirstPage" id="7ge-Et-EA1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="K1H-VT-jLz" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1357,7 +1361,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ffs-V8-AaD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-208.5" y="-1921"/>
+            <point key="canvasLocation" x="-135" y="-1974"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="4g4-ir-JKQ">
@@ -1558,7 +1562,7 @@
         <scene sceneID="1bd-Aq-tS9">
             <objects>
                 <tableViewController id="fU0-Nd-H6n" customClass="EditProfileController" customModule="customTabBar" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="AZm-eh-VnE">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="AZm-eh-VnE">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -2063,6 +2067,7 @@
                                 </variation>
                             </label>
                         </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="JT1-sa-hW7" firstAttribute="leading" secondItem="GDl-XV-RCX" secondAttribute="leading" id="90g-Qe-HAN"/>
                             <constraint firstAttribute="bottom" secondItem="JT1-sa-hW7" secondAttribute="bottom" id="EM9-Nt-rfu"/>
@@ -2351,7 +2356,7 @@
                     </connections>
                 </barButtonItem>
             </objects>
-            <point key="canvasLocation" x="-3285" y="-495"/>
+            <point key="canvasLocation" x="-3297" y="-493"/>
         </scene>
         <!--Image Table Content Controller-->
         <scene sceneID="1Jc-Qr-pJo">
@@ -2963,8 +2968,8 @@
         <image name="testim.jpg" width="827" height="464"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="0Gh-mN-icB"/>
+        <segue reference="LUN-mT-dgi"/>
+        <segue reference="Db0-t4-OZd"/>
         <segue reference="uv1-dU-GSv"/>
-        <segue reference="I7W-cb-Hb9"/>
     </inferredMetricsTieBreakers>
 </document>

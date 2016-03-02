@@ -77,7 +77,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             let user = PFUser()
             user.username = username.text?.lowercaseString
             user.password = password.text
-            
+            user["postUpdatedAt"] = user.updatedAt
             user.signUpInBackgroundWithBlock({ (success, error) -> Void in
                 currentUserID = PFUser.currentUser()?.objectId
                 self.activityIndicator.stopAnimating()
@@ -85,7 +85,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 
                 if error == nil {
                     // Signed up
-                    
                     self.performSegueWithIdentifier("login", sender: self)
                     // TODO: could go back to
                 } else {

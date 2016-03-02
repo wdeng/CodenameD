@@ -30,6 +30,8 @@ class HomeFeedController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.tableFooterView = refreshView
+        
         noInternetLabel.hidden = true
         refreshButton.hidden = true
         
@@ -54,7 +56,6 @@ class HomeFeedController: UITableViewController {
     func refreshShouldStop(refresher: UIRefreshControl) {
         if refresher.refreshing { /// Refreshing failed
             refresher.endRefreshing()
-            //tableView.tableHeaderView = refreshView  //TODO: make it show cannot fresh
         }
     }
     

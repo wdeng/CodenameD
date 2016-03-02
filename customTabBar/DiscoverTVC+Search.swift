@@ -19,13 +19,16 @@ extension DiscoverViewController {
         }
         
         guard let vc = searchController.searchResultsController as? SearchResultTVC else {return}
+        //if searchController.searchBar.text != "" {
+            fetchSearchData(searchController.searchBar.text?.lowercaseString) { results in
+                vc.searchedUsers = results
+                vc.tableView.reloadData()
+            }
+        //} else {
+            //vc.searchedUsers = []
+            //vc.tableView.reloadData()
+        //}
         
-        fetchSearchData(searchController.searchBar.text?.lowercaseString) { results in
-            vc.searchedUsers = results
-            vc.tableView.reloadData()
-        }
-        
-        //vc.tableView.reloadData()
     }
     
     func willPresentSearchController(searchController: UISearchController) {

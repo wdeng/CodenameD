@@ -21,7 +21,7 @@ class AudioMerger: NSObject {
     var episode = EpisodeToPlay()
     
     private var audios: [RecordedAudio] = []
-    private var tmpAudios: [AudioModel] = []
+    private var tmpAudios: [NSURL] = []
     private var imageSets: [AddedImageSet] = []
     var outputAudio: NSURL?
     var exportSession: AVAssetExportSession?
@@ -89,7 +89,7 @@ class AudioMerger: NSObject {
                 imagesSets[imagesSets.count-1].append(photo)
                 prevItemType = .Photo
             } else if let audio = items[i] as? AudioModel {
-                tmpAudios.append(audio)
+                tmpAudios.append(audio.filePathURL)
                 sectDurations[imagesSets.count-1] += audio.duration
                 if prevItemType != .Possible {
                     prevItemType = .Audio
@@ -110,6 +110,7 @@ class AudioMerger: NSObject {
         
         episode.imageSets = imagesSets
         episode.sectionDurations = sectDurations
+        episode.thumb = ImageUtils.createCropImageFromSize((episode.imageSets).first?.first as? UIImage)
     }
     
     override init() {
@@ -120,29 +121,9 @@ class AudioMerger: NSObject {
     init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
         super.init()
         
-//        if imageSets.count == 0 {
-//            if let d = (items.first as? RecordedAudio) {
-//                episode.sectionDurations.append(d.duration)
-//                episode.episodeURL = d.filePathURL
-//                return
-//            }
-//        }
+        classifyAudioAndPhoto(fromModel: items)
+        episode.episodeURL = merge(tmpAudios, toOneAudioName: toNewAudio)
         
-        getImageSetions(items)
-        for i in imageSets {
-            episode.sectionDurations.append(i.sectionDuration)
-            episode.imageSets.append(i.images)
-        }
-        episode.thumb = ImageUtils.createCropImageFromSize((episode.imageSets).first?.first as? UIImage)
-        
-        var mergerAudios: [NSURL] = []
-        for i in audios {
-            mergerAudios.append(i.filePathURL)
-        }
-        
-        
-        
-        episode.episodeURL = merge(mergerAudios, toOneAudioName: toNewAudio)
     }
     
         

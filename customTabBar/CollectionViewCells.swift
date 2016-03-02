@@ -24,6 +24,8 @@ class UIPhotoCell: UICollectionViewCell {
         //selected = true
     }
     
+    
+    
     override var selected: Bool {
         didSet {
             if selected {

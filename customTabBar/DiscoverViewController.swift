@@ -9,18 +9,13 @@
 import UIKit
 import Parse
 
-class DiscoverViewController: UITableViewController, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, SearchResultsDelegate {
+class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, SearchResultsDelegate {
     
-    //var searchedData = ["One","Two","Three","Twenty-One"]
     var fetchedUsers = [PFUser]()
     var searchController: UISearchController!
     
-    //var leftBarButton: UIBarButtonItem!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        allNotFollowed()
         
         // TODO: custom search controller with segment controls
         searchController = {
@@ -40,7 +35,7 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating, UI
             
             controller.hidesNavigationBarDuringPresentation = false
             controller.dimsBackgroundDuringPresentation = false
-            controller.searchBar.placeholder = "Search"
+            controller.searchBar.placeholder = "Search by Username"
             //controller.searchBar.sizeToFit()
             
             return controller}()
@@ -58,6 +53,22 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating, UI
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    
+    override func loadItems(type: LoadType, size: Int) {
+        if isLoadingItems {
+            return
+        }
+        
+        var start = 0
+        if type == .Reload {
+            start = 0
+        } else if type == .AddOn {
+            start = fetchedUsers.count
+        }
+        
+        usersNotFollowing(start, size: size)
     }
     
     
@@ -81,7 +92,7 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating, UI
         
         if let text = item["intro"] as? String {
             if cell.detailTextLabel?.text != nil {
-                cell.detailTextLabel!.text! += (" ● " + text)
+                cell.detailTextLabel!.text! += (" • " + text)
             }
         }
         
@@ -107,17 +118,24 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating, UI
     
     
     // MARK: following users
-    func allNotFollowed() {
+    func usersNotFollowing(skip: Int, size: Int) {
+        
+        isLoadingItems = true
         var errorMessage = "Please try again later"
+        
         guard let queryA = PFUser.query() else {return}
         let queryB = PFQuery(className: "Activities")
-        
         queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
         queryB.whereKey("type", equalTo: "following")
         queryA.whereKey("objectId", doesNotMatchKey: "toUser", inQuery: queryB)
         
-        queryA.limit = 100
+        queryA.limit = size
+        queryA.skip = skip
         queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+            self.refreshControl?.endRefreshing()
+            self.isLoadingItems = false
+            
+            
             if error != nil {
                 if let errorString = error!.userInfo["error"] as? String {
                     errorMessage = errorString
@@ -128,16 +146,31 @@ class DiscoverViewController: UITableViewController, UISearchResultsUpdating, UI
             
             guard let users = objects else {return}
             
-            //var searchedUsers = [PFUser]()
+            if skip <= 0 {
+                self.fetchedUsers.removeAll()
+            }
+            
             for object in users {
                 guard let u = object as? PFUser else {return}
                 if (u.objectId! == PFUser.currentUser()?.objectId) || (u.username == nil) {continue}
-                
                 self.fetchedUsers.append(u)
             }
-            self.tableView.reloadData()
+            
+            if skip <= 0 {
+                self.tableView.reloadData()
+            } else {
+                
+                var idxPath = [NSIndexPath]()
+                for i in skip ..< self.fetchedUsers.count {
+                    idxPath.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                self.tableView.insertRowsAtIndexPaths(idxPath, withRowAnimation: .None)
+            }
+            
+            if users.count < size {
+                self.allItemsLoaded = true
+            }
         }
-        
     }
     
     

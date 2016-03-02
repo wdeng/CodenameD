@@ -36,136 +36,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         tableView.keyboardDismissMode = .OnDrag
     }
     
-    //TODO: handle errors!!!
-    // should set the pffiles else where
-    func uploadImages() {
-        if episodeCreating.episode.imageSets.count == 0 {return}
-        
-        //images
-        var images: [[PFFile]] = []
-        for i in 0 ..< episodeCreating.episode.imageSets.count {
-            var imSect = [PFFile]()
-            let set = episodeCreating.episode.imageSets[i] as! [UIImage]
-            for j in 0 ..< set.count {
-                let imData = UIImageJPEGRepresentation(set[j], GeneralSettings.compressQuality)
-                if let im = PFFile(data: imData!) {
-                    imSect.append(im)
-                }
-            }
-            images.append(imSect)
-        }
-        post["images"] = images
-        
-        //thumbnail
-        if let thumbImage = episodeCreating.episode.thumb as? UIImage {
-            let thumb = UIImageJPEGRepresentation(thumbImage, GeneralSettings.compressQuality)
-            post["thumb"] = PFFile(data: thumb!)
-        }
-        
-        //lengths
-        var sectionDurs: [Double] = []
-        for i in episodeCreating.episode.sectionDurations {
-            sectionDurs.append(i)
-        }
-        post["durations"] = sectionDurs
-        
-        post.saveInBackgroundWithBlock{(success, error) -> Void in
-            if success {
-                print("images uploaded")
-                print(self.post.updatedAt)
-                //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
-            } else {
-                AppUtils.displayAlert("Could not upload images", message: "Please try again later", onViewController: self)
-            }
-        }
-    }
-    
-    func uploadAudio() {
-        //TODO: delete PFFile filenames
-        guard let audioData = NSData(contentsOfURL: episodeCreating.episode.episodeURL!) else {return}
-        post["audio"] = PFFile(name: "audio.m4a", data: audioData)
-        post.saveInBackgroundWithBlock{(success, error) -> Void in
-            if success {
-                print(self.post.updatedAt)
-                //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
-            } else {
-                AppUtils.displayAlert("Could not upload audio", message: "Please try again later", onViewController: self)
-            }
-        }
-        
-    }
-    
-    @IBAction func postEpisode(sender: AnyObject) {
-        
-        if episodeTitle.textColor == UIColor.lightGrayColor() || episodeTitle.text.isEmpty {
-            post["title"] = "Posted an Episode"
-        }
-        else { post["title"] = episodeTitle.text }
-        post["userId"] = PFUser.currentUser()!.objectId!
-        
-        post.saveInBackgroundWithBlock{(success, error) -> Void in
-            if error == nil {
-                self.updateFollowersTime(self.post.updatedAt)
-            } else {
-                AppUtils.displayAlert("Could not post", message: "Please try again later", onViewController: self)
-            }
-        }
-    }
-    
-    func updateFollowersTime(date: NSDate?) {
-        
-        let q = PFQuery(className: "Activities")
-        q.whereKey("toUser", equalTo: PFUser.currentUser()!.objectId!)
-        q.whereKey("type", equalTo: "following")
-        
-        q.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-            if error != nil {
-                AppUtils.displayAlert("Fetching Users Failed", message: "Please try later", onViewController: self)
-                return
-            }
-            
-            // Need to change updatedAt
-            for i in 0 ..< objects!.count {
-                objects![i]["type"] = "following"
-            }
-            
-            // TODO: change into only use save() to change updatedAt remove postUpdatedAt
-            PFObject.saveAllInBackground(objects)
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
-    
-
-    //MARK: Segue to Section Playing Scene
-    @IBOutlet weak var episodeTitle: UITextView!
-    @IBOutlet weak var openPlayer: UIButton!
-    
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
-        if identifier == "showSoundPlayer" {
-            if finishedMerging != true { return false}
-            else {return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)}
-        }
-        else {
-            return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)
-        }
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if (segue.identifier == "showSoundPlayer") {
-            
-            audioPlayer.setPlayerItemWithURL(episodeCreating.episode.episodeURL!)
-            audioPlayer.play()
-            
-            let postEpisodeVC = segue.destinationViewController as! PlaySoundViewController
-            postEpisodeVC.episode = episodeCreating.episode
-            // This make the user can see through the VC to the parent View, or OverFullScreen
-            if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
-                postEpisodeVC.modalPresentationStyle = .OverFullScreen
-            }
-        }
-    }
-    
-    
     
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var bottomSpaceConstraint: NSLayoutConstraint!
@@ -173,11 +43,12 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        containerView.frame.size.height = 80.0
+        
         if episodeTitle.text.isEmpty {
             episodeTitle.text = "Title"
             episodeTitle.textColor = UIColor.lightGrayColor()
         }
-        containerView.frame.size.height = 80.0
         
         finishedMerging = false
         episodeCreating = AudioMerger(withItems: receivedBundles)
@@ -214,7 +85,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     
     //MARK: textView delegate
     func textViewDidBeginEditing(textView: UITextView) {
-        print("begin editing")
+        //print("begin editing")
         if textView.textColor == UIColor.lightGrayColor() {
             textView.text = nil
             textView.textColor = UIColor.blackColor()
@@ -231,15 +102,192 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     //MARK: audio merger delegate
     func mergingDidFinished(status: AVAssetExportSessionStatus) {
         if status == .Completed {
-            print("Merging complete")
+            debugPrint("Merging complete")
             uploadAudio()
             finishedMerging = true
         }
         else {
             finishedMerging = nil
-            print("Merge Of Audios failed")
+            debugPrint("Merge Of Audios failed")
         }
         
     }
+    
+    //TODO: handle errors!!!
+    // should set the pffiles else where
+    func uploadImages() {
+        if episodeCreating.episode.imageSets.count == 0 {return}
+        
+        //images
+        var images: [[PFFile]] = []
+        for i in 0 ..< episodeCreating.episode.imageSets.count {
+            var imSect = [PFFile]()
+            let set = episodeCreating.episode.imageSets[i] as! [UIImage]
+            for j in 0 ..< set.count {
+                let imData = UIImageJPEGRepresentation(set[j], GeneralSettings.compressQuality)
+                if let im = PFFile(data: imData!) {
+                    imSect.append(im)
+                }
+            }
+            images.append(imSect)
+        }
+        post["images"] = images
+        
+        //thumbnail
+        if let thumbImage = episodeCreating.episode.thumb as? UIImage {
+            let thumb = UIImageJPEGRepresentation(thumbImage, GeneralSettings.compressQuality)
+            post["thumb"] = PFFile(data: thumb!)
+        }
+        
+        //lengths
+        var sectionDurs: [Double] = []
+        for i in episodeCreating.episode.sectionDurations {
+            sectionDurs.append(i)
+        }
+        post["durations"] = sectionDurs
+        
+        post.saveInBackgroundWithBlock{(success, error) -> Void in
+            if success {
+                //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
+            } else {
+                AppUtils.displayAlert("Could not upload images", message: "Please try again later", onViewController: self)
+            }
+        }
+    }
+    
+    func uploadAudio() {
+        //TODO: delete PFFile filenames
+        guard let audioData = NSData(contentsOfURL: episodeCreating.episode.episodeURL!) else {return}
+        post["audio"] = PFFile(name: "audio.m4a", data: audioData)
+        post.saveInBackgroundWithBlock{(success, error) -> Void in
+            if success {
+                //AppUtils.displayAlert("Image Posted!", message: "Your image has been posted successfully", onViewController: self)
+            } else {
+                AppUtils.displayAlert("Could not upload audio", message: "Please try again later", onViewController: self)
+            }
+        }
+        
+    }
+    
+    @IBAction func postEpisode(sender: AnyObject) {
+        episodeTitle.resignFirstResponder()
+        
+        if episodeTitle.textColor == UIColor.lightGrayColor() || episodeTitle.text.isEmpty {
+            post["title"] = "Posted an Episode"
+        }
+        else { post["title"] = episodeTitle.text }
+        post["userId"] = PFUser.currentUser()!.objectId!
+        
+        post.saveInBackgroundWithBlock{(success, error) -> Void in
+            if error == nil {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            } else {
+                AppUtils.displayAlert("Could not post", message: "Please try again later", onViewController: self)
+            }
+        }
+        PFUser.currentUser()!["postUpdatedAt"] = post.updatedAt
+        PFUser.currentUser()?.saveInBackground()
+    }
+    
+    func updateFollowersTime(date: NSDate?) {
+        
+        let q = PFQuery(className: "Activities")
+        q.whereKey("toUser", equalTo: PFUser.currentUser()!.objectId!)
+        q.whereKey("type", equalTo: "following")
+        episodeTitle.resignFirstResponder()
+        q.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+            if error != nil {
+                AppUtils.displayAlert("Fetching Users Failed", message: "Please try later", onViewController: self)
+                return
+            }
+            // Need to change updatedAt
+            for i in 0 ..< objects!.count {
+                print(self.post.updatedAt)
+                objects![i]["postUpdatedAt"] = self.post.updatedAt
+            }
+            
+            //PFObject.saveAllInBackground(objects)
+            
+            PFObject.saveAllInBackground(objects) { (success, error) in
+                print(success)
+                print(error)
+            }
+            
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+    }
+    
+    
+    //MARK: Segue to Section Playing Scene
+    @IBOutlet weak var episodeTitle: UITextView!
+    @IBOutlet weak var openPlayer: UIButton!
+    
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        if identifier == "showSoundPlayer" {
+            if finishedMerging != true { return false}
+            //else {return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)}
+        }
+        
+        return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "showSoundPlayer") {
+            
+            audioPlayer.setPlayerItemWithURL(episodeCreating.episode.episodeURL!)
+            audioPlayer.play()
+            
+            let postEpisodeVC = segue.destinationViewController as! PlaySoundViewController
+            postEpisodeVC.episode = episodeCreating.episode
+            // This make the user can see through the VC to the parent View, or OverFullScreen
+            if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
+                postEpisodeVC.modalPresentationStyle = .OverFullScreen
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
