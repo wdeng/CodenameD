@@ -69,9 +69,7 @@ extension RecordSoundViewController {
     @IBAction func deleteAction(sender: AnyObject) {
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-            
-        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { _ in}
         alertController.addAction(cancelAction)
         
         let multiplier = recordedTableView.indexPathsForSelectedRows?.count > 1 ? "s" : ""

@@ -20,12 +20,11 @@
 		76017D731C1CD48900E9693B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D721C1CD48900E9693B /* SystemConfiguration.framework */; };
 		76017D751C1CD49800E9693B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D741C1CD49800E9693B /* libz.tbd */; };
 		76017D771C1CD4A000E9693B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D761C1CD4A000E9693B /* libsqlite3.tbd */; };
-		76017D7B1C1E12D800E9693B /* ChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7A1C1E12D800E9693B /* ChannelViewController.swift */; };
 		76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7C1C1E17F800E9693B /* ProfileViewController.swift */; };
 		76017D801C1E19BD00E9693B /* FollowingFollowerTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D7F1C1E19BD00E9693B /* FollowingFollowerTVC.swift */; };
-		7607CD3C1C8559AC00FE51C0 /* TestEpisodeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7607CD3B1C8559AC00FE51C0 /* TestEpisodeCell.xib */; };
+		7607CD3C1C8559AC00FE51C0 /* EpisodeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7607CD3B1C8559AC00FE51C0 /* EpisodeCell.xib */; };
 		7607CD3E1C85604E00FE51C0 /* InfiniteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7607CD3D1C85604E00FE51C0 /* InfiniteTableViewController.swift */; };
-		7607CD451C8655FE00FE51C0 /* TestEpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7607CD431C8655FE00FE51C0 /* TestEpisodeCell.swift */; };
+		7607CD481C8942E300FE51C0 /* RecordingVC+Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7607CD471C8942E300FE51C0 /* RecordingVC+Record.swift */; };
 		761984C71C6F96680004D3AC /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767659F81C5600D20078CFF4 /* EditProfileController.swift */; };
 		761984C91C7175A20004D3AC /* SearchResultTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761984C81C7175A20004D3AC /* SearchResultTVC.swift */; };
 		761D03351C171D8100BF37A2 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D03341C171D8100BF37A2 /* Cache.swift */; };
@@ -45,8 +44,6 @@
 		762A29621C82C8DD00FA9302 /* image1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 762A29611C82C8DD00FA9302 /* image1.jpg */; };
 		7647BC5D1C1B95AD0092E96D /* TabBarPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */; };
 		764C43041C156F68009F29E8 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764C43031C156F68009F29E8 /* CustomTabBarController.swift */; };
-		764C430A1C16B7C7009F29E8 /* mkbhd.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 764C43091C16B7C7009F29E8 /* mkbhd.jpg */; };
-		764C430C1C16B821009F29E8 /* testim.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 764C430B1C16B821009F29E8 /* testim.jpg */; };
 		766E97661C289AEA0012EDA9 /* NumTypes+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97641C289AEA0012EDA9 /* NumTypes+Conversion.swift */; };
 		766E97671C289AEA0012EDA9 /* MeterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E97651C289AEA0012EDA9 /* MeterTable.swift */; };
 		766E97761C2934640012EDA9 /* AudioMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E976D1C2934640012EDA9 /* AudioMerger.swift */; };
@@ -97,12 +94,11 @@
 		76017D721C1CD48900E9693B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		76017D741C1CD49800E9693B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		76017D761C1CD4A000E9693B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
-		76017D7A1C1E12D800E9693B /* ChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewController.swift; sourceTree = "<group>"; };
 		76017D7C1C1E17F800E9693B /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		76017D7F1C1E19BD00E9693B /* FollowingFollowerTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingFollowerTVC.swift; sourceTree = "<group>"; };
-		7607CD3B1C8559AC00FE51C0 /* TestEpisodeCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestEpisodeCell.xib; sourceTree = "<group>"; };
+		7607CD3B1C8559AC00FE51C0 /* EpisodeCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EpisodeCell.xib; sourceTree = "<group>"; };
 		7607CD3D1C85604E00FE51C0 /* InfiniteTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteTableViewController.swift; sourceTree = "<group>"; };
-		7607CD431C8655FE00FE51C0 /* TestEpisodeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEpisodeCell.swift; sourceTree = "<group>"; };
+		7607CD471C8942E300FE51C0 /* RecordingVC+Record.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RecordingVC+Record.swift"; sourceTree = "<group>"; };
 		761984C81C7175A20004D3AC /* SearchResultTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultTVC.swift; sourceTree = "<group>"; };
 		761D03341C171D8100BF37A2 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		761D03361C171DAF00BF37A2 /* Episode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
@@ -121,8 +117,6 @@
 		762A29611C82C8DD00FA9302 /* image1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image1.jpg; sourceTree = "<group>"; };
 		7647BC5C1C1B95AD0092E96D /* TabBarPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarPlayButton.swift; sourceTree = "<group>"; };
 		764C43031C156F68009F29E8 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
-		764C43091C16B7C7009F29E8 /* mkbhd.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mkbhd.jpg; sourceTree = "<group>"; };
-		764C430B1C16B821009F29E8 /* testim.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testim.jpg; sourceTree = "<group>"; };
 		766E97641C289AEA0012EDA9 /* NumTypes+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NumTypes+Conversion.swift"; sourceTree = "<group>"; };
 		766E97651C289AEA0012EDA9 /* MeterTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeterTable.swift; sourceTree = "<group>"; };
 		766E976D1C2934640012EDA9 /* AudioMerger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioMerger.swift; sourceTree = "<group>"; };
@@ -220,7 +214,6 @@
 				767659F81C5600D20078CFF4 /* EditProfileController.swift */,
 				76017D7F1C1E19BD00E9693B /* FollowingFollowerTVC.swift */,
 				76F717581C1E3F4C00B79AC1 /* FollowCell.swift */,
-				76017D7A1C1E12D800E9693B /* ChannelViewController.swift */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -244,6 +237,7 @@
 				762A294F1C82B66C00FA9302 /* RecordingVC.swift */,
 				762A295F1C82BE9900FA9302 /* RecordingVC+Edit.swift */,
 				762A29511C82B67300FA9302 /* RecordVC+Drag.swift */,
+				7607CD471C8942E300FE51C0 /* RecordingVC+Record.swift */,
 				762A29531C82B6EE00FA9302 /* CollectionViewCells.swift */,
 				762A29551C82B6F700FA9302 /* UICollectionViewLeftAlignedLayout.swift */,
 				762A29571C82B6FF00FA9302 /* ImageCollectionViewController.swift */,
@@ -318,14 +312,14 @@
 				762A29611C82C8DD00FA9302 /* image1.jpg */,
 				76F7175C1C1F228500B79AC1 /* AppSettings.swift */,
 				7607CD3D1C85604E00FE51C0 /* InfiniteTableViewController.swift */,
-				7607CD3B1C8559AC00FE51C0 /* TestEpisodeCell.xib */,
-				7607CD431C8655FE00FE51C0 /* TestEpisodeCell.swift */,
+				7607CD3B1C8559AC00FE51C0 /* EpisodeCell.xib */,
+				76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */,
 				7687069F1C1563AB00D1A457 /* Main.storyboard */,
 				76017D791C1CFF5C00E9693B /* Login */,
+				76F7175E1C1F307800B79AC1 /* Record */,
+				76D0AC2F1C4B23C2000EA60A /* SectionPlayer */,
 				7647BC5B1C1B95010092E96D /* TabBar */,
 				76F8FC4E1C16E026009B7E81 /* Home */,
-				76D0AC2F1C4B23C2000EA60A /* SectionPlayer */,
-				76F7175E1C1F307800B79AC1 /* Record */,
 				76F717671C20F2E000B79AC1 /* Discover */,
 				766E97901C2AFC5C0012EDA9 /* Notifications */,
 				76017D7E1C1E17FE00E9693B /* Profile */,
@@ -380,9 +374,6 @@
 			children = (
 				769A262E1C16D748007A2EDA /* HomeFeedController.swift */,
 				76F8FC511C16E089009B7E81 /* ChannelCell.swift */,
-				764C430B1C16B821009F29E8 /* testim.jpg */,
-				76F8FC4F1C16E053009B7E81 /* EpisodeCell.swift */,
-				764C43091C16B7C7009F29E8 /* mkbhd.jpg */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -447,10 +438,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				768706A61C1563AB00D1A457 /* LaunchScreen.storyboard in Resources */,
-				7607CD3C1C8559AC00FE51C0 /* TestEpisodeCell.xib in Resources */,
+				7607CD3C1C8559AC00FE51C0 /* EpisodeCell.xib in Resources */,
 				768706A31C1563AB00D1A457 /* Assets.xcassets in Resources */,
-				764C430A1C16B7C7009F29E8 /* mkbhd.jpg in Resources */,
-				764C430C1C16B821009F29E8 /* testim.jpg in Resources */,
 				768706A11C1563AB00D1A457 /* Main.storyboard in Resources */,
 				762A29621C82C8DD00FA9302 /* image1.jpg in Resources */,
 			);
@@ -478,7 +467,6 @@
 				761D03351C171D8100BF37A2 /* Cache.swift in Sources */,
 				766E977E1C2934640012EDA9 /* SectionSlider.swift in Sources */,
 				762A29541C82B6EE00FA9302 /* CollectionViewCells.swift in Sources */,
-				7607CD451C8655FE00FE51C0 /* TestEpisodeCell.swift in Sources */,
 				766E97661C289AEA0012EDA9 /* NumTypes+Conversion.swift in Sources */,
 				762A29601C82BE9900FA9302 /* RecordingVC+Edit.swift in Sources */,
 				76F8FC521C16E089009B7E81 /* ChannelCell.swift in Sources */,
@@ -491,6 +479,7 @@
 				762A29561C82B6F700FA9302 /* UICollectionViewLeftAlignedLayout.swift in Sources */,
 				761D03391C171DAF00BF37A2 /* Channel.swift in Sources */,
 				766E977D1C2934640012EDA9 /* ImageTableContentCell.swift in Sources */,
+				7607CD481C8942E300FE51C0 /* RecordingVC+Record.swift in Sources */,
 				766E97771C2934640012EDA9 /* PostEpisodeTVC.swift in Sources */,
 				76017D801C1E19BD00E9693B /* FollowingFollowerTVC.swift in Sources */,
 				761984C71C6F96680004D3AC /* EditProfileController.swift in Sources */,
@@ -515,7 +504,6 @@
 				761984C91C7175A20004D3AC /* SearchResultTVC.swift in Sources */,
 				76017D7D1C1E17F800E9693B /* ProfileViewController.swift in Sources */,
 				76F717661C20F2DA00B79AC1 /* DiscoverViewController.swift in Sources */,
-				76017D7B1C1E12D800E9693B /* ChannelViewController.swift in Sources */,
 				762A295C1C82B70E00FA9302 /* ImageViewCell.swift in Sources */,
 				764C43041C156F68009F29E8 /* CustomTabBarController.swift in Sources */,
 			);

@@ -38,6 +38,8 @@ class HomeFeedController: UITableViewController {
         tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
         tableView.contentInset.bottom = TabBarSettings.height
         
+        tableView.registerNib(UINib(nibName: "EpisodeCell", bundle: nil), forCellReuseIdentifier: "episodeCell")
+        
         refreshControl = UIRefreshControl()
         refreshControl!.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
         //feeds = NSKeyedUnarchiver.unarchiveObjectWithFile(homeFeedFilePath) as? [ChannelFeed] ?? [homeFeedFilePath]()
@@ -140,9 +142,9 @@ class HomeFeedController: UITableViewController {
     }
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.row == 0 {
-            return 40
+            return 50
         } else {
-            return 85
+            return 100
         }
     }
     
@@ -150,18 +152,16 @@ class HomeFeedController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell", forIndexPath: indexPath) as! ChannelCell
-            
-            chCell.name.text = feeds[indexPath.section].username
-            feeds[indexPath.section].userThumb?.getDataInBackgroundWithBlock { (data, error) -> Void in
-                guard let data = data else {return}
-                if let thumb = UIImage(data: data) {
-                    chCell.photo.image = thumb
-                }
+            var profileName = ((feeds[indexPath.section].user?["profileName"] ?? nil) as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            if profileName?.isEmpty != false {
+                profileName = feeds[indexPath.section].user?.username
             }
+            chCell.name.text = profileName
+            
             return chCell
         }
         else {
-            let epCell = tableView.dequeueReusableCellWithIdentifier("contentCell", forIndexPath: indexPath) as! EpisodeCell
+            let epCell = tableView.dequeueReusableCellWithIdentifier("episodeCell", forIndexPath: indexPath) as! EpisodeCell
         
             //Image Files are PFFile type
             let episode = feeds[indexPath.section].episodes[indexPath.row-1]
@@ -172,8 +172,27 @@ class HomeFeedController: UITableViewController {
                 }
             }
             
+            epCell.uploadTime.text = AppUtils.dateToUploadTime(episode.uploadDate)
+            
             epCell.title.text = episode.episodeTitle
-            epCell.duration.text = AppUtils.durationToClockTime(episode.sectionDurations.reduce(0, combine: +))
+            let dur = AppUtils.durationToClockTime(episode.sectionDurations.reduce(0, combine: +))
+            epCell.durationAndLikes.text = dur + " • " + "0 like"
+            
+            let query = PFQuery(className: "Activities")
+            query.whereKey("type", equalTo: "like")
+            if let id = episode.episodeId {
+                query.whereKey("episode", equalTo: id)
+                query.countObjectsInBackgroundWithBlock{ (count, error) -> Void in
+                    if error != nil {
+                        debugPrint("couldn't fetch Activities")
+                        return
+                    }
+                    
+                    let appendix = count > 1 ? "s" : ""
+                    epCell.durationAndLikes.text = dur + " • \(count) like" + appendix
+                }
+            }
+            
             
             epCell.otherOptions.addTarget(self, action: Selector("otherFunctions:"), forControlEvents: .TouchUpInside)
 
@@ -182,23 +201,20 @@ class HomeFeedController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.row != 0 {
+            self.performSegueWithIdentifier("openPlayer", sender: indexPath)
+        } else {
+            self.performSegueWithIdentifier("showUserProfile", sender: indexPath)
+        }
+        
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let idx = tableView.indexPathForCell(sender as! UITableViewCell) else {return}
+        guard let idx = sender else {return}
         if segue.identifier == "showUserProfile" {
-            
-            let options : [String : AnyObject?] = [
-                UserProfileKeys.UserID : feeds[idx.section].userId,
-                UserProfileKeys.Username : feeds[idx.section].username,
-                UserProfileKeys.Name : "Profile Name",
-                UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
-                UserProfileKeys.Weblink : "www.facebook.com",
-                //UserProfileKeys.UserID : feeds[idx.section].userId
-            ]
             let profileVC = segue.destinationViewController as! ProfileViewController
-            profileVC.options = options
+            profileVC.user = feeds[idx.section].user ?? PFUser()
             
         } else if segue.identifier == "openPlayer" {
             let playVC = segue.destinationViewController as! PlaySoundViewController
@@ -241,6 +257,10 @@ class HomeFeedController: UITableViewController {
         alertController.addAction(reportAct)
         
         self.presentViewController(alertController, animated: true, completion: nil)
+        
+        for action in alertController.actions {
+            action.enabled = false
+        }
     }
 }
 

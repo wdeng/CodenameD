@@ -35,7 +35,7 @@ class InfiniteTableViewController: UITableViewController {
         tableView.tableFooterView?.hidden = false
         
         allItemsLoaded = false
-        loadItems(.AddOn, size: sizePerPage)
+        loadItems(.Reload, size: sizePerPage)
         performSelector("refreshShouldStop", withObject: nil, afterDelay: 10.0)
     }
     

@@ -129,6 +129,8 @@ class BarChartView: UIView {
         return result / Double(nums.count)
     }
     
+
+    
 }
 
 

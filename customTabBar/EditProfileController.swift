@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Parse
 
-class EditProfileController: UITableViewController {
+class EditProfileController: UITableViewController, UITextFieldDelegate {
     //TODO: use left view textField.leftView to set edit profile items
     //http://stackoverflow.com/questions/22326288/how-do-i-add-padding-to-a-uitextfield-with-an-icon
     //http://stackoverflow.com/questions/27903500/swift-add-icon-image-in-uitextfield
@@ -35,47 +36,94 @@ class EditProfileController: UITableViewController {
 //    [self.passwordTextField setLeftViewMode:UITextFieldViewModeAlways];
     
     @IBOutlet weak var displayName: UITextField!
-    @IBOutlet weak var username: UITextField!
     @IBOutlet weak var webLink: UITextField!
-    @IBOutlet weak var email: UITextField!
+    @IBOutlet weak var intro: UITextField!
     
-    @IBOutlet weak var profilePicCell: UITableViewCell!
+    @IBOutlet weak var saveButton: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        //saveButton.enabled = false
+        webLink.delegate = self
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        let user = PFUser.currentUser()!
         
+        if let name = user["profileName"] {
+            displayName.text = name as? String
+        }
+        if let web = user["website"] {
+            webLink.text = web as? String
+        }
+        if let introduction = user["introduction"] {
+            intro.text = introduction as? String
+        }
+    }
+    
+    @IBAction func saveProfile(sender: AnyObject) {
         
+        if ((webLink.text?.isEmpty) == false) {
+            if let urlString = verifyURL(webLink.text) {
+                webLink.text = urlString
+            } else {
+                webLink.textColor = UIColor.redColor()
+                return
+            }
+        }
+        PFUser.currentUser()!["profileName"] = displayName.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        PFUser.currentUser()!["website"] = webLink.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        PFUser.currentUser()!["introduction"] = intro.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
-        webLink.text = nil
-        print(displayName.text)
-        print(webLink.text)
+        AppUtils.addCustomView(toBarItem: saveButton)
+        
+        PFUser.currentUser()?.saveInBackgroundWithBlock{(success, error) -> Void in
+            self.saveButton.customView = nil
+            if success {
+                self.performSegueWithIdentifier("saveEditProfile", sender: sender)
+            } else {
+                AppUtils.displayAlert("Could not upload Information", message: "Please try again later", onViewController: self)
+            }
+        }
         
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func textViewDidBeginEditing(textView: UITextView) {
+        if textView.textColor == UIColor.redColor() {
+            textView.textColor = UIColor.blackColor()
+        }
     }
-
-    // MARK: - Table view data source
-
-//    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-//        // #warning Incomplete implementation, return the number of sections
-//        return 0
-//    }
-//
-//    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        // #warning Incomplete implementation, return the number of rows
-//        return 0
-//    }
-
-    /*
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
-
-        // Configure the cell...
-
-        return cell
+    
+    
+    @IBAction func resignKeyboard(sender: AnyObject) {
+        sender.resignFirstResponder()
     }
-    */
-
+    
+    
+    func verifyURL(urlString: String?) -> String? {
+        //let link =  "http://www.yourUrl.com".stringByRemovingPercentEncoding!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+        if var urlString = urlString?.stringByTrimmingCharactersInSet( NSCharacterSet.whitespaceAndNewlineCharacterSet()) {
+            //let re = try! NSRegularExpression(pattern: "https?:\\/.*", options: .CaseInsensitive)
+            
+            let regex = "http(s)?://.*"
+            if !NSPredicate(format: "SELF MATCHES %@", regex).evaluateWithObject(urlString.lowercaseString) {
+                urlString = "http://" + urlString
+            }
+            
+            //TODO: check if it works
+            let reg = "http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%#&=]*)?"
+            
+            if let url = NSURL(string: urlString) {
+                if UIApplication.sharedApplication().canOpenURL(url) {
+                    if NSPredicate(format: "SELF MATCHES %@", reg).evaluateWithObject(urlString.lowercaseString) {
+                        return urlString
+                    }
+                }
+            }
+        }
+        
+        
+        return nil
+    }
 }

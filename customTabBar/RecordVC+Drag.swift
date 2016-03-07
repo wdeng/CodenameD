@@ -119,8 +119,6 @@ extension RecordingViewController: UIGestureRecognizerDelegate {
         if var idx = idx {
             idx = customIndexPath(Drag.sourceIdx, toIdx: idx, forPoint: p)
             if (idx != Drag.sourceIdx) {
-                //print("from path: \(Drag.sourceIdx.section),\(Drag.sourceIdx.item)    to path \(idx.section),\(idx.item)")
-                //print(collectionView.cellForItemAtIndexPath(idx))
                 addedItems.data.moveItemAtIndex(Drag.sourceIdx.item, toIndex: idx.item)
                 collectionView.moveItemAtIndexPath(Drag.sourceIdx, toIndexPath: idx)
                 //print(collectionView.cellForItemAtIndexPath(idx))
@@ -164,7 +162,6 @@ extension RecordingViewController: UIGestureRecognizerDelegate {
                     }, completion: { (_) in
                         //cell.hidden = true
                 })
-                
             }
         case .Changed:
             if (Drag.sourceIdx == nil) || (Drag.placeholderView == nil) {return}

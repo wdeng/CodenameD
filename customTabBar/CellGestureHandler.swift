@@ -91,7 +91,7 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate {
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
         default:    // failed or canceled
-            debugPrint("failed")
+            debugPrint("failed or canceled")
             if orientationBeforeDismiss == .Unknown {
                 self.dismissViewControllerAnimated(true, completion: nil)
             }

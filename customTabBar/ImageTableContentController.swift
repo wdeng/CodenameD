@@ -30,6 +30,7 @@ class ImageTableContentController: UITableViewController {
         //print("view did load")
         super.viewDidLoad()
         tableView.contentInset.bottom = 20
+        tableView.contentInset.top = 74
     }
 
     // MARK: - Table view data source

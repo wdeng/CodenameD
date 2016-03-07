@@ -133,15 +133,18 @@ class CustomTabBarController: UITabBarController {
             }
         } else if let vc = viewControllers![button.tag] as? ProfileViewController {
             
-            let options : [String : AnyObject?] = [
-                UserProfileKeys.UserID : PFUser.currentUser()?.objectId,
-                UserProfileKeys.Username : PFUser.currentUser()?.username,
-                //UserProfileKeys.Name : "Profile Name",
-                UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
-                UserProfileKeys.Weblink : "www.facebook.com",
-                UserProfileKeys.ShouldHideNavOfTabBar : false
-            ]
-            vc.options = options
+//            let options : [String : AnyObject?] = [
+//                UserProfileKeys.UserID : PFUser.currentUser()?.objectId,
+//                UserProfileKeys.Username : PFUser.currentUser()?.username,
+//                //UserProfileKeys.Name : "Profile Name",
+//                UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
+//                UserProfileKeys.Weblink : "",
+//                UserProfileKeys.ShouldHideNavOfTabBar : false
+//            ]
+            
+            vc.navBarShouldHide = false
+            vc.user = PFUser.currentUser()!
+            //vc.options = options
         }
         
         selectedIndex = button.tag

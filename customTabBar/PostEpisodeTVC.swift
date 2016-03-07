@@ -180,41 +180,16 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         
         post.saveInBackgroundWithBlock{(success, error) -> Void in
             if error == nil {
+                //self.dismissViewControllerAnimated(true, completion: nil)
+                PFUser.currentUser()!["postUpdatedAt"] = self.post.updatedAt
+                PFUser.currentUser()?.saveInBackground()
                 self.dismissViewControllerAnimated(true, completion: nil)
             } else {
                 AppUtils.displayAlert("Could not post", message: "Please try again later", onViewController: self)
             }
         }
-        PFUser.currentUser()!["postUpdatedAt"] = post.updatedAt
-        PFUser.currentUser()?.saveInBackground()
-    }
-    
-    func updateFollowersTime(date: NSDate?) {
         
-        let q = PFQuery(className: "Activities")
-        q.whereKey("toUser", equalTo: PFUser.currentUser()!.objectId!)
-        q.whereKey("type", equalTo: "following")
-        episodeTitle.resignFirstResponder()
-        q.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-            if error != nil {
-                AppUtils.displayAlert("Fetching Users Failed", message: "Please try later", onViewController: self)
-                return
-            }
-            // Need to change updatedAt
-            for i in 0 ..< objects!.count {
-                print(self.post.updatedAt)
-                objects![i]["postUpdatedAt"] = self.post.updatedAt
-            }
-            
-            //PFObject.saveAllInBackground(objects)
-            
-            PFObject.saveAllInBackground(objects) { (success, error) in
-                print(success)
-                print(error)
-            }
-            
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
+        
     }
     
     
@@ -239,10 +214,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
             
             let postEpisodeVC = segue.destinationViewController as! PlaySoundViewController
             postEpisodeVC.episode = episodeCreating.episode
-            // This make the user can see through the VC to the parent View, or OverFullScreen
-            if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
-                postEpisodeVC.modalPresentationStyle = .OverFullScreen
-            }
         }
     }
     

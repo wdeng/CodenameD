@@ -17,27 +17,34 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
         pageViewController.delegate = self
         
         let firstController = (sectionNum > progressBar.currentSection) ? viewControllerAtIndex(progressBar.currentSection) : viewControllerAtIndex(0)
-        let startingViewControllers = [firstController]
         
-        pageViewController.setViewControllers(startingViewControllers, direction: .Forward, animated: false, completion: nil)
-        
-        addChildViewController(pageViewController!)
+        firstController.willMoveToParentViewController(pageViewController)
+        pageViewController.setViewControllers([firstController], direction: .Forward, animated: false, completion: nil)
+        firstController.didMoveToParentViewController(pageViewController)
+        pageViewController!.willMoveToParentViewController(self)
+        self.addChildViewController(pageViewController!)
         self.view.addSubview(pageViewController!.view)
         pageViewController!.didMoveToParentViewController(self)
-        print(progressBar.currentSection)
     }
     
     func resetCurrentContentController(index: Int, direction dir: UIPageViewControllerNavigationDirection, animated: Bool) {
         let currentVC = (sectionNum > index) ? viewControllerAtIndex(index) : viewControllerAtIndex(0)
-        pageViewController.setViewControllers([currentVC], direction: dir, animated: animated, completion: nil)
-        
+        currentVC.willMoveToParentViewController(pageViewController)
+        print("will move to \(currentVC)")
+        pageViewScrollInTransit = true
+        pageViewController.setViewControllers([currentVC], direction: dir, animated: animated){ success in
+            self.pageViewScrollInTransit = false
+        }
+        currentVC.didMoveToParentViewController(pageViewController)
     }
     
     func viewControllerAtIndex(index: Int) -> ImageTableContentController {
         //print(index)
-        if index < sectionNum {
-            let vc = storyboard?.instantiateViewControllerWithIdentifier("ImageTableVC") as! ImageTableContentController
+        let vc = storyboard?.instantiateViewControllerWithIdentifier("ImageTableVC") as! ImageTableContentController
+        
+        if index > -1 && index < sectionNum {
             vc.itemIndex = index
+            
             //vc.images = []
             AppUtils.switchOnActivityIndicator(vc.activityIndicator, forView: vc.tableView, ignoreUser:  false)
             ParseActions.fetchImages(episode.imageSets[index]) { (imagesData) -> Void in
@@ -55,13 +62,11 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
                 vc.tableView.reloadData()
                 
             }
-            
-            return vc
         } else {
             
         }
-        
-        return ImageTableContentController()
+        print("image tvc current itemIndex: \(vc.itemIndex)")
+        return vc
         
     }
     
@@ -69,7 +74,6 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
         let itemController = viewController as! ImageTableContentController
-        
         if itemController.itemIndex > 0 {
             return viewControllerAtIndex(itemController.itemIndex-1)
         }
@@ -77,9 +81,11 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+        print(pageViewController.childViewControllers)
         let itemController = viewController as! ImageTableContentController
         
         if itemController.itemIndex + 1 < sectionNum {
+            print("delegate called vc at idx")
             return viewControllerAtIndex(itemController.itemIndex+1)
         }
         return nil
@@ -93,7 +99,7 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
     }
     
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        
+        pageViewScrollInTransit = false
         let currentSection = progressBar.sectionForLocation(progressBar.positionForValue(progressBar.value))
         if completed {
             progressBar.currentSection = pageViewPendingSection
@@ -102,7 +108,7 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
             //If didn't successfully finished
         }
         
-        pageViewScrollInTransit = false
+        
         if currentSection == progressBar.currentSection {
             progressBar.sectionSelectedByUser = false
         }

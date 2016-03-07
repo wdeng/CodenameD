@@ -16,18 +16,23 @@ class EpisodeCell: UITableViewCell {
     @IBOutlet weak var save: UIButton!
     @IBOutlet weak var otherOptions: UIButton!
     
-    @IBOutlet weak var likesNumber: UILabel!
-    @IBOutlet weak var duration: UILabel!
-    @IBOutlet weak var title: UILabel!
+    //@IBOutlet weak var likesNumber: UILabel!
+    @IBOutlet weak var durationAndLikes: UILabel!
+    @IBOutlet weak var title: UITextView!
     @IBOutlet weak var uploadTime: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        title.textContainer.lineBreakMode = .ByTruncatingTail
+        title.textContainer.maximumNumberOfLines = 2
         episodeThumb.contentMode = .ScaleAspectFill
         episodeThumb.clipsToBounds = true
         
         playLater.imageView?.contentMode = .ScaleAspectFit
+        playLater.hidden = true
         save.imageView?.contentMode = .ScaleAspectFit
+        save.hidden = true
         
         otherOptions.imageView?.contentMode = .ScaleAspectFit
         
@@ -38,8 +43,6 @@ class EpisodeCell: UITableViewCell {
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
-
 }

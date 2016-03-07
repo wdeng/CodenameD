@@ -87,6 +87,7 @@ public class SectionAudioPlayer: NSObject {
             }
         }
     }
+    //TODO: seek track    test in very bad internet status
     
     func setupPlayerWithEpisode(episode: EpisodeToPlay) {
         if let url = episode.episodeURL {
@@ -102,7 +103,7 @@ public class SectionAudioPlayer: NSObject {
         
         if let player = player {
             player.removeObserver(self, forKeyPath: "rate", context: nil)
-            //player.removeObserver(self, forKeyPath: "status", context: nil)
+            player.removeObserver(self, forKeyPath: "status", context: nil)
             NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
             player.removeTimeObserver(periodicTimeObserver!)
             periodicTimeObserver = nil
@@ -116,8 +117,8 @@ public class SectionAudioPlayer: NSObject {
             player!.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(), context: nil)
             
             // not sure if this is needed
-            //player!.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
-            
+            player!.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
+            print("current status: \(player!.status.rawValue)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: player!.currentItem)
             
             if periodicTimeObserver == nil {
@@ -146,13 +147,14 @@ public class SectionAudioPlayer: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerRateChanged", object: nil, userInfo: ["rate": player!.rate])
             
         }
-//        if (keyPath == "status") && (player != nil) {
-//            if (player!.status == .ReadyToPlay) {
-//                //print("Player is ready\(player!.currentItem)")
-//            } else  {
-//                // something went wrong. player.error should contain some information
-//            }
-//        }
+        if (keyPath == "status") && (player != nil) {
+            print("status: \(player!.status.rawValue), is ready: \(player!.status == .ReadyToPlay)")
+            if (player!.status == .ReadyToPlay) {
+                //print("Player is ready\(player!.currentItem)")
+            } else  {
+                // something went wrong. player.error should contain some information
+            }
+        }
     }
     
     func fastForward(time: Double) {

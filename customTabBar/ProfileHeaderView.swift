@@ -29,7 +29,7 @@ class ProfileHeaderView: UIView {
         followingNum.titleLabel!.numberOfLines = 2
         
         isFollowing.layer.cornerRadius = 6.0
-        
+        //userLink.titleLabel?.numberOfLines = 1
     }
     
     func setTitleWithNum(num: Int?, withText text: String) -> NSAttributedString {
@@ -44,7 +44,6 @@ class ProfileHeaderView: UIView {
         attr.addAttributes([NSFontAttributeName: UIFont.systemFontOfSize(12.0), NSForegroundColorAttributeName: UIColor.lightGrayColor()], range: range)
         
         return attr
-        
         
     }
     
@@ -120,22 +119,26 @@ class ProfileHeaderView: UIView {
             userIntro.text = ""
         }
         
-        if var link = options[UserProfileKeys.Weblink] as? String {
-            link = link.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            
-            let idx = link.startIndex
-            if link.characters.count >= 8 {
-                if link[idx ..< idx.advancedBy(7)] == "http://" {
-                    link = link.substringFromIndex(idx.advancedBy(7))
-                } else if link[idx ..< idx.advancedBy(8)] == "https://" {
-                    link = link.substringFromIndex(idx.advancedBy(8))
-                }
-            }
-            userLink.setTitle(link, forState: .Normal)
+//        if var link = options[UserProfileKeys.Weblink] as? String {
+//            link = link.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+//            
+//            let idx = link.startIndex
+//            if link.characters.count >= 8 {
+//                if link[idx ..< idx.advancedBy(7)] == "http://" {
+//                    link = link.substringFromIndex(idx.advancedBy(7))
+//                } else if link[idx ..< idx.advancedBy(8)] == "https://" {
+//                    link = link.substringFromIndex(idx.advancedBy(8))
+//                }
+//            }
+//            userLink.setTitle(link, forState: .Normal)
+//        } else {
+//            userLink.setTitle(nil, forState: .Normal)
+//        }
+        if let link = options[UserProfileKeys.Weblink] as? String {
+            userLink.setTitle(removeScheme(link), forState: .Normal)
         } else {
             userLink.setTitle(nil, forState: .Normal)
         }
-        
         //tabBarController?.navigationItem.title = profileView.profileName.text
     }
     
@@ -162,31 +165,20 @@ class ProfileHeaderView: UIView {
             return ""
         }
     }
-    
-    class func verifyURL(urlString: String?) -> NSURL? {
-        //let link =  "http://www.yourUrl.com".stringByRemovingPercentEncoding!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
-        if var urlString = urlString?.stringByTrimmingCharactersInSet( NSCharacterSet.whitespaceAndNewlineCharacterSet()) {
-            //let re = try! NSRegularExpression(pattern: "https?:\\/.*", options: .CaseInsensitive)
-            
-            let regex = "http(s)?://.*"
-            if !NSPredicate(format: "SELF MATCHES %@", regex).evaluateWithObject(urlString.lowercaseString) {
-                urlString = "http://" + urlString
-            }
-            
-            //TODO: check if it works
-            let reg = "http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%#&=]*)?"
-            
-            if let url = NSURL(string: urlString) {
-                if UIApplication.sharedApplication().canOpenURL(url) {
-                    if NSPredicate(format: "SELF MATCHES %@", reg).evaluateWithObject(urlString.lowercaseString) {
-                        return url
-                    }
+    func removeScheme(urlString: String?) -> String {
+        if var link = urlString?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) {
+            let idx = link.startIndex
+            if link.characters.count >= 8 {
+                if link[idx ..< idx.advancedBy(7)] == "http://" {
+                    link = link.substringFromIndex(idx.advancedBy(7))
+                } else if link[idx ..< idx.advancedBy(8)] == "https://" {
+                    link = link.substringFromIndex(idx.advancedBy(8))
                 }
             }
+            return link
+        } else {
+            return ""
         }
-        
-        
-        return nil
     }
 }
 

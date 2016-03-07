@@ -153,6 +153,7 @@ class ParseActions: NSObject {
             return
         }
         //query.limit = 1000
+        
         query.countObjectsInBackgroundWithBlock { (count, error) -> Void in
             if error != nil {
                 print("couldn't fetch Activities")
@@ -193,6 +194,54 @@ class ParseActions: NSObject {
             following["toUsername"] = username
             
             following.saveInBackground()
+        }
+    }
+    
+    class func setLikeUnlikeButton(b: UIBarButtonItem, episodeID: String?) {
+        b.title = "Like"
+        guard let eid = episodeID else {return}
+        let query = PFQuery(className: "Activities")
+        query.whereKey("type", equalTo: "like")
+        query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+        query.whereKey("episode", equalTo: eid)
+        
+        query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
+            if objects?.count > 0 {
+                b.title = "Unlike"
+            }
+        })
+    }
+    
+    class func likeUnlike(b: UIBarButtonItem, userID: String?, episodeID: String?) {
+        guard let uid = userID else {return}
+        guard let eid = episodeID else {return}
+        if b.title == "Unlike" {
+            b.title = "Like"
+            
+            let query = PFQuery(className: "Activities")
+            query.whereKey("type", equalTo: "like")
+            query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+            query.whereKey("toUser", equalTo: uid)
+            query.whereKey("episode", equalTo: eid)
+            
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
+                if let objects = objects {
+                    for object in objects {
+                        object.deleteInBackground()
+                    }
+                }
+            })
+            
+        } else if b.title == "Like" {
+            b.title = "Unlike"
+            
+            let like = PFObject(className: "Activities")
+            like["type"] = "like"
+            like["fromUser"] = PFUser.currentUser()?.objectId
+            like["toUser"] = uid
+            like["episode"] = eid
+            
+            like.saveInBackground()
         }
     }
     

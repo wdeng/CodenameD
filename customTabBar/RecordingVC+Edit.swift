@@ -19,6 +19,9 @@ extension RecordingViewController {
             collectionView.removeGestureRecognizer(longPress)
             collectionView.allowsMultipleSelection = false
             for i in idx { collectionView.deselectItemAtIndexPath(i, animated: true) }
+            
+            navigationItem.title = "Record"
+            recordBackgroundView.hidden = false
         }
         else {
             setEditing(true, animated: true)
@@ -28,6 +31,10 @@ extension RecordingViewController {
             audioPlayerShouldStop()//TODO: maybe use KVO of model data for audio player should stop
             collectionView.addGestureRecognizer(longPress)
             collectionView.allowsMultipleSelection = true
+            
+            stopRecorder()
+            navigationItem.title = "Tap or Drag"
+            recordBackgroundView.hidden = true
         }
         
     }
@@ -42,16 +49,20 @@ extension RecordingViewController {
         alertController.addAction(cancelAction)
         
         let multiplier = idx.count > 1 ? "s" : ""
-        let destroyAction = UIAlertAction(title: "Delete Item"+multiplier, style: .Destructive) { (action) in
+        let destroyAction = UIAlertAction(title: "Delete Item" + multiplier, style: .Destructive) { (action) in
             
-            let rank = idx.sort({$0.item > $1.item}) // rank in reverse order
+            let rank = idx.sort({$0.item > $1.item})//rank in reverse order, model missmatch if not
             self.collectionView.performBatchUpdates({
                 for i in rank {
+                    if let dur = (self.addedItems.data[i.item] as? AudioModel)?.duration {
+                        self.totalRecordedLength -= dur
+                    }
+                    
                     self.addedItems.data.removeAtIndex(i.item)
-                    self.collectionView.deleteItemsAtIndexPaths([i])  // have to be like this because model missmatch if not reverse order
+                    self.collectionView.deleteItemsAtIndexPaths([i])
                 } }, completion: nil)
             
-            self.postSceneButton.enabled = (self.addedItems.data.audioCount() > 0)
+            //self.postSceneButton.enabled = (self.addedItems.data.audioCount() > 0)
             self.deleteButton.enabled = false
             
             if self.addedItems.data.count == 0 {
@@ -73,7 +84,6 @@ extension RecordingViewController {
                 if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? UIPhotoCell {
                     performSegueWithIdentifier("openImageViewer", sender: cell)
                 } else if let _ = collectionView.cellForItemAtIndexPath(indexPath) as? UIAudioCell {
-                    
                     playSelectedAudio(atIndexPath: indexPath)
                 }
             }
@@ -100,9 +110,6 @@ extension RecordingViewController {
             vc.currentParentIndexPath = collectionView.indexPathForCell(cell)!
             
             vc.placeHoldViewForAnimation = ImageCollectionViewController.placeHolderImageView(forImageView: cell.imageView, presentingView: view)
-//            print(cell.imageView)
-//            print(cell.subviews)
-//            print(vc.placeHoldViewForAnimation)
         } else if (segue.identifier == "showPostEpisodeVC") {
             let postEpisodeVC = segue.destinationViewController as! PostEpisodeTVC
             postEpisodeVC.receivedBundles = sender as! [AnyObject]

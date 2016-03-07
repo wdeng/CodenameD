@@ -10,18 +10,11 @@ import UIKit
 import Parse
 
 class ProfileViewController: InfiniteTableViewController {
-    //THIS IS MAINLY FOR DISPLAY OTHER USERS PROFILE
     
-    struct Options {
-        static var followText = "Loading"
-        static var hideFollowing = true
-        static var username = PFUser.currentUser()?.username
-        static var userId = PFUser.currentUser()?.objectId
-        static var profileName = "Profile Name"
-    }
-    
+    var user = PFUser()
     var options = [String : AnyObject?]()
-    
+    var fetchedEpisodes = [EpisodeToPlay]()
+    var navBarShouldHide = true
     
     //TODO: change this to something else
     func setupProfile(withOptions options: [String: AnyObject?]) {
@@ -36,16 +29,41 @@ class ProfileViewController: InfiniteTableViewController {
     
     @IBOutlet weak var profileView: ProfileHeaderView!
     
+    func setupProfile(withUser user: PFUser) {
+        
+        // make sure is not
+        var profileName = ((user["profileName"] ?? nil) as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        if profileName?.isEmpty != false {
+            profileName = user.username
+        }
+        
+        let opts : [String : AnyObject?] = [
+            UserProfileKeys.UserID : user.objectId,
+            UserProfileKeys.Username : user.username,
+            UserProfileKeys.Name : profileName,
+            UserProfileKeys.Intro : user["introduction"] ?? nil,
+            UserProfileKeys.Weblink : user["website"] ?? nil,
+        ]
+        
+        profileView.setupProfile(withOptions: opts)
+        
+        if navBarShouldHide {
+            tabBarController?.navigationController?.setNavigationBarHidden(true, animated: false)
+        } else {
+            tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupProfile(withOptions: options)
+        //setupProfile(withOptions: options)
+        setupProfile(withUser: user)
         
+        settingsButton.hidden = true
         tableView.rowHeight = 100.0
-        tableView.registerNib(UINib(nibName: "TestEpisodeCell", bundle: nil), forCellReuseIdentifier: "TestEpisodeCell")
+        tableView.registerNib(UINib(nibName: "EpisodeCell", bundle: nil), forCellReuseIdentifier: "episodeCell")
+        //print(PFUser.currentUser()!.updatedAt?.timeIntervalSinceNow)
         
-        tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
-        tableView.contentInset.bottom = TabBarSettings.height
     }
     
     @IBAction func settings(sender: AnyObject) {
@@ -67,20 +85,26 @@ class ProfileViewController: InfiniteTableViewController {
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
+    @IBOutlet weak var settingsButton: UIButton!
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
         let headerView = tableView.tableHeaderView!
         let maxSize = CGSize(width: UIScreen.mainScreen().bounds.width - 24.0, height: CGFloat.max)
         let userLinkHeight = profileView.userLink.titleForState(.Normal)?.characters.count > 0 ? profileView.userLink.sizeThatFits(maxSize).height : 0
         headerView.frame.size.height = 148 + profileView.userIntro.sizeThatFits(maxSize).height + userLinkHeight
-        
         tableView.tableHeaderView = headerView // everytime this was called, layout subviews will be called
         
         tabBarController?.navigationItem.title = profileView.profileName.text
         navigationItem.title = profileView.profileName.text
         
-        
+        if let id = currentUserID { // TODO: may should change this
+            if id == user.objectId {
+                settingsButton.hidden = false
+                tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
+                tableView.contentInset.bottom = TabBarSettings.height
+            }
+        }
         
         //tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
         //let item = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
@@ -99,26 +123,154 @@ class ProfileViewController: InfiniteTableViewController {
         }
     }
     
-    // MARK: - Table view data source
+    override func loadItems(type: LoadType, size: Int) {
+        if isLoadingItems {
+            return
+        }
+        
+        var start = 0
+        if type == .Reload {
+            start = 0
+        } else if type == .AddOn {
+            start = fetchedEpisodes.count
+        }
+        
+        fetchEpisodes(start, size: size)
+    }
     
+    func fetchEpisodes(skip: Int, size: Int) {
+        
+        guard let id = user.objectId else {return}
+        
+        isLoadingItems = true
+        var errorMessage = "Please try again later"
+        
+        let query = PFQuery(className: "Episode")
+        query.whereKey("userId", equalTo: id)
+        query.orderByDescending("updatedAt")
+        
+        query.limit = size
+        query.skip = skip
+        query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+            self.refreshControl?.endRefreshing()
+            self.isLoadingItems = false
+            
+            if error != nil {
+                if let errorString = error!.userInfo["error"] as? String {
+                    errorMessage = errorString
+                }
+                AppUtils.displayAlert("Fetching Posts Failed", message: errorMessage, onViewController: self)
+                return
+            }
+            
+            guard let posts = objects else {return}
+            
+            if skip <= 0 {
+                self.fetchedEpisodes.removeAll()
+            }
+            
+            for p in posts {
+                let e = EpisodeToPlay()
+                if let urlString = (p["audio"] as? PFFile)?.url {
+                    e.episodeURL = NSURL(string: urlString)
+                }
+                e.episodeTitle = p["title"] as? String
+                e.thumb = p["thumb"]
+                e.imageSets = (p["images"] as? [[AnyObject]]) ?? []
+                e.sectionDurations = (p["durations"] as? [Double]) ?? []
+                e.episodeId = p.objectId
+                e.authorId = id
+                e.uploadDate = p.updatedAt
+                
+                //print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
+                self.fetchedEpisodes.append(e)
+            }
+            
+            if skip <= 0 {
+                self.tableView.reloadData()
+            } else {
+                
+                var idxPath = [NSIndexPath]()
+                for i in skip ..< self.fetchedEpisodes.count {
+                    idxPath.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                self.tableView.insertRowsAtIndexPaths(idxPath, withRowAnimation: .None)
+            }
+            
+            if posts.count < size {
+                self.allItemsLoaded = true
+            }
+        }
+    }
+    
+    
+    
+    // MARK: - Table view data source
     
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 20
+        return fetchedEpisodes.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("TestEpisodeCell", forIndexPath: indexPath)
-        print(cell as? TestEpisodeCell)
+        let cell = tableView.dequeueReusableCellWithIdentifier("episodeCell", forIndexPath: indexPath) as! EpisodeCell
+        
+        //Image Files are PFFile type
+        let episode = fetchedEpisodes[indexPath.row]
+        
+        cell.episodeThumb.image = nil
+        episode.thumb?.getDataInBackgroundWithBlock { (data, error) -> Void in
+            guard let data = data else {return}
+            cell.episodeThumb.image = UIImage(data: data)
+        }
+        
+        cell.title.text = episode.episodeTitle
+        cell.uploadTime.text = AppUtils.dateToUploadTime(episode.uploadDate)
+        
+        let dur = AppUtils.durationToClockTime(episode.sectionDurations.reduce(0, combine: +))
+        cell.durationAndLikes.text = dur + " • " + "0 like"
+        
+        let query = PFQuery(className: "Activities")
+        query.whereKey("type", equalTo: "like")
+        if let id = episode.episodeId {
+            query.whereKey("episode", equalTo: id)
+            query.countObjectsInBackgroundWithBlock{ (count, error) -> Void in
+                if error != nil {
+                    debugPrint("couldn't fetch Activities")
+                    return
+                }
+                
+                let appendix = count > 1 ? "s" : ""
+                cell.durationAndLikes.text = dur + " • \(count) like" + appendix
+            }
+        }
+        
+        cell.otherOptions.addTarget(self, action: Selector("otherFunctions:"), forControlEvents: .TouchUpInside)
+        
 
-        // Configure the cell...
 
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        print(indexPath)
+        
+        let playerVC = storyboard!.instantiateViewControllerWithIdentifier("SectionAudioPlayer") as! PlaySoundViewController
+        
+        let episode = fetchedEpisodes[indexPath.row]
+        
+        if SectionAudioPlayer.sharedInstance.currentEpisode?.episodeURL != episode.episodeURL {
+            SectionAudioPlayer.sharedInstance.setupPlayerWithEpisode(episode)
+        }
+        
+        playerVC.episode = episode
+        SectionAudioPlayer.sharedInstance.play()
+        
+        if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0 {
+            playerVC.modalPresentationStyle = .OverFullScreen
+        }
+        self.presentViewController(playerVC, animated: true, completion: nil)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
     // show following followers
@@ -129,11 +281,12 @@ class ProfileViewController: InfiniteTableViewController {
         } else {
             return super.shouldPerformSegueWithIdentifier(identifier, sender: sender)
         }
+        
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         //let vc = segue.destinationViewController as! FollowingFollowerVC
-        guard let userID = options[UserProfileKeys.UserID] as? String else {return}
+        guard let userID = user.objectId else {return}
         if segue.identifier == "showFollowing" || segue.identifier == "showFollowers" {
             
             let actiType = segue.identifier == "showFollowing" ? ActivityType.Following : ActivityType.Followers
@@ -163,16 +316,86 @@ class ProfileViewController: InfiniteTableViewController {
         }
     }
     
+    @IBAction func unwindEditProfile(segue: UIStoryboardSegue) {
+        //debugPrint("hi: \(segue.identifier)")
+        if segue.sourceViewController is EditProfileController {
+            
+            if (PFUser.currentUser()?["profileName"] as? String)?.isEmpty == false {
+                profileView.profileName.text = (PFUser.currentUser()?["profileName"] as? String)
+            } else {
+                profileView.profileName.text = PFUser.currentUser()?.username
+            }
+            
+            
+            if let link = PFUser.currentUser()?["website"] as? String {
+                profileView.userLink.setTitle(profileView.removeScheme(link), forState: .Normal)
+            } else {
+                profileView.userLink.setTitle(nil, forState: .Normal)
+            }
+            
+            profileView.userIntro.text = PFUser.currentUser()?["introduction"] as? String
+        }
+    }
+    
     @IBAction func followUnfollow(sender: UIButton) {
         let title = sender.titleLabel?.text?.lowercaseString
-        guard let id = options[UserProfileKeys.UserID] as? String else {return}
-        guard let username = options[UserProfileKeys.Username] as? String else {return}
+        guard let id = user.objectId else {return}
+        guard let username = user.username else {return}
         if (title == "following") || (title == "follow") {
             ParseActions.followUnfollow(sender, withID: id, andUsername: username)
         }
     }
     
-    
+    func otherFunctions(sender: AnyObject) {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        if profileView.isFollowing.titleLabel?.text == "Edit Profile" {
+            let delAct = UIAlertAction(title: "Delete", style: .Destructive) { (action) in
+                let alert = UIAlertController(title: "Delete Episode?", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Delete", style: .Destructive) { (action) -> Void in
+                    //TODO: delete episode
+                    })
+                
+                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+            alertController.addAction(delAct)
+        }
+        
+        let shareAct = UIAlertAction(title: "Share...", style: .Default) { (action) in
+            
+        }
+        alertController.addAction(shareAct)
+        
+        let title = profileView.isFollowing.titleLabel?.text?.lowercaseString
+        if (title == "following") || (title == "follow") {
+            let laterAct = UIAlertAction(title: "Add to Play Later", style: .Default) { (action) in
+                
+            }
+            alertController.addAction(laterAct)
+            laterAct.enabled = false
+            let listAct = UIAlertAction(title: "Add to playlist", style: .Default) { (action) in
+                
+            }
+            alertController.addAction(listAct)
+            
+            let reportAct = UIAlertAction(title: "Report", style: .Destructive) { (action) in
+                
+            }
+            alertController.addAction(reportAct)
+        }
+        
+        //TODO: remove
+        for action in alertController.actions {
+            action.enabled = false
+        }
+        cancelAction.enabled = true
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
 }
 
 

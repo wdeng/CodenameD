@@ -23,6 +23,9 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     //private var updateTime: NSTimer?
     //private var sliderIsTracking = false
     
+    @IBOutlet weak var topBackgroundView: UIView!
+    
+    @IBOutlet weak var dismissButton: UIButton!
     @IBOutlet weak var playPauseButton: UIButton!
     
     // Tool Bar
@@ -30,6 +33,8 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     @IBOutlet weak var moreButton: UIBarButtonItem!
     @IBOutlet weak var playSpeed: UIBarButtonItem!
     @IBOutlet weak var sleepTimer: UIBarButtonItem!
+    @IBOutlet weak var likeUnlike: UIBarButtonItem!
+    
     
     private var sleepCountDown: Double?
     
@@ -57,7 +62,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         
         if progressBar.sliderIsTracking {return}
         if let time = notification.userInfo?["time"] as? Double {
-            print(time)
+            //print(time)
             progressBar.value = time
         }
     }
@@ -73,30 +78,26 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         }
     }
     
+    
     func sectionSliderSectionDidChange(oldVal: Int, newVal: Int) {
         if !pageViewScrollInTransit {
             if newVal > oldVal {
                 for i in oldVal ..< newVal {
+                    print("change to NEXT controller")
                     resetCurrentContentController(i+1, direction: .Forward, animated: true)
                 }
             }
             else if newVal < oldVal {
                 for i in (newVal ..< oldVal).reverse() {
+                    print("change to PREV controller")
                     resetCurrentContentController(i, direction: .Reverse, animated: true)
                 }
             }
         }
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .AllButUpsideDown
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("orientationDidChange"),
-            name: UIDeviceOrientationDidChangeNotification, object: nil)
         
         tools.clipsToBounds = true
         // Needed because we need shadows
@@ -124,23 +125,34 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         
         //TODO: background Play should be in section av player
         // setup background play
-        if NSClassFromString("MPNowPlayingInfoCenter") != nil {
-            if let poster = UIImage(named: "IMG_0006.jpg") {
-                let pic = MPMediaItemArtwork(image: poster)
-                let info: [String: AnyObject] = [MPMediaItemPropertyTitle: "Hello this is MKBHD",
-                    MPMediaItemPropertyArtist: "MKBHD",    /// place holder, neeeeeed to change
-                    MPMediaItemPropertyArtwork: pic]
-                
-                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = info
-            }
-        }
+//        if NSClassFromString("MPNowPlayingInfoCenter") != nil {
+//            if let poster = UIImage(named: "IMG_0006.jpg") {
+//                let pic = MPMediaItemArtwork(image: poster)
+//                let info: [String: AnyObject] = [MPMediaItemPropertyTitle: "Hello this is MKBHD",
+//                    MPMediaItemPropertyArtist: "MKBHD",    /// place holder, neeeeeed to change
+//                    MPMediaItemPropertyArtwork: pic]
+//                
+//                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = info
+//            }
+//        }
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback) // if headphone plugged, should be PlayAndRecord
-            print("Receiving remote control events")
+            debugPrint("Receiving remote control events")
             UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
             
         } catch _ {print("Audio session error")}
         
+        //add gradient color to background top
+        let gradientOpacity = CAGradientLayer()
+        gradientOpacity.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 74)
+        gradientOpacity.frame.size.height = 74
+        gradientOpacity.colors = [UIColor(white: 0.0, alpha: 0.2).CGColor, UIColor(white: 0.0, alpha: 0.2).CGColor, UIColor(white: 0.0, alpha: 0.12).CGColor, UIColor.clearColor().CGColor]
+        gradientOpacity.locations = [0.0, 0.6, 0.8, 1.0]
+        
+        topBackgroundView.layer.addSublayer(gradientOpacity)
+        
+        // dismiss button color
+        dismissButton.tintColor = UIColor.whiteColor()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -162,10 +174,8 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "AudioPlayerRateChanged", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
-    }
-    
-    func sectionSliderThumbDidChange() {
-        audioPlayer.currentTime = progressBar.value
+        
+        
     }
     
     override func viewWillLayoutSubviews() {
@@ -174,12 +184,24 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         progressBar.frame = CGRect(x: 0.0, y: view.frame.height - PlaySoundSetting.progressBarHeight, width: view.frame.width, height: PlaySoundSetting.progressBarHeight)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        //statusBarShouldHide = true
+        //self.presentingViewController?.childViewControllers // Parent Controller
+        
+        ParseActions.setLikeUnlikeButton(likeUnlike, episodeID: episode.episodeId)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerRateChanged", object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "AudioPlayerTimeChanged", object: nil)
     }
     
+    func sectionSliderThumbDidChange() {
+        audioPlayer.currentTime = progressBar.value
+    }
         
     //MARK: hook page view to progressBar
     
@@ -226,9 +248,6 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     @IBAction func fastForwardAudio(sender: AnyObject) {
         audioPlayer.fastForward(10)
     }
-    
-    
-    
     
     
     @IBAction func dismissPlayer(sender: UIButton) {

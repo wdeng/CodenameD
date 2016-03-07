@@ -159,6 +159,7 @@ class SectionSlider: UIControl {
             }
             let thumbCenter = positionForValue(value)
             if !sectionSelectedByUser {
+                //print("value changed, \(sectionForLocation(thumbCenter)) set by value")
                 currentSection = sectionForLocation(thumbCenter)
             }
             
@@ -201,8 +202,6 @@ class SectionSlider: UIControl {
     
     private var touchableFrame: CGRect!
     
-    var valueShouldUpdate = false
-    
     var trackTintColor: UIColor = UIColor(white: 0.3, alpha: 1.0) {
         didSet {
             progressTrackLayer.setNeedsDisplay()
@@ -215,7 +214,7 @@ class SectionSlider: UIControl {
         }
     }
     
-    var sectionHighlightColor: UIColor = UIColor.whiteColor() { //UIColor(red: 0.0, green: 0.45, blue: 0.94, alpha: 0.5) {
+    var sectionHighlightColor: UIColor = UIColor.whiteColor() {
         didSet {
             progressTrackLayer.setNeedsDisplay()
         }
@@ -297,8 +296,6 @@ class SectionSlider: UIControl {
     }
     
     func valueForPosition(p: CGFloat) -> Double {
-        //v = ((p - backgroundTrackLayer.frame.minX - thumbSize.width / 2) * CGFloat(maximumValue - minimumValue)) / (backgroundTrackLayer.frame.width - thumbSize.width) + CGFloat(minimumValue)
-        
         let v = (p - backgroundTrackLayer.frame.minX - thumbSize.width / 2) / (backgroundTrackLayer.frame.width - thumbSize.width)
         return (Double(v) * (maximumValue - minimumValue) + minimumValue)
     }
@@ -336,14 +333,13 @@ class SectionSlider: UIControl {
         
         // Hit test the thumb layers
         
-        if abs(thumbLayer.frame.midX - previousLocation.x) < 20 {
-        //if thumbLayer.frame.contains(previousLocation) {
+        if abs(thumbLayer.frame.midX - previousLocation.x) < 20 { // pressing the thumb
             thumbLayer.highlighted = true
             delegate?.sectionSliderThumbDidBeginTrack?()
             sliderIsTracking = true
             return true
         }
-        else if backgroundTrackLayer.frame.contains(previousLocation){
+        else if backgroundTrackLayer.frame.contains(previousLocation){ // doesn't contain thumb
             sectionSelectedByUser = true
             currentSection = sectionForLocation(previousLocation.x)
             return true
@@ -367,11 +363,10 @@ class SectionSlider: UIControl {
         if thumbLayer.highlighted {
             sectionSelectedByUser = false
             value += deltaValue
-            valueShouldUpdate = true
             delegate?.sectionSliderThumbDidChange?()
-            //sendActionsForControlEvents(.ValueChanged)
         }
-        currentSection = sectionForLocation(location.x)
+        //print("by tracking, current section is \(sectionForLocation(location.x))")
+        currentSection = sectionForLocation(location.x) //TODO: this is called and in "var value: Double" will call this again
         
         previousLocation = location
         return true

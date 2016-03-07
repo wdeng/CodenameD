@@ -72,11 +72,11 @@ struct AppSettings {
     static let minSoundLevel: Double = 0.08
     static let reallySmallNumber: Double = 0.000001
     static let tabBarHeight: CGFloat = 38.0
-    
+    static let AppTintColor: UIColor = UIColor.grayColor()//UIColor(red: 0.7, green: 1.0, blue: 0, alpha: 1.0)
 }
 
 struct RecordSettings {
-    static let recordedDurationLimit: (Double, Double) = (1.0, 60.0)
+    static let recordedDurationLimit: (Double, Double) = (1.0, 61.0)
     static let audioButtonColor: UIColor = UIColor.grayColor()
     static let recordedAudioCellCornerRadius: CGFloat = 12.0
     static let recordedAudioCellHeight: CGFloat = 38.0
@@ -276,15 +276,37 @@ struct GeneralSettings {
 
 
 class AppUtils: NSObject {
-    class func durationToClockTime(duration: Double?) ->String? {
+    class func durationToClockTime(duration: Double?) ->String {
         
-        guard let duration = duration else { return nil}
+        guard let duration = duration else { return "?:??"}
         let dur = Int(floor(duration))
         if dur <= 3600 {
             return String(format: "%d:%02d", dur / 60, dur % 60)
         }
         else {
             return String(format: "%d:%02d:%02d", dur / 3600, (dur % 3600) / 60, (dur % 3600) % 60)
+        }
+        
+    }
+    
+    class func dateToUploadTime(date: NSDate?) ->String {
+        //PFUser.currentUser()!.updatedAt?.timeIntervalSinceNow
+        
+        guard let date = date else {return "??"}
+        var time: Int = Int(date.timeIntervalSinceNow)
+        if time < 0 {
+            time = -time
+        }
+        if time <= 60 {
+            return "\(time)s"
+        } else if time <= 3600 {
+            return "\(time/60)m"
+        } else if time <= 86400 {
+            return "\(time/3600)h"
+        } else if time <= 604800 {
+            return "\(time/86400)d"
+        } else {
+            return "\(time/604800)w"
         }
         
     }
@@ -315,5 +337,11 @@ class AppUtils: NSObject {
         
     }
     
-    
+    class func addCustomView(toBarItem item: UIBarButtonItem) {
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        
+        activityIndicator.activityIndicatorViewStyle = .Gray
+        item.customView = activityIndicator
+        activityIndicator.startAnimating()
+    }
 }

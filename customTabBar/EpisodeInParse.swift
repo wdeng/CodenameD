@@ -17,6 +17,8 @@ class EpisodeToPlay: NSObject, NSCoding {
     var thumb: AnyObject?
     var sectionDurations: [Double] = []
     var episodeId: String?
+    var authorId: String?
+    var uploadDate: NSDate?
     
     struct Keys {
         static let title = "title"
@@ -66,20 +68,15 @@ class EpisodeToPlay: NSObject, NSCoding {
 }
 
 class ChannelFeed {
-    var username: String?
-    var userThumb: PFFile?
-    var userId: String?
+    //var username: String?
+    //var userThumb: PFFile?
+    //var userId: String?
     var episodes: [EpisodeToPlay] = []
+    var user: PFUser?
 }
 
 class HomeFeedFromParse: NSObject {
     var channels: [ChannelFeed] = []
-    
-    
-//    init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
-//        super.init()
-//        
-//    }
     
     class func fetchProfilePosts(forUserID userId: String, skip: Int, size: Int = HomeFeedsSettings.sectionsInPage, finished:([EpisodeToPlay]) -> Void ) {
         
@@ -105,6 +102,7 @@ class HomeFeedFromParse: NSObject {
                 e.imageSets = (p["images"] as? [[AnyObject]]) ?? []
                 e.sectionDurations = (p["durations"] as? [Double]) ?? []
                 e.episodeId = p.objectId
+                e.authorId = userId
                 
                 feeds.append(e)
             }
@@ -149,14 +147,14 @@ class HomeFeedFromParse: NSObject {
             
             var counter = 0
             
-            //var searchedUsers = [PFUser]()
             for object in users {
                 guard let u = object as? PFUser else {return}
                 
                 let ch = ChannelFeed()
-                ch.username = (u["profileName"] as? String) ?? u.username
-                ch.userThumb = u["userThumb"] as? PFFile
-                ch.userId = u.objectId
+                //ch.username = (u["profileName"] as? String) ?? u.username
+                //ch.userThumb = u["userThumb"] as? PFFile
+                //ch.userId = u.objectId
+                ch.user = u
                 
                 feeds.append(ch)
                 
@@ -180,8 +178,9 @@ class HomeFeedFromParse: NSObject {
                         e.imageSets = (p["images"] as? [[AnyObject]]) ?? []
                         e.sectionDurations = (p["durations"] as? [Double]) ?? []
                         e.episodeId = p.objectId
+                        e.uploadDate = p.updatedAt
+                        e.authorId = u.objectId
                         
-                        //print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
                         ch.episodes.append(e)
                     }
                     // shouldn't only be like this, doesn't load this one when all feeds loaded, us is []

@@ -102,14 +102,7 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let vc = storyboard!.instantiateViewControllerWithIdentifier("UserProfileTVCIdentifier") as! ProfileViewController
         
-        vc.options = [
-            UserProfileKeys.UserID : fetchedUsers[indexPath.row].objectId!,
-            UserProfileKeys.Username : fetchedUsers[indexPath.row].username!,
-            //UserProfileKeys.Intro : searchedUsers[indexPath.row]["intro"] as? String,
-            //UserProfileKeys.Weblink : searchedUsers[indexPath.row]["weblink"] as? String
-            UserProfileKeys.Intro : "Hello Hello Hello, How are you? I'm fine thank you and you?",
-            UserProfileKeys.Weblink : "www.facebook.com"
-        ]
+        vc.user = fetchedUsers[indexPath.row]
         
         shouldPushViewController(vc)
         

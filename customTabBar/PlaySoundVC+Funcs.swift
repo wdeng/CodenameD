@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 extension PlaySoundViewController {
     
@@ -65,9 +66,9 @@ extension PlaySoundViewController {
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
-    
-    
-    
+    @IBAction func likeUnlikeEpisode(sender: UIBarButtonItem) {
+        ParseActions.likeUnlike(sender, userID: episode.authorId, episodeID: episode.episodeId)
+    }
     
 }
 

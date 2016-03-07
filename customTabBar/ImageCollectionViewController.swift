@@ -50,8 +50,9 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDataSourc
         super.viewDidLoad()
         transitioningDelegate = self
         
-        ButtonUtils.addShadow(closeButton)
-        ButtonUtils.addShadow(deleteButton)
+        //TODO: currently doesn't support edit in this scene
+        //ButtonUtils.addShadow(closeButton)
+        //ButtonUtils.addShadow(deleteButton)
         if model == nil {
             debugPrint("model is not set")
         }

@@ -11,21 +11,15 @@ import AVFoundation
 import Parse
 
 struct RecordCollectionSettings {
-    static let photoItemSize: CGSize = CGSize(width: 88, height: 188)
+    static let photoItemSize: CGSize = CGSize(width: 88, height: 88)
     static let audioItemSize: CGSize = CGSize(width: UIScreen.mainScreen().bounds.width - 82, height: 40)
     static let itemMinSpacing: CGFloat = 1.0
     static let itemSectInset: UIEdgeInsets = UIEdgeInsetsMake(4.0, 10.0, 4.0, 10.0)
     static var photoitemLimit: Int? = 4
 }
 
-//class PhotoModel {
-//    init(withImage im: UIImage?) {
-//        image = im
-//    }
-//    var photoDiscription: String?
-//    var image: UIImage?
-//}
 typealias PhotoModel = UIImage
+
 class AudioModel {
     
     init(withURL url: NSURL) {
@@ -52,8 +46,9 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet weak var recordBackgroundView: UIVisualEffectView!
     @IBOutlet weak var recordButton: UIButton!
-    @IBOutlet weak var recordingInProgress: UILabel!
+    var recordMeterView: RecordingMeterView!
     
     @IBOutlet var deleteButton: UIBarButtonItem!
     @IBOutlet var closeButton: UIBarButtonItem!
@@ -64,14 +59,25 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     @IBOutlet weak var postSceneButton: UIBarButtonItem!
     @IBOutlet weak var toolBar: UIToolbar!
     
-    
-    
     var updateTime: NSTimer?
     
     var recordingNameIndex = 0
-    private var recordingLengthAllowed = false
-    private var durationOfRecording = 0.0
-    private var sampledAudioLevel = [Double]()
+    internal var recordingShouldFail = false
+    internal var sampledAudioLevel = [Double]()
+    internal var totalRecordedLength = 0.0 {
+        didSet {
+            if (totalRecordedLength > 0.5) && (totalRecordedLength < 600) {
+                if !postSceneButton.enabled {
+                    postSceneButton.enabled = true
+                }
+                
+            } else {
+                if postSceneButton.enabled {
+                    postSceneButton.enabled = false
+                }
+            }
+        }
+    }
     let meterTable: MeterTable = MeterTable(minDecibels: AppSettings.minDBValue)!
     
     var audioRecorder:AVAudioRecorder!
@@ -98,8 +104,18 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         return statusBarShouldHide
     }
     
+    //TODO: maybe need to decrease things before viewdidappear
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let normalImage = UIImage(named: "mic")?.imageWithRenderingMode(.AlwaysTemplate)
+        recordButton.setImage(normalImage, forState: .Normal)
+        recordButton.tintColor = UIColor.whiteColor()
+        recordButton.adjustsImageWhenHighlighted = false
+        recordButton.imageView?.contentMode = .ScaleAspectFit
+        
+        recordBackgroundView.layer.cornerRadius = 35
+        recordBackgroundView.clipsToBounds = true
         
         longPress = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
         longPress.minimumPressDuration = 0.3
@@ -126,126 +142,20 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         super.viewDidAppear(animated)
         cameraButton.enabled = UIImagePickerController.isSourceTypeAvailable(.Camera)
         postSceneButton.enabled = addedItems.data.audioCount() > 0 ? true : false
+        
+        recordMeterView = RecordingMeterView(frame: recordBackgroundView.frame)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         audioPlayerShouldStop()
+        updateTime?.invalidate()
         if audioRecorder != nil {
             audioRecorder.stop()
         }
     }
     
-    // MARK: recording events
-    @IBAction func recordStart(sender: UIButton) {
-        //button stats change
-        recordingInProgress.hidden = false
-        
-        self.audioPlayerShouldStop()
-        
-        
-        //tmp audio saving dir
-        //TODO: 点击录制有延时  需要在开始录制之前就把这些设定好
-        let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first! as String
-        let recordingName = "myaudio\(recordingNameIndex).wav"
-        let pathArray = [dirPath, recordingName]
-        let filePath = NSURL.fileURLWithPathComponents(pathArray)
-        
-        let recordSettings:[String : AnyObject] = [
-            //AVFormatIDKey: NSNumber(unsignedInt:kAudioFormatMPEG4AAC),
-            AVEncoderAudioQualityKey : AVAudioQuality.High.rawValue,
-            AVEncoderBitRateKey : 64000,
-            AVNumberOfChannelsKey: 1,
-            AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key, if cannot change export session in the
-        
-        //start recording
-        do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
-            try audioRecorder = AVAudioRecorder(URL: filePath!, settings: recordSettings)
-            audioRecorder.delegate = self
-            audioRecorder.meteringEnabled = true
-            audioRecorder.prepareToRecord()
-            audioRecorder.record()
-        } catch {
-            debugPrint("recording failed")
-            return
-        }
-        
-        
-        // timer to sample sound level
-        sampledAudioLevel.removeAll()
-        updateTime = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "updateTimer:", userInfo: audioRecorder, repeats: true)
-    }
     
-    // sample audio level
-    func updateTimer(timer: NSTimer) {
-        
-        if (timer.userInfo is AVAudioRecorder) {
-            audioRecorder.updateMeters()
-            let meter = meterTable.ValueAt(audioRecorder.averagePowerForChannel(0))
-            sampledAudioLevel.append( Double(meter) )
-        }
-    }
-    
-    @IBAction func recordEndSucceed(sender: UIButton) {
-        updateTime?.invalidate()
-        
-        // remove first a few level when recording is starting
-        if sampledAudioLevel.count > 5 {
-            sampledAudioLevel[0 ... 3] = []
-        }
-        recordingInProgress.hidden = true
-        let len = audioRecorder.currentTime
-        if (len > 1.0)
-        {
-            durationOfRecording = len
-            recordingLengthAllowed = true
-        } else {
-            audioRecorder.stop()
-        }
-        
-        audioRecorder.stop()
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setActive(false)
-        } catch {}
-        
-    }
-    
-    @IBAction func recordEndFail(sender: UIButton) {
-        updateTime?.invalidate()
-        recordingInProgress.hidden = true
-        
-        audioRecorder.stop()
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setActive(false)
-        } catch {}
-        
-    }
-    
-    func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
-        // stop timer
-        updateTime?.invalidate()
-        
-        if (flag && recordingLengthAllowed){
-            //prepare for next
-            let recordedAudio = AudioModel(withURL: recorder.url)
-            recordedAudio.duration = durationOfRecording
-            recordedAudio.samples = sampledAudioLevel
-            recordingLengthAllowed = false
-            
-            recordingNameIndex++
-            postSceneButton.enabled = true
-
-            
-            appendItemInCollectionView(withItem: recordedAudio)
-        }
-        else{
-            debugPrint("not succussful")
-        }
-    }
     
     
     
@@ -271,17 +181,11 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        //TODO: what is the problem
-        
+        //TODO: what is the problem, image pickers doesn't work sometimes
         dispatch_async(dispatch_get_main_queue()) {
             if let im = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 let image = ImageUtils.createFitImageFromSize(im)
                 self.appendItemInCollectionView(withItem: image)
-//                self.addedItems.data.append(image)
-//                
-//                let idxPath = NSIndexPath(forItem: self.addedItems.data.count - 1, inSection: 0)
-//                self.collectionView.insertItemsAtIndexPaths([idxPath])
-//                self.collectionView.scrollToItemAtIndexPath(idxPath, atScrollPosition: .CenteredVertically, animated: true)
                 
             }
         }
@@ -294,11 +198,9 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         
         let idxPath = NSIndexPath(forItem: addedItems.data.count-1, inSection: 0)
         
-        
-        
         collectionView.performBatchUpdates( {
             //TODO: change insert animation, put change offset into the animation
-            //need photo and audio item animations different
+            //need photo and audio item animations different,   need to modify layout file
             self.collectionView.insertItemsAtIndexPaths([idxPath])
              }, completion: { _ in
                 let maxOffset = CGPoint(x: self.collectionView.contentOffset.x, y: (self.collectionView.contentSize.height + self.collectionView.contentInset.bottom) - self.collectionView.frame.size.height)  // otherwise collection view content size haven't changed yet
@@ -313,18 +215,13 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     }
     
     
-    //MARK: Open Section Player
-    @IBAction func openPostEpisodeVC(sender: AnyObject) {
-        self.performSegueWithIdentifier("showPostEpisodeVC", sender: addedItems.data)
-    }
-    
+    //MARK: play audio item
     func audioPlayerShouldStop() {
         if let idxPath = self.audioPlayerCurrentIdxPath {
             if let layer = (self.collectionView.cellForItemAtIndexPath(idxPath) as? UIAudioCell)?.audioProgressLayer {
                 layer.removeAllAnimations()
                 layer.path = nil
             }
-            
         }
         audioPlayerCurrentIdxPath = nil
         audioPlayer?.stop()
@@ -353,7 +250,6 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     
     func playSelectedAudio(atIndexPath idxPath: NSIndexPath)
     {
-        
         guard let audioToRun = addedItems.data[idxPath.item] as? AudioModel else {return}
         guard let cell = collectionView.cellForItemAtIndexPath(idxPath) as? UIAudioCell else {return}
         if idxPath == audioPlayerCurrentIdxPath {
@@ -390,11 +286,15 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         } catch {
             debugPrint("playing item failed")
         }
-        
     }
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
         audioPlayerShouldStop()
+    }
+    
+    //MARK: change scene
+    @IBAction func openPostEpisodeVC(sender: AnyObject) {
+        self.performSegueWithIdentifier("showPostEpisodeVC", sender: addedItems.data)
     }
     
     @IBAction func closeRecordingController(sender: AnyObject) {
@@ -422,20 +322,16 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
 //MARK: collection view datasource
 extension RecordingViewController: ImageViewerDelegate, LeftAlignedLayoutDelegate, UICollectionViewDataSource, UICollectionViewDelegate  {  //UICollectionViewDelegateFlowLayout
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return addedItems.data.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        if let image = addedItems.data[indexPath.item] as? PhotoModel { //TODO: change when actually use
+        if let image = addedItems.data[indexPath.item] as? PhotoModel {
             let photoCell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoItem", forIndexPath: indexPath) as! UIPhotoCell
             photoCell.imageView.image = image ?? UIImage(named: placeHoldImage)
             return photoCell
-        } else if let audio = addedItems.data[indexPath.item] as? AudioModel { //TODO: change when actually use
+        } else if let audio = addedItems.data[indexPath.item] as? AudioModel {
             let audioCell = collectionView.dequeueReusableCellWithReuseIdentifier("AudioItem", forIndexPath: indexPath) as! UIAudioCell
             
             //audioCell.audio = audio
