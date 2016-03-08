@@ -122,6 +122,7 @@ enum PlayingSpeed: Float {
     case x100 = 1.0
     case x125 = 1.25
     case x150 = 1.5
+    case x175 = 1.75
     case x200 = 2.0
 }
 

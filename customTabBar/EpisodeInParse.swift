@@ -27,6 +27,7 @@ class EpisodeToPlay: NSObject, NSCoding {
         static let thumb = "thumb"
         static let durs = "durations"
         static let id = "id"
+        static let authorId = "authorId"
     }
     
     // MARK: - NSCoding
@@ -39,10 +40,9 @@ class EpisodeToPlay: NSObject, NSCoding {
             archiver.encodeObject(thumbData, forKey: Keys.thumb)
             archiver.encodeObject(imageSets, forKey: Keys.imsets)
         }
-        else {
-            archiver.encodeObject(episodeId, forKey: Keys.id)
-        }
         
+        archiver.encodeObject(episodeId, forKey: Keys.id)
+        archiver.encodeObject(authorId, forKey: Keys.authorId)
     }
     
     override init() {
@@ -58,9 +58,9 @@ class EpisodeToPlay: NSObject, NSCoding {
         if let thumbData = unarchiver.decodeObjectForKey(Keys.thumb) as? NSData {
             imageSets = (unarchiver.decodeObjectForKey(Keys.imsets) as? [[AnyObject]]) ?? []
             thumb = thumbData
-        } else {
-            episodeId = unarchiver.decodeObjectForKey(Keys.id) as? String
         }
+        episodeId = unarchiver.decodeObjectForKey(Keys.id) as? String
+        authorId = unarchiver.decodeObjectForKey(Keys.authorId) as? String
         
     }
     

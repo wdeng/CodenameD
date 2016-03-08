@@ -25,14 +25,15 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     @IBOutlet weak var topBackgroundView: UIView!
     
     @IBOutlet weak var dismissButton: UIButton!
+    
+    //Play buttons
     @IBOutlet weak var playPauseButton: UIButton!
     
     // Tool Bar
-    @IBOutlet weak var tools: UIToolbar!
-    @IBOutlet weak var moreButton: UIBarButtonItem!
-    @IBOutlet weak var playSpeed: UIBarButtonItem!
-    @IBOutlet weak var sleepTimer: UIBarButtonItem!
-    @IBOutlet weak var likeUnlike: UIBarButtonItem!
+    @IBOutlet weak var moreButton: UIButton!
+    @IBOutlet weak var playSpeed: UIButton!
+    @IBOutlet weak var sleepTimer: UIButton!
+    @IBOutlet weak var likeUnlike: UIButton!
     
     // Page view
     var pageViewPendingSection = 0
@@ -41,6 +42,11 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     func sectionPlayerDidChangeRate(notification: NSNotification) {
         if let rate = notification.userInfo?["rate"] as? Float {
             setPlayerForPlayPause(rate)
+            
+            if playSpeed.titleForState(.Normal) != "\(audioPlayer.playbackSpeed.rawValue)x" {
+                playSpeed.setTitle("\(audioPlayer.playbackSpeed.rawValue)x", forState: .Normal)
+            }
+            
         }
     }
     func sectionPlayerDidChangeTime(notification: NSNotification) {
@@ -49,13 +55,13 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         if let counter = audioPlayer.sleepCountDown {
             if counter > 0 {
                 let displayTime = AppUtils.durationToClockTime(counter)
-                if sleepTimer.title != displayTime {
-                    sleepTimer.title = displayTime
+                if sleepTimer.titleForState(.Normal) != displayTime {
+                    sleepTimer.setTitle(displayTime, forState: .Normal)
                 }
             }
         } else {
-            if sleepTimer.title != "Sleep" {
-                sleepTimer.title = "Sleep"
+            if sleepTimer.titleForState(.Normal) != "Sleep" {
+                sleepTimer.setTitle("Sleep", forState: .Normal)
             }
         }
         
@@ -67,7 +73,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     }
     
     func setPlayerForPlayPause(rate: Float) {
-        if rate == 0 {
+        if rate <= 0 {
             let im = UIImage(named: "play")//?.imageWithRenderingMode(.AlwaysTemplate)
             playPauseButton.setImage(im, forState: .Normal)
             
@@ -99,15 +105,12 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tools.clipsToBounds = true
         
         
         
         // Needed because we need shadows
         
-        let btnName = functionButtonTemplate("dots")
-        btnName.addTarget(self, action: Selector("otherFunctions:"), forControlEvents: .TouchUpInside)
-        moreButton.customView = btnName
+        //let btnName = functionButtonTemplate("dots")
         
         
         
@@ -128,6 +131,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         view.addSubview(progressBar)
         view.bringSubviewToFront(progressBar)
         progressBar.delegate = self
+        
         
         //TODO: background Play should be in section av player
         // setup background play
@@ -169,7 +173,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         if let currentTime = audioPlayer.currentTime {
             progressBar.value = currentTime
         } else { progressBar.value = 0.0}
-        if audioPlayer.isPlaying == true { setPlayerForPlayPause(audioPlayer.rate) }
+        if audioPlayer.isPlaying == true { setPlayerForPlayPause(audioPlayer.currentRate) }
         
         progressBar.frame = CGRect(x: 0.0, y: view.frame.height - PlaySoundSetting.progressBarHeight, width: view.frame.width, height: PlaySoundSetting.progressBarHeight)
         let currentSection = progressBar.sectionForLocation(progressBar.positionForValue(progressBar.value))
@@ -196,7 +200,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         //self.presentingViewController?.childViewControllers // Parent Controller
         
         ParseActions.setLikeUnlikeButton(likeUnlike, episodeID: episode.episodeId)
-        
+        playSpeed.setTitle("\(audioPlayer.playbackSpeed.rawValue)x", forState: .Normal)
         
     }
     

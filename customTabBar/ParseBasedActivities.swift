@@ -197,8 +197,8 @@ class ParseActions: NSObject {
         }
     }
     
-    class func setLikeUnlikeButton(b: UIBarButtonItem, episodeID: String?) {
-        b.title = "Like"
+    class func setLikeUnlikeButton(b: UIButton, episodeID: String?) {
+        b.setTitle("Like", forState: .Normal)
         guard let eid = episodeID else {return}
         let query = PFQuery(className: "Activities")
         query.whereKey("type", equalTo: "like")
@@ -207,17 +207,17 @@ class ParseActions: NSObject {
         
         query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
             if objects?.count > 0 {
-                b.title = "Unlike"
+                b.setTitle("Unlike", forState: .Normal)
             }
         })
     }
     
-    class func likeUnlike(b: UIBarButtonItem, userID: String?, episodeID: String?) {
+    class func likeUnlike(b: UIButton, userID: String?, episodeID: String?) {
         guard let uid = userID else {return}
         guard let eid = episodeID else {return}
-        if b.title == "Unlike" {
-            b.title = "Like"
-            
+        
+        if b.titleForState(.Normal) == "Unlike" {
+            b.setTitle("Like", forState: .Normal)            
             let query = PFQuery(className: "Activities")
             query.whereKey("type", equalTo: "like")
             query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
@@ -232,8 +232,8 @@ class ParseActions: NSObject {
                 }
             })
             
-        } else if b.title == "Like" {
-            b.title = "Unlike"
+        } else if b.titleForState(.Normal) == "Like" {
+            b.setTitle("Unlike", forState: .Normal)
             
             let like = PFObject(className: "Activities")
             like["type"] = "like"

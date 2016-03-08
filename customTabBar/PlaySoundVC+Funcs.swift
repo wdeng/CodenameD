@@ -31,7 +31,7 @@ extension PlaySoundViewController {
     }
     
     
-    func otherFunctions(sender: AnyObject) {
+    @IBAction func otherFunctions(sender: AnyObject) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -72,18 +72,18 @@ extension PlaySoundViewController {
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
-    @IBAction func likeUnlikeEpisode(sender: UIBarButtonItem) {
+    @IBAction func likeUnlikeEpisode(sender: UIButton) {
         ParseActions.likeUnlike(sender, userID: episode.authorId, episodeID: episode.episodeId)
     }
     
-    @IBAction func sleepCounting(sender: UIBarButtonItem) {
+    @IBAction func sleepCounting(sender: UIButton) {
         let ac = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         ac.addAction(cancelAction)
         
         let laterAct = UIAlertAction(title: "Off", style: .Default) { (action) in
             self.audioPlayer.sleepCountDown = nil
-            self.sleepTimer.title = "Sleep"
+            self.sleepTimer.setTitle("Sleep", forState: .Normal)
         }
         ac.addAction(laterAct)
         
@@ -110,14 +110,25 @@ extension PlaySoundViewController {
         presentViewController(ac, animated: true, completion: nil)
     }
     
-    @IBAction func speedChange(sender: UIBarButtonItem) {
-        
-//        let shadow : NSShadow = NSShadow()
-//        shadow.shadowBlurRadius = 5.0
-//        let attributes = [NSShadowAttributeName: shadow]
-//        let attr = NSAttributedString(string: "hahahah", attributes: attributes)
-//        dismissSection.setAttributedTitle(attr, forState: .Normal)
-//        print(dismissSection.titleLabel?.text)
+    @IBAction func changeSpeed(sender: UIButton) {
+        //        let shadow : NSShadow = NSShadow()
+        //        shadow.shadowBlurRadius = 5.0
+        //        let attributes = [NSShadowAttributeName: shadow]
+        //        let attr = NSAttributedString(string: "hahahah", attributes: attributes)
+        //        dismissSection.setAttributedTitle(attr, forState: .Normal)
+        //        print(dismissSection.titleLabel?.text)
+        switch audioPlayer.playbackSpeed {
+        case .x100:
+            audioPlayer.setPlaySpeed(.x125)
+        case .x125:
+            audioPlayer.setPlaySpeed(.x150)
+        case .x150:
+            audioPlayer.setPlaySpeed(.x175)
+        case .x175:
+            audioPlayer.setPlaySpeed(.x200)
+        default:
+            audioPlayer.setPlaySpeed(.x100)
+        }
     }
 }
 
