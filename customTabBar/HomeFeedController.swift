@@ -256,11 +256,13 @@ class HomeFeedController: UITableViewController {
         }
         alertController.addAction(reportAct)
         
-        self.presentViewController(alertController, animated: true, completion: nil)
-        
+        //TODO: remove
         for action in alertController.actions {
             action.enabled = false
         }
+        cancelAction.enabled = true
+
+        self.presentViewController(alertController, animated: true, completion: nil)
     }
 }
 

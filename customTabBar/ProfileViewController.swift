@@ -89,16 +89,19 @@ class ProfileViewController: InfiniteTableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        //Reset HeaderView height
         let headerView = tableView.tableHeaderView!
         let maxSize = CGSize(width: UIScreen.mainScreen().bounds.width - 24.0, height: CGFloat.max)
-        let userLinkHeight = profileView.userLink.titleForState(.Normal)?.characters.count > 0 ? profileView.userLink.sizeThatFits(maxSize).height : 0
+        let userLinkHeight = profileView.userLink.titleForState(.Normal)?.characters.count > 0 ? profileView.userLink.sizeThatFits(maxSize).height : 6
         headerView.frame.size.height = 148 + profileView.userIntro.sizeThatFits(maxSize).height + userLinkHeight
         tableView.tableHeaderView = headerView // everytime this was called, layout subviews will be called
+        
         
         tabBarController?.navigationItem.title = profileView.profileName.text
         navigationItem.title = profileView.profileName.text
         
-        if let id = currentUserID { // TODO: may should change this
+        if let id = PFUser.currentUser()?.objectId { // TODO: may should change this
             if id == user.objectId {
                 settingsButton.hidden = false
                 tableView.scrollIndicatorInsets.bottom = TabBarSettings.height
@@ -297,21 +300,19 @@ class ProfileViewController: InfiniteTableViewController {
                     for following in objs {
                         let id = following["toUser"] as! String
                         vc.userids.append(id)
-                        vc.usernames.append(following["toUsername"] as! String)
-                        vc.isFollowing[id] = true
+                        //vc.usernames.append(following["toUsername"] as! String)
                         vc.navigationItem.title = "Following"
                     }
                 } else {
                     for follower in objs {
                         let id = follower["fromUser"] as! String
                         vc.userids.append(id)
-                        vc.usernames.append(follower["fromUsername"] as! String)
-                        vc.isFollowing[id] = false
+                        //vc.usernames.append(follower["fromUsername"] as! String)
                         vc.navigationItem.title = "Followers"
                     }
                 }
                 
-                vc.tableView.reloadData()
+                vc.reloadUsers()
             })
         }
     }
@@ -363,6 +364,11 @@ class ProfileViewController: InfiniteTableViewController {
                 self.presentViewController(alert, animated: true, completion: nil)
             }
             alertController.addAction(delAct)
+            
+            let laterAct = UIAlertAction(title: "Edit Title", style: .Default) { (action) in
+                
+            }
+            alertController.addAction(laterAct)
         }
         
         let shareAct = UIAlertAction(title: "Share...", style: .Default) { (action) in
@@ -376,7 +382,6 @@ class ProfileViewController: InfiniteTableViewController {
                 
             }
             alertController.addAction(laterAct)
-            laterAct.enabled = false
             let listAct = UIAlertAction(title: "Add to playlist", style: .Default) { (action) in
                 
             }

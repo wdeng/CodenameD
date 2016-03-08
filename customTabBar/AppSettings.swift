@@ -76,6 +76,12 @@ struct AppSettings {
 }
 
 struct RecordSettings {
+    static let photoItemSpacing: CGFloat = 1.0
+    static let audioItemSpacing: CGFloat = 4.0
+    
+    static let photoItemSize: CGSize = CGSize(width: 88, height: 88)
+    static let audioItemSize: CGSize = CGSize(width: UIScreen.mainScreen().bounds.width - 82, height: 44)
+    
     static let recordedDurationLimit: (Double, Double) = (1.0, 61.0)
     static let audioButtonColor: UIColor = UIColor.grayColor()
     static let recordedAudioCellCornerRadius: CGFloat = 12.0

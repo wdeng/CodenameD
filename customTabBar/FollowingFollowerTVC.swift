@@ -11,69 +11,99 @@ import Parse
 
 class FollowingFollowerVC: UITableViewController {
     
-    var usernames = [String]()
     var userids = [String]()
-    var isFollowing = [String: Bool]()
-    
-    //before prepare for segue
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+    var users = [PFUser]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        tableView.rowHeight = 60
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+    }
+    func reloadUsers() {
+        guard let query = PFUser.query() else {return}
+        query.whereKey("objectId", containedIn: userids)
+        
+        query.limit = 100
+        query.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+            if let us = objects as? [PFUser] {
+                self.users = us
+            }
+            self.tableView.reloadData()
+        }
     }
 
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return usernames.count
+        return users.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("followCell", forIndexPath: indexPath) as! FollowCell
         
-        cell.username.text = usernames[indexPath.row]
-        let followedObjectID = userids[indexPath.row]
+        let item = users[indexPath.row]
         
-        cell.isFollowing.tag = indexPath.row
-        cell.isFollowing.addTarget(self, action: "followUnfollow:", forControlEvents: .TouchUpInside)
-        if isFollowing[followedObjectID] == true {
-            cell.isFollowing.setTitle("Following", forState: .Normal)
-        } else {
-            cell.isFollowing.setTitle("Follow", forState: .Normal)
+        cell.textLabel?.text = (item["profileName"] as? String) ?? (item["username"] as! String)
+        cell.detailTextLabel?.text = "@" + (item["username"] as! String)
+        
+        if let text = item["introduction"] as? String {
+            if cell.detailTextLabel?.text != nil {
+                cell.detailTextLabel!.text! += (" • " + text)
+            }
         }
-
+        
         return cell
     }
     
-    //TODO: remove all the following tag
-    func followUnfollow(b: UIButton) {
-        let id = userids[b.tag]
-        let username = usernames[b.tag]
-        if isFollowing[id] == true {
-            isFollowing[id] = false
-        } else {
-            isFollowing[id] = true
-        }
-        ParseActions.followUnfollow(b, withID: id, andUsername: username)
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.performSegueWithIdentifier("showUserProfile", sender: indexPath)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let idx = sender else {return}
+        if segue.identifier == "showUserProfile" {
+            let profileVC = segue.destinationViewController as! ProfileViewController
+            profileVC.user = users[idx.row]
+            
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -63,6 +63,12 @@ extension PlaySoundViewController {
         }
         alertController.addAction(reportAct)
         
+        //TODO: remove
+        for action in alertController.actions {
+            action.enabled = false
+        }
+        cancelAction.enabled = true
+        
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     

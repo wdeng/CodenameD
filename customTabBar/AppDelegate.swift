@@ -29,6 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         defaultACL.publicWriteAccess = false
         PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
         
+        
+        
 //        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 //        
 //        // Load Main App Screen
@@ -45,6 +47,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         
+        if PFUser.currentUser() != nil {
+            //print(window?.rootViewController)
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            
+            let rootNav = storyboard.instantiateViewControllerWithIdentifier("rootNavController")
+            window?.rootViewController = rootNav
+//            window?.rootViewController?.presentViewController(loginVC, animated: true, completion: nil)
+        }
+        
+        
+        
+        window?.tintColor = UIColor.darkGrayColor()
+        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics:UIBarMetrics.Default)
+        //self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
+//        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[UIImage imageNamed:@"back_button_bg"]
+//            forState:UIControlStateNormal
+//            barMetrics:UIBarMetricsDefault];
         return true
     }
     

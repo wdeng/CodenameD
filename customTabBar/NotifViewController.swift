@@ -9,10 +9,6 @@
 import UIKit
 
 class NotifViewController: UITableViewController {
-    var headerHeight: CGFloat = 0
-    
-    
-    @IBOutlet weak var tmpLabel: UILabel!
     
     
     override func viewDidLoad() {
@@ -24,6 +20,16 @@ class NotifViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 60))
+        label.text = "Notifications Current Not Available"
+        label.textColor = UIColor.grayColor()
+        label.font = UIFont.systemFontOfSize(21.0, weight: UIFontWeightMedium)
+        label.numberOfLines = 2
+        label.textAlignment = .Center
+        label.center = CGPoint(x: view.center.x, y: view.center.y - 74)
+        
+        view.addSubview(label)
     }
     
     override func viewWillLayoutSubviews() {
@@ -33,26 +39,13 @@ class NotifViewController: UITableViewController {
         
     }
     
-    func sizeHeaderToFit() {
-        let headerView = tableView.tableHeaderView!
-        
-        //headerView.setNeedsLayout()
-        //headerView.layoutIfNeeded()
-        
-        let height = headerView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
-        print(height)
-        var frame = headerView.frame
-        frame.size.height = height
-        headerView.frame = frame
-        
-        tableView.tableHeaderView = headerView
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Notifications"
-        print(tmpLabel.sizeThatFits(CGSize(width: view.bounds.width, height: CGFloat.max)))
-        print(tmpLabel.frame.height)
+        
+        
+        
+        //print(tmpLabel.sizeThatFits(CGSize(width: view.bounds.width, height: CGFloat.max)))
     }
 
     // MARK: - Table view data source

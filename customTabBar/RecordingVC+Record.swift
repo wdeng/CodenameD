@@ -84,7 +84,7 @@ extension RecordingViewController {
                 let scale = CGFloat(meter) * 2.0 + 1
                 recordMeterView.transform = CGAffineTransformMakeScale(scale, scale)
             } else {
-                showRecordMeter()
+                showRecordMeterGradientView()
                 //view.insertSubview(recordMeterView, belowSubview: recordBackgroundView)
             }
         }
@@ -137,10 +137,9 @@ extension RecordingViewController {
         } else {
             navigationItem.title = "Record"
         }
-        
     }
     
-    func showRecordMeter() {
+    func showRecordMeterGradientView() {
         view.insertSubview(recordMeterView, belowSubview: recordBackgroundView)
         recordMeterView.transform = CGAffineTransformMakeScale(0.6, 0.6)
         UIView.animateWithDuration(0.15) {
@@ -148,7 +147,7 @@ extension RecordingViewController {
         }
     }
     
-    func removeRecordMeter() {
+    func removeRecordMeterGradientView() {
         UIView.animateWithDuration(0.15, animations: {
             self.recordMeterView.transform = CGAffineTransformMakeScale(0.6, 0.6)
             }) { _ in
@@ -156,6 +155,32 @@ extension RecordingViewController {
         }
     }
     
+    func hideRecordButton() {
+        recordBackgroundView.transform = CGAffineTransformIdentity
+        UIView.animateWithDuration(0.15, animations: {
+            self.recordBackgroundView.transform = CGAffineTransformMakeScale(0.1, 0.1)
+            }) { _ in
+                self.recordBackgroundView.hidden = true
+                self.micButton.style = .Plain
+        }
+    }
+    
+    func showRecordButton() {
+        recordBackgroundView.transform = CGAffineTransformMakeScale(0.0, 0.0)
+        recordBackgroundView.hidden = false
+        UIView.animateWithDuration(0.15) {
+            self.recordBackgroundView.transform = CGAffineTransformIdentity
+            self.micButton.style = .Done
+        }
+    }
+    
+    @IBAction func showHideMicButton(sender: UIBarButtonItem) {
+        if sender.style == .Done {
+            hideRecordButton()
+        } else if sender.style == .Plain {
+            showRecordButton()
+        }
+    }
     
     func initializeRecorder() {  //  may be should be static,
         //TODO: the newer version of the Recorder, initialized after the recording, and when will did appear
@@ -166,17 +191,16 @@ extension RecordingViewController {
             AVNumberOfChannelsKey: 1,
             AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key, if cannot change export session in the
         
-        
     }
     
     func stopRecorder() {
         updateTime?.invalidate()
-        audioRecorder.stop()
+        audioRecorder?.stop()
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setActive(false)
         } catch {}
-        removeRecordMeter()
+        removeRecordMeterGradientView()
     }
 }
 

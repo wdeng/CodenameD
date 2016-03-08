@@ -35,7 +35,7 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
             
             controller.hidesNavigationBarDuringPresentation = false
             controller.dimsBackgroundDuringPresentation = false
-            controller.searchBar.placeholder = "Search by Username"
+            controller.searchBar.placeholder = "Search Username"
             //controller.searchBar.sizeToFit()
             
             return controller}()
@@ -43,6 +43,8 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
         self.definesPresentationContext = true    //// WHY??
         
         navigationItem.titleView = searchController.searchBar
+        
+        tableView.rowHeight = 60
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -73,10 +75,6 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
     
     
     // MARK: - Table view data source
-
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 60
-    }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return fetchedUsers.count
@@ -90,7 +88,7 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
         cell.textLabel?.text = (item["profileName"] as? String) ?? (item["username"] as! String)
         cell.detailTextLabel?.text = "@" + (item["username"] as! String)
         
-        if let text = item["intro"] as? String {
+        if let text = item["introduction"] as? String {
             if cell.detailTextLabel?.text != nil {
                 cell.detailTextLabel!.text! += (" • " + text)
             }

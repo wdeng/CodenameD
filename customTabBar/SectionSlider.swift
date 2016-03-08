@@ -138,13 +138,15 @@ class SectionSlider: UIControl {
             self.delegate?.sliderSelectedStatusDidChanged?(oldValue, newVal: sectionSelectedByUser)
         }
     }
-    var sliderIsTracking: Bool = false
+    var thumbIsTracking: Bool = false
     var currentSection: Int = 0 {
         didSet {
             if oldValue != currentSection {
                 progressTrackLayer.sectionSelected = currentSection // Redraw the selected Section
                 
-                self.delegate?.sectionSliderSectionDidChange?(oldValue, newVal: currentSection)
+                if !sectionSelectedByUser {
+                    self.delegate?.sectionSliderSectionDidChange?(oldValue, newVal: currentSection)
+                }
             }
         }
     }
@@ -159,7 +161,7 @@ class SectionSlider: UIControl {
             }
             let thumbCenter = positionForValue(value)
             if !sectionSelectedByUser {
-                //print("value changed, \(sectionForLocation(thumbCenter)) set by value")
+                //print("value changed, \(sectionForLocation(thumbCenter)) set by value: \(value)")
                 currentSection = sectionForLocation(thumbCenter)
             }
             
@@ -336,11 +338,12 @@ class SectionSlider: UIControl {
         if abs(thumbLayer.frame.midX - previousLocation.x) < 20 { // pressing the thumb
             thumbLayer.highlighted = true
             delegate?.sectionSliderThumbDidBeginTrack?()
-            sliderIsTracking = true
+            thumbIsTracking = true
             return true
         }
         else if backgroundTrackLayer.frame.contains(previousLocation){ // doesn't contain thumb
             sectionSelectedByUser = true
+            self.delegate?.sectionSliderSectionDidChange?(currentSection, newVal: sectionForLocation(previousLocation.x))
             currentSection = sectionForLocation(previousLocation.x)
             return true
         }
@@ -352,21 +355,24 @@ class SectionSlider: UIControl {
         var location = touch.locationInView(self)
         // Determine by how much the user has dragged
         
-        //TODO: need to clean up the code very redundant
-        //TODO: to implement apple's fine tune, need conditionally change location depending on location.y
-        let deltaLocation = Double(location.x - previousLocation.x)
-        let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(backgroundTrackLayer.frame.width - thumbSize.width)
         location.x = min(max(location.x, backgroundTrackLayer.frame.minX), backgroundTrackLayer.frame.maxX)
         
         // Update the values
-        
         if thumbLayer.highlighted {
+            //TODO: to implement apple's fine tune, need conditionally change location depending on location.y
+            let deltaLocation = Double(location.x - previousLocation.x)
+            let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(backgroundTrackLayer.frame.width - thumbSize.width)
             sectionSelectedByUser = false
             value += deltaValue
             delegate?.sectionSliderThumbDidChange?()
+        } else {
+            //print("by tracking, current section is \(sectionForLocation(location.x))")
+            self.delegate?.sectionSliderSectionDidChange?(currentSection, newVal: sectionForLocation(location.x))
+            currentSection = sectionForLocation(location.x) //TODO: this is called and in "var value: Double" will call this again
+            
         }
-        //print("by tracking, current section is \(sectionForLocation(location.x))")
-        currentSection = sectionForLocation(location.x) //TODO: this is called and in "var value: Double" will call this again
+        
+        
         
         previousLocation = location
         return true
@@ -377,10 +383,10 @@ class SectionSlider: UIControl {
         if sectionSelectedByUser && (currentSection == s) {
             sectionSelectedByUser = false
         }
-        //sendActionsForControlEvents(.ValueChanged)
+        
         if thumbLayer.highlighted {
             delegate?.sectionSliderThumbDidEndTrack?()
-            sliderIsTracking = false
+            thumbIsTracking = false
             thumbLayer.highlighted = false
         }
     }

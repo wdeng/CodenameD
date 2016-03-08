@@ -21,7 +21,7 @@ extension RecordingViewController {
             for i in idx { collectionView.deselectItemAtIndexPath(i, animated: true) }
             
             navigationItem.title = "Record"
-            recordBackgroundView.hidden = false
+            showRecordButton()
         }
         else {
             setEditing(true, animated: true)
@@ -34,7 +34,7 @@ extension RecordingViewController {
             
             stopRecorder()
             navigationItem.title = "Tap or Drag"
-            recordBackgroundView.hidden = true
+            hideRecordButton()
         }
         
     }

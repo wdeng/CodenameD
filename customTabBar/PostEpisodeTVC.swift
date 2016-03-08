@@ -169,7 +169,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         
     }
     
-    @IBAction func postEpisode(sender: AnyObject) {
+    @IBAction func postEpisode(sender: UIBarButtonItem) {
         episodeTitle.resignFirstResponder()
         
         if episodeTitle.textColor == UIColor.lightGrayColor() || episodeTitle.text.isEmpty {
@@ -178,7 +178,9 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         else { post["title"] = episodeTitle.text }
         post["userId"] = PFUser.currentUser()!.objectId!
         
+        AppUtils.addCustomView(toBarItem: sender)
         post.saveInBackgroundWithBlock{(success, error) -> Void in
+            sender.customView = nil
             if error == nil {
                 //self.dismissViewControllerAnimated(true, completion: nil)
                 PFUser.currentUser()!["postUpdatedAt"] = self.post.updatedAt

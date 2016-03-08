@@ -78,6 +78,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate, UITa
     override func viewWillAppear(animated: Bool) {
         //recordButton.enabled = true
         cameraButton.enabled = UIImagePickerController.isSourceTypeAvailable(.Camera)
+        
     }
     
     override func viewWillDisappear(animated: Bool) {

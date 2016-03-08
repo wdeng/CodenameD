@@ -21,7 +21,6 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     var episode: EpisodeToPlay!
     var sectionNum: Int = 0
     //private var updateTime: NSTimer?
-    //private var sliderIsTracking = false
     
     @IBOutlet weak var topBackgroundView: UIView!
     
@@ -60,7 +59,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
             }
         }
         
-        if progressBar.sliderIsTracking {return}
+        if progressBar.thumbIsTracking {return}
         if let time = notification.userInfo?["time"] as? Double {
             //print(time)
             progressBar.value = time
@@ -83,13 +82,13 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         if !pageViewScrollInTransit {
             if newVal > oldVal {
                 for i in oldVal ..< newVal {
-                    print("change to NEXT controller")
+                    //print("change to NEXT controller")
                     resetCurrentContentController(i+1, direction: .Forward, animated: true)
                 }
             }
             else if newVal < oldVal {
                 for i in (newVal ..< oldVal).reverse() {
-                    print("change to PREV controller")
+                    //print("change to PREV controller")
                     resetCurrentContentController(i, direction: .Reverse, animated: true)
                 }
             }
@@ -98,7 +97,6 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tools.clipsToBounds = true
         // Needed because we need shadows
         let btnName = functionButtonTemplate("dots")

@@ -43,7 +43,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wOj-mG-3hG">
-                        <rect key="frame" x="335" y="73" width="40" height="27"/>
+                        <rect key="frame" x="335" y="69" width="40" height="27"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="wOj-mG-3hG" secondAttribute="height" multiplier="3:2" id="UIX-Z2-gIY"/>
                             <constraint firstAttribute="width" constant="40" id="aMn-2w-KH6"/>
@@ -51,7 +51,7 @@
                         <state key="normal" image="dots"/>
                     </button>
                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oB0-8V-v7j">
-                        <rect key="frame" x="235" y="73" width="40" height="27"/>
+                        <rect key="frame" x="259" y="69" width="40" height="27"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="c6M-8h-Er8"/>
                             <constraint firstAttribute="width" secondItem="oB0-8V-v7j" secondAttribute="height" multiplier="3:2" id="qLP-mt-N2n"/>
@@ -59,7 +59,7 @@
                         <state key="normal" image="download"/>
                     </button>
                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9cM-NP-Kb8">
-                        <rect key="frame" x="159" y="73" width="40" height="27"/>
+                        <rect key="frame" x="183" y="69" width="40" height="27"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="QwG-Vv-vaa"/>
                             <constraint firstAttribute="width" secondItem="9cM-NP-Kb8" secondAttribute="height" multiplier="3:2" id="p4a-EE-9op"/>
@@ -80,17 +80,17 @@
                     <constraint firstItem="rlv-uh-NhE" firstAttribute="leading" secondItem="F2b-Nb-u5O" secondAttribute="trailing" constant="4" id="5wl-oQ-Xcf"/>
                     <constraint firstItem="Fwq-7x-ZpN" firstAttribute="top" secondItem="rlv-uh-NhE" secondAttribute="bottom" id="8l8-9F-KFl"/>
                     <constraint firstItem="rlv-uh-NhE" firstAttribute="top" secondItem="sve-GS-0jc" secondAttribute="top" id="8qv-BJ-vH7"/>
+                    <constraint firstItem="oB0-8V-v7j" firstAttribute="centerY" secondItem="wOj-mG-3hG" secondAttribute="centerY" id="9U4-TC-OJp"/>
                     <constraint firstItem="oB0-8V-v7j" firstAttribute="leading" secondItem="9cM-NP-Kb8" secondAttribute="trailing" constant="36" id="Aia-xt-2rw"/>
-                    <constraint firstAttribute="bottom" secondItem="oB0-8V-v7j" secondAttribute="bottom" id="EHp-Iw-N9u"/>
                     <constraint firstItem="F2b-Nb-u5O" firstAttribute="leading" secondItem="sve-GS-0jc" secondAttribute="leading" constant="10" id="Iib-vt-pGc"/>
                     <constraint firstAttribute="bottom" secondItem="F2b-Nb-u5O" secondAttribute="bottom" constant="8" id="KY2-ul-INL"/>
                     <constraint firstAttribute="trailing" secondItem="rlv-uh-NhE" secondAttribute="trailing" constant="30" id="Ptb-RA-ozq"/>
                     <constraint firstItem="uYu-a6-cjc" firstAttribute="top" secondItem="sve-GS-0jc" secondAttribute="top" constant="12" id="UKI-sj-ZbQ"/>
-                    <constraint firstAttribute="bottom" secondItem="9cM-NP-Kb8" secondAttribute="bottom" id="Wai-Dp-h1q"/>
-                    <constraint firstAttribute="bottom" secondItem="wOj-mG-3hG" secondAttribute="bottom" id="eOx-Ra-XKM"/>
+                    <constraint firstAttribute="bottom" secondItem="wOj-mG-3hG" secondAttribute="bottom" constant="4" id="eOx-Ra-XKM"/>
+                    <constraint firstItem="9cM-NP-Kb8" firstAttribute="centerY" secondItem="wOj-mG-3hG" secondAttribute="centerY" id="f1U-5L-ozg"/>
                     <constraint firstItem="F2b-Nb-u5O" firstAttribute="top" secondItem="sve-GS-0jc" secondAttribute="top" constant="8" id="gTS-dr-QTs"/>
                     <constraint firstAttribute="trailing" secondItem="wOj-mG-3hG" secondAttribute="trailing" id="iHQ-wL-elv"/>
-                    <constraint firstItem="wOj-mG-3hG" firstAttribute="leading" secondItem="oB0-8V-v7j" secondAttribute="trailing" constant="60" id="kZm-IA-6o0"/>
+                    <constraint firstItem="wOj-mG-3hG" firstAttribute="leading" secondItem="oB0-8V-v7j" secondAttribute="trailing" constant="36" id="kZm-IA-6o0"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

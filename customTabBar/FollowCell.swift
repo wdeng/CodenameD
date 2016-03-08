@@ -10,20 +10,19 @@ import UIKit
 
 class FollowCell: UITableViewCell {
 
-    @IBOutlet weak var isFollowing: UIButton!
-    @IBOutlet weak var username: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        isFollowing.backgroundColor = UIColor.grayColor()
-        isFollowing.layer.cornerRadius = 5
+        //isFollowing.backgroundColor = UIColor.grayColor()
+        //isFollowing.layer.cornerRadius = 5
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         //self.bringSubviewToFront(isFollowing)
         if textLabel != nil {
-            self.sendSubviewToBack(textLabel!)}
+            self.sendSubviewToBack(textLabel!)
+        }
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

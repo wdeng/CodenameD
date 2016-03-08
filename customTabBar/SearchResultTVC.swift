@@ -42,9 +42,9 @@ class SearchResultTVC: UITableViewController {
         cell.textLabel?.text = (item["profileName"] as? String) ?? (item["username"] as! String)
         cell.detailTextLabel?.text = "@" + (item["username"] as! String)
         
-        if let text = item["intro"] as? String {
+        if let text = item["introduction"] as? String {
             if cell.detailTextLabel?.text != nil {
-                cell.detailTextLabel!.text! += (" ● " + text)
+                cell.detailTextLabel!.text! += (" • " + text)
             }
         }
         
@@ -54,12 +54,8 @@ class SearchResultTVC: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let vc = storyboard!.instantiateViewControllerWithIdentifier("UserProfileTVCIdentifier") as! ProfileViewController
-        vc.options = [
-            UserProfileKeys.UserID : searchedUsers[indexPath.row].objectId!,
-            UserProfileKeys.Username : searchedUsers[indexPath.row]["username"] as! String,
-            UserProfileKeys.Intro : searchedUsers[indexPath.row]["intro"] as? String,
-            UserProfileKeys.Weblink : searchedUsers[indexPath.row]["weblink"] as? String
-        ]
+        
+        vc.user = searchedUsers[indexPath.row]
         delegate?.shouldPushViewController?(vc)
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)

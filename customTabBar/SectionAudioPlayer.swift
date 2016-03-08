@@ -62,6 +62,7 @@ public class SectionAudioPlayer: NSObject {
             playerIsSeekingTime = true
             player?.seekToTime(CMTime(seconds: newValue!, preferredTimescale: 1000)) { (_) in
                 self.playerIsSeekingTime = false
+                //print("player is ready:\(self.player!.status == .ReadyToPlay), is unknown:\(self.player!.status == .Unknown)")
                 NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": newValue!])
             }
         }
@@ -118,7 +119,7 @@ public class SectionAudioPlayer: NSObject {
             
             // not sure if this is needed
             player!.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
-            print("current status: \(player!.status.rawValue)")
+            //print("current status is unknown: \(player!.status == .Unknown)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: player!.currentItem)
             
             if periodicTimeObserver == nil {
@@ -148,7 +149,7 @@ public class SectionAudioPlayer: NSObject {
             
         }
         if (keyPath == "status") && (player != nil) {
-            print("status: \(player!.status.rawValue), is ready: \(player!.status == .ReadyToPlay)")
+            //print("status: \(player!.status.rawValue), is ready: \(player!.status == .ReadyToPlay)")
             if (player!.status == .ReadyToPlay) {
                 //print("Player is ready\(player!.currentItem)")
             } else  {
@@ -177,7 +178,7 @@ public class SectionAudioPlayer: NSObject {
     func playerDidFinishPlaying(notification: NSNotification) {
         
         // probably dont need to remove all the observers
-        print("finished playing \(notification.object)")  ///  notification.object is player!.currentItem
+        debugPrint("finished playing \(notification.object)")  ///  notification.object is player!.currentItem
         NSUserDefaults.standardUserDefaults().removeObjectForKey(PlaySoundSetting.currentEpisodeKey)
         currentTime = 0
     }

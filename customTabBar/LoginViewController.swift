@@ -10,7 +10,7 @@ import UIKit
 import Parse
 
 //TODO: check if works even when this is not the first screeen
-var currentUserID = PFUser.currentUser()?.objectId
+//var currentUserID = PFUser.currentUser()?.objectId
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
@@ -31,6 +31,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         login_signupButton.hidden = true
     }
     
@@ -74,12 +75,24 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         var errorMessage = "Please try again later"
         if signUpActived {
             // Parse
+            
+            let regex = "^(?=.{2,15}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"
+            if !NSPredicate(format: "SELF MATCHES %@", regex).evaluateWithObject(username.text!.lowercaseString) {
+                activityIndicator.stopAnimating()
+                UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                AppUtils.displayAlert("Sign Up Failed", message: "Username illegal, please don't include spaces and special characters", onViewController: self)
+                return
+            }
+            
             let user = PFUser()
             user.username = username.text?.lowercaseString
             user.password = password.text
-            user["postUpdatedAt"] = user.updatedAt
+            
+            
+            user["postUpdatedAt"] = user.updatedAt ?? NSDate()
+            
             user.signUpInBackgroundWithBlock({ (success, error) -> Void in
-                currentUserID = PFUser.currentUser()?.objectId
+                
                 self.activityIndicator.stopAnimating()
                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
                 
@@ -101,7 +114,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
                 if user != nil {
                     //Logged in
-                    currentUserID = PFUser.currentUser()?.objectId
                     self.performSegueWithIdentifier("login", sender: self)
                     //TODO: go to front page
                 } else {
@@ -114,6 +126,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             // End Parse
         }
         
+    }
+    
+    @IBAction func usernameDidEnd(sender: UITextField) {
+        sender.resignFirstResponder()
+        password.becomeFirstResponder()
+    }
+    
+    @IBAction func passwordDidEnd(sender: UITextField) {
+        password.resignFirstResponder()
+        login(login_signupButton)
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {

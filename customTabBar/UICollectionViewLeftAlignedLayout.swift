@@ -26,7 +26,8 @@ extension UICollectionViewLayoutAttributes {
 }
 
 class LeftAlignedLayout: UICollectionViewLayout {
-    let maxSpacing = RecordCollectionSettings.itemMinSpacing
+    let photoMaxSpacing = RecordSettings.photoItemSpacing
+    let audioMaxSpacing = RecordSettings.audioItemSpacing
     var delegate: LeftAlignedLayoutDelegate!
     
     private var cache = [UICollectionViewLayoutAttributes]()
@@ -61,11 +62,17 @@ class LeftAlignedLayout: UICollectionViewLayout {
                 prevShouldAllRow = currentShouldAllRow
             }
             
-            let frame = CGRect(x: xOffset, y: yOffset, width: size.width, height: size.height)
-            let insetFrame = CGRectInset(frame, maxSpacing, maxSpacing)
+            var frame = CGRect(x: xOffset, y: yOffset, width: size.width, height: size.height)
+            //let insetFrame = CGRectInset(frame, photoMaxSpacing, photoMaxSpacing)
+            if currentShouldAllRow {
+                frame = CGRectInset(frame, audioMaxSpacing, audioMaxSpacing)
+            } else {
+                frame = CGRectInset(frame, photoMaxSpacing, photoMaxSpacing)
+            }
+            
             
             let attributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
-            attributes.frame = insetFrame
+            attributes.frame = frame//insetFrame
             cache.append(attributes)
             
             rowHeight = max(rowHeight, size.height)
@@ -107,7 +114,7 @@ class LeftAlignedLayout: UICollectionViewLayout {
         if !delegate.collectionView(collectionView!, shouldTakeAllRowAtIndexPath: NSIndexPath(forItem: maxIdx, inSection: 0)) {
             
             var rect = cache[maxIdx].frame
-            rect.origin.x += (rect.size.width + maxSpacing)
+            rect.origin.x += (rect.size.width + photoMaxSpacing)
             
             if (rect.maxX < collectionView!.bounds.maxX) && (p.x > rect.minX) {
                 return NSIndexPath(forItem: maxIdx+1, inSection: 0)

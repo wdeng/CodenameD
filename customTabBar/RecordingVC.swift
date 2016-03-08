@@ -10,13 +10,6 @@ import UIKit
 import AVFoundation
 import Parse
 
-struct RecordCollectionSettings {
-    static let photoItemSize: CGSize = CGSize(width: 88, height: 88)
-    static let audioItemSize: CGSize = CGSize(width: UIScreen.mainScreen().bounds.width - 82, height: 40)
-    static let itemMinSpacing: CGFloat = 1.0
-    static let itemSectInset: UIEdgeInsets = UIEdgeInsetsMake(4.0, 10.0, 4.0, 10.0)
-    static var photoitemLimit: Int? = 4
-}
 
 typealias PhotoModel = UIImage
 
@@ -56,6 +49,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     // Toolbar Items
     @IBOutlet weak var photoButton: UIBarButtonItem!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
+    @IBOutlet weak var micButton: UIBarButtonItem!
     @IBOutlet weak var postSceneButton: UIBarButtonItem!
     @IBOutlet weak var toolBar: UIToolbar!
     
@@ -115,14 +109,14 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         recordButton.imageView?.contentMode = .ScaleAspectFit
         
         recordBackgroundView.layer.cornerRadius = 35
-        recordBackgroundView.clipsToBounds = true
+        //recordBackgroundView.clipsToBounds = true
         
         longPress = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
         longPress.minimumPressDuration = 0.3
         longPress.delegate = self
         
         //Removes the toolbar hairline
-        toolBar.clipsToBounds = true
+        //toolBar.clipsToBounds = true
         
         //nav button
         navigationItem.rightBarButtonItem = closeButton
@@ -136,6 +130,11 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         layout.delegate = self
         
         pickerController.delegate = self
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        SectionAudioPlayer.sharedInstance.pause()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -183,6 +182,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         //TODO: what is the problem, image pickers doesn't work sometimes
         dispatch_async(dispatch_get_main_queue()) {
+            
             if let im = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 let image = ImageUtils.createFitImageFromSize(im)
                 self.appendItemInCollectionView(withItem: image)
@@ -350,9 +350,9 @@ extension RecordingViewController: ImageViewerDelegate, LeftAlignedLayoutDelegat
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        var size = RecordCollectionSettings.photoItemSize
+        var size = RecordSettings.photoItemSize
         if let audio = addedItems.data[indexPath.row] as? AudioModel {
-            size = RecordCollectionSettings.audioItemSize
+            size = RecordSettings.audioItemSize
             size.width = UIAudioCell.calculateButtonWidth(audioDuration: audio.duration, boundsWidth: view.bounds.width)
         }
         

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 class ProfileHeaderView: UIView {
 
@@ -82,7 +83,7 @@ class ProfileHeaderView: UIView {
         // isFollowing/editProfile settings
         isFollowing.setTitle("Loading", forState: .Normal)
         if let id = options[UserProfileKeys.UserID] as? String {
-            if id == currentUserID {
+            if id == PFUser.currentUser()?.objectId {
                 isFollowing.setTitle("Edit Profile", forState: .Normal)
                 //isFollowing.backgroundColor = UIColor.grayColor()
             } else {
