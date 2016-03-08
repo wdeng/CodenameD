@@ -33,29 +33,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         super.viewWillAppear(animated)
         
         login_signupButton.hidden = true
+        username.layer.cornerRadius = 5
+        //username.alpha = 0.8
+        password.layer.cornerRadius = 5
+        //password.alpha = 0.8
+        
+        username.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
+        username.leftViewMode = .Always
+        password.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
+        password.leftViewMode = .Always
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        // Parse
-        if PFUser.currentUser() != nil {
-            self.performSegueWithIdentifier("login", sender: self)
-        }
-    }
-    
-    //TODO: put in app settings
-    
-    func turnOnActivityIndicator(ignoreUser: Bool) {
-        activityIndicator.center = view.center
-        activityIndicator.backgroundColor = UIColor(white: 1.0, alpha: 0.2)
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.activityIndicatorViewStyle = .Gray
-        view.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
-        if ignoreUser {
-            // maybe add a white view
-            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-        }
     }
     
     @IBAction func login(sender: AnyObject) {
@@ -71,7 +61,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         activityIndicator = UIActivityIndicatorView(frame: view.bounds)
         AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser:  true)
-        //turnOnActivityIndicator(true)
         var errorMessage = "Please try again later"
         if signUpActived {
             // Parse

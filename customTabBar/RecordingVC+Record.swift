@@ -140,6 +140,7 @@ extension RecordingViewController {
     }
     
     func showRecordMeterGradientView() {
+        recordMeterView.center = recordBackgroundView.center
         view.insertSubview(recordMeterView, belowSubview: recordBackgroundView)
         recordMeterView.transform = CGAffineTransformMakeScale(0.6, 0.6)
         UIView.animateWithDuration(0.15) {

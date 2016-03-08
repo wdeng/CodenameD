@@ -20,6 +20,7 @@ public class SectionAudioPlayer: NSObject {
     private var periodicTimeObserver: AnyObject?
     
     var playbackSpeed: Float = 1.0 // fast or slow playing
+    var sleepCountDown: Double?
     
     var currentEpisode: EpisodeToPlay?
     var currentSpeed: Float?
@@ -125,6 +126,17 @@ public class SectionAudioPlayer: NSObject {
             if periodicTimeObserver == nil {
                 periodicTimeObserver = player!.addPeriodicTimeObserverForInterval(CMTime(seconds: PlaySoundSetting.playbackTimerInterval, preferredTimescale: 1000), queue: nil, usingBlock: {(time) in
                     if !self.playerIsSeekingTime {
+                        
+                        if self.sleepCountDown != nil {
+                            if self.sleepCountDown > 0 {
+                                self.sleepCountDown! -= PlaySoundSetting.playbackTimerInterval
+                                
+                            } else {
+                                self.sleepCountDown = nil
+                                self.pause()
+                            }
+                        }
+                        
                         NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerTimeChanged", object: nil, userInfo: ["time": time.seconds])
                     }
                 })

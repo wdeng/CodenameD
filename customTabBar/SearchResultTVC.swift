@@ -21,7 +21,7 @@ class SearchResultTVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        tableView.rowHeight = 60
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)

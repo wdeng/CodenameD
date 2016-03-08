@@ -43,6 +43,9 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     @IBOutlet weak var recordButton: UIButton!
     var recordMeterView: RecordingMeterView!
     
+    @IBOutlet weak var recordButtonPosition: NSLayoutConstraint!
+    
+    
     @IBOutlet var deleteButton: UIBarButtonItem!
     @IBOutlet var closeButton: UIBarButtonItem!
     
@@ -143,6 +146,40 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         postSceneButton.enabled = addedItems.data.audioCount() > 0 ? true : false
         
         recordMeterView = RecordingMeterView(frame: recordBackgroundView.frame)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("orientationDidChange:"),
+            name: UIDeviceOrientationDidChangeNotification, object: nil)
+    }
+    
+    // recordButton changes place if
+    func orientationDidChange(sender: AnyObject?) {
+        if recordMeterView.isDescendantOfView(view) || recordBackgroundView.hidden {
+            return
+        }
+        let orientation = UIDevice.currentDevice().orientation
+        if orientation == .PortraitUpsideDown {
+            recordButtonPosition.constant = view.frame.height - 100 - 70
+            view.setNeedsUpdateConstraints()
+            UIView.animateWithDuration(0.2,
+                delay: 0,
+                options: [.CurveEaseInOut],
+                animations: {
+                    self.recordBackgroundView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
+                    self.view.layoutIfNeeded()
+            }, completion: nil)
+            
+        } else if orientation == .Portrait {
+            recordButtonPosition.constant = 100
+            view.setNeedsUpdateConstraints()
+            
+            UIView.animateWithDuration(0.2,
+                delay: 0,
+                options: [.CurveEaseInOut],
+                animations: {
+                    self.recordBackgroundView.transform = CGAffineTransformMakeRotation(0)
+                    self.view.layoutIfNeeded()
+                }, completion: nil)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -152,6 +189,8 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         if audioRecorder != nil {
             audioRecorder.stop()
         }
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     

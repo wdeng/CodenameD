@@ -22,7 +22,7 @@ class NotifViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 60))
-        label.text = "Notifications Current Not Available"
+        label.text = "Notifications Currently Not Available"
         label.textColor = UIColor.grayColor()
         label.font = UIFont.systemFontOfSize(21.0, weight: UIFontWeightMedium)
         label.numberOfLines = 2

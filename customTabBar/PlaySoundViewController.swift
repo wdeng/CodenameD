@@ -34,9 +34,6 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     @IBOutlet weak var sleepTimer: UIBarButtonItem!
     @IBOutlet weak var likeUnlike: UIBarButtonItem!
     
-    
-    private var sleepCountDown: Double?
-    
     // Page view
     var pageViewPendingSection = 0
     var pageViewScrollInTransit = false
@@ -49,13 +46,16 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     func sectionPlayerDidChangeTime(notification: NSNotification) {
         
         //TODO: if multiple countDowns appears, should put this in the section player
-        if let countDown = sleepCountDown {
-            if countDown > 0 {
-                sleepCountDown! -= PlaySoundSetting.playbackTimerInterval
-            } else {
-                sleepCountDown = nil
-                audioPlayer.pause()
-                //TODO: setback the button to original
+        if let counter = audioPlayer.sleepCountDown {
+            if counter > 0 {
+                let displayTime = AppUtils.durationToClockTime(counter)
+                if sleepTimer.title != displayTime {
+                    sleepTimer.title = displayTime
+                }
+            }
+        } else {
+            if sleepTimer.title != "Sleep" {
+                sleepTimer.title = "Sleep"
             }
         }
         
@@ -78,7 +78,9 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     }
     
     
+    
     func sectionSliderSectionDidChange(oldVal: Int, newVal: Int) {
+        
         if !pageViewScrollInTransit {
             if newVal > oldVal {
                 for i in oldVal ..< newVal {
@@ -98,10 +100,16 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         tools.clipsToBounds = true
+        
+        
+        
         // Needed because we need shadows
+        
         let btnName = functionButtonTemplate("dots")
         btnName.addTarget(self, action: Selector("otherFunctions:"), forControlEvents: .TouchUpInside)
         moreButton.customView = btnName
+        
+        
         
         //progress bar related
         if episode == nil { episode = EpisodeToPlay() }
@@ -150,7 +158,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         topBackgroundView.layer.addSublayer(gradientOpacity)
         
         // dismiss button color
-        dismissButton.tintColor = UIColor.whiteColor()
+        //dismissButton.tintColor = UIColor.whiteColor()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -188,6 +196,8 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         //self.presentingViewController?.childViewControllers // Parent Controller
         
         ParseActions.setLikeUnlikeButton(likeUnlike, episodeID: episode.episodeId)
+        
+        
     }
     
     override func viewWillDisappear(animated: Bool) {

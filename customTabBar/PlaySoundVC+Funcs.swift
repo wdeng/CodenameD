@@ -23,7 +23,7 @@ extension PlaySoundViewController {
         btn.layer.shadowOffset = CGSize(width: 0, height: 0)
         btn.layer.shadowRadius = 5.0
         btn.layer.shadowOpacity = 0.7
-        btn.layer.shadowColor = UIColor.blackColor().CGColor
+        //btn.layer.shadowColor = UIColor.blackColor().CGColor
         //button with image and text
         //http://stackoverflow.com/questions/3903018/how-to-have-a-uibarbuttonitem-with-both-image-and-text
         //http://stackoverflow.com/questions/11717219/uibutton-image-text-ios    set image as well as title
@@ -76,6 +76,49 @@ extension PlaySoundViewController {
         ParseActions.likeUnlike(sender, userID: episode.authorId, episodeID: episode.episodeId)
     }
     
+    @IBAction func sleepCounting(sender: UIBarButtonItem) {
+        let ac = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        ac.addAction(cancelAction)
+        
+        let laterAct = UIAlertAction(title: "Off", style: .Default) { (action) in
+            self.audioPlayer.sleepCountDown = nil
+            self.sleepTimer.title = "Sleep"
+        }
+        ac.addAction(laterAct)
+        
+        let fiveMin = UIAlertAction(title: "5 Min", style: .Default) { (action) in
+            self.audioPlayer.sleepCountDown = 300
+        }
+        ac.addAction(fiveMin)
+        
+        let fifteenMin = UIAlertAction(title: "15 Min", style: .Default) { (action) in
+            self.audioPlayer.sleepCountDown = 900
+        }
+        ac.addAction(fifteenMin)
+        
+        let thirtyMin = UIAlertAction(title: "30 Min", style: .Default) { (action) in
+            self.audioPlayer.sleepCountDown = 1800
+        }
+        ac.addAction(thirtyMin)
+        
+        let hour = UIAlertAction(title: "60 Min", style: .Default) { (action) in
+            self.audioPlayer.sleepCountDown = 3600
+        }
+        ac.addAction(hour)
+        
+        presentViewController(ac, animated: true, completion: nil)
+    }
+    
+    @IBAction func speedChange(sender: UIBarButtonItem) {
+        
+//        let shadow : NSShadow = NSShadow()
+//        shadow.shadowBlurRadius = 5.0
+//        let attributes = [NSShadowAttributeName: shadow]
+//        let attr = NSAttributedString(string: "hahahah", attributes: attributes)
+//        dismissSection.setAttributedTitle(attr, forState: .Normal)
+//        print(dismissSection.titleLabel?.text)
+    }
 }
 
 
