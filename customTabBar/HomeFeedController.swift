@@ -152,10 +152,7 @@ class HomeFeedController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let chCell = tableView.dequeueReusableCellWithIdentifier("nameCell", forIndexPath: indexPath) as! ChannelCell
-            var profileName = ((feeds[indexPath.section].user?["profileName"] ?? nil) as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            if profileName?.isEmpty != false {
-                profileName = feeds[indexPath.section].user?.username
-            }
+            let profileName = AppUtils.getMeaningfulString(feeds[indexPath.section].user?["profileName"]) ?? feeds[indexPath.section].user?.username
             chCell.name.text = profileName
             
             return chCell

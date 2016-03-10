@@ -157,9 +157,9 @@ extension RecordingViewController {
     }
     
     func hideRecordButton() {
-        recordBackgroundView.transform = CGAffineTransformIdentity
+        //recordBackgroundView.transform = CGAffineTransformIdentity
         UIView.animateWithDuration(0.15, animations: {
-            self.recordBackgroundView.transform = CGAffineTransformMakeScale(0.1, 0.1)
+            self.recordBackgroundView.transform = CGAffineTransformMakeScale(0.01, 0.01)
             }) { _ in
                 self.recordBackgroundView.hidden = true
                 self.micButton.style = .Plain
@@ -167,7 +167,7 @@ extension RecordingViewController {
     }
     
     func showRecordButton() {
-        recordBackgroundView.transform = CGAffineTransformMakeScale(0.0, 0.0)
+        //recordBackgroundView.transform = CGAffineTransformMakeScale(0.0, 0.0)
         recordBackgroundView.hidden = false
         UIView.animateWithDuration(0.15) {
             self.recordBackgroundView.transform = CGAffineTransformIdentity

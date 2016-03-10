@@ -122,7 +122,6 @@ enum PlayingSpeed: Float {
     case x100 = 1.0
     case x125 = 1.25
     case x150 = 1.5
-    case x175 = 1.75
     case x200 = 2.0
 }
 
@@ -292,6 +291,16 @@ class AppUtils: NSObject {
         }
         else {
             return String(format: "%d:%02d:%02d", dur / 3600, (dur % 3600) / 60, (dur % 3600) % 60)
+        }
+        
+    }
+    
+    class func getMeaningfulString(fromString: AnyObject?) -> String? {
+        let newStr = (fromString as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        if newStr?.isEmpty != false {
+            return nil
+        } else {
+            return newStr
         }
         
     }

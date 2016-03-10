@@ -39,13 +39,11 @@ class SearchResultTVC: UITableViewController {
         //let cell = tableView.dequeueReusableCellWithIdentifier("searchResultCell")!
         let item = searchedUsers[indexPath.row]
         
-        cell.textLabel?.text = (item["profileName"] as? String) ?? (item["username"] as! String)
+        cell.textLabel?.text = AppUtils.getMeaningfulString(item["profileName"]) ?? (item["username"] as! String)
         cell.detailTextLabel?.text = "@" + (item["username"] as! String)
         
-        if let text = item["introduction"] as? String {
-            if cell.detailTextLabel?.text != nil {
-                cell.detailTextLabel!.text! += (" • " + text)
-            }
+        if let text = AppUtils.getMeaningfulString(item["introduction"]) {
+            cell.detailTextLabel?.text? += (" • " + text)
         }
         
         return cell

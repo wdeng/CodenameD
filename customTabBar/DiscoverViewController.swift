@@ -12,6 +12,7 @@ import Parse
 class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, SearchResultsDelegate {
     
     var fetchedUsers = [PFUser]()
+    var userNumberToSkip = 0
     var searchController: UISearchController!
     
     override func viewDidLoad() {
@@ -57,7 +58,7 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
         tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
-    
+    // MARK: following users
     override func loadItems(type: LoadType, size: Int) {
         if isLoadingItems {
             return
@@ -67,10 +68,67 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
         if type == .Reload {
             start = 0
         } else if type == .AddOn {
-            start = fetchedUsers.count
+            start = userNumberToSkip
         }
-        
         usersNotFollowing(start, size: size)
+    }
+    
+    func usersNotFollowing(skip: Int, size: Int) {
+        
+        isLoadingItems = true
+        var errorMessage = "Please try again later"
+        
+        guard let queryA = PFUser.query() else {return}
+        let queryB = PFQuery(className: "Activities")
+        queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
+        queryB.whereKey("type", equalTo: "following")
+        queryA.whereKey("objectId", doesNotMatchKey: "toUser", inQuery: queryB)
+        
+        queryA.orderByDescending("postUpdatedAt")
+        queryA.limit = size
+        queryA.skip = skip
+        queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
+            self.refreshControl?.endRefreshing()
+            self.isLoadingItems = false
+            
+            if error != nil {
+                if let errorString = error!.userInfo["error"] as? String {
+                    errorMessage = errorString
+                }
+                AppUtils.displayAlert("Fetching Users Failed", message: errorMessage, onViewController: self)
+                return
+            }
+            
+            guard let users = objects else {return}
+            
+            if skip <= 0 {
+                self.fetchedUsers.removeAll()
+                self.userNumberToSkip = 0  // we need this para because current user is skipped, maybe remove in future
+            }
+            let numOfUsersBeforeInsertion = self.fetchedUsers.count
+            
+            for object in users {
+                guard let u = object as? PFUser else {continue}
+                if (u.objectId! == PFUser.currentUser()?.objectId) || (u.username == nil) {continue}
+                self.fetchedUsers.append(u)
+            }
+            self.userNumberToSkip += users.count
+            
+            if skip <= 0 {
+                self.tableView.reloadData()
+            } else {
+                
+                var idxPath = [NSIndexPath]()
+                for i in numOfUsersBeforeInsertion ..< self.fetchedUsers.count {
+                    idxPath.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                self.tableView.insertRowsAtIndexPaths(idxPath, withRowAnimation: .None)
+            }
+            
+            if (users.count < size) || (self.fetchedUsers.count > 100) {
+                self.allItemsLoaded = true
+            }
+        }
     }
     
     
@@ -85,13 +143,11 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
         
         let item = fetchedUsers[indexPath.row]
         
-        cell.textLabel?.text = (item["profileName"] as? String) ?? (item["username"] as! String)
+        cell.textLabel?.text = AppUtils.getMeaningfulString(item["profileName"]) ?? (item["username"] as! String)
         cell.detailTextLabel?.text = "@" + (item["username"] as! String)
         
-        if let text = item["introduction"] as? String {
-            if cell.detailTextLabel?.text != nil {
-                cell.detailTextLabel!.text! += (" • " + text)
-            }
+        if let text = AppUtils.getMeaningfulString(item["introduction"]) {
+            cell.detailTextLabel?.text? += (" • " + text)
         }
         
         return cell
@@ -108,61 +164,7 @@ class DiscoverViewController: InfiniteTableViewController, UISearchResultsUpdati
     }
     
     
-    // MARK: following users
-    func usersNotFollowing(skip: Int, size: Int) {
-        
-        isLoadingItems = true
-        var errorMessage = "Please try again later"
-        
-        guard let queryA = PFUser.query() else {return}
-        let queryB = PFQuery(className: "Activities")
-        queryB.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-        queryB.whereKey("type", equalTo: "following")
-        queryA.whereKey("objectId", doesNotMatchKey: "toUser", inQuery: queryB)
-        
-        queryA.limit = size
-        queryA.skip = skip
-        queryA.findObjectsInBackgroundWithBlock{ (objects, error) -> Void in
-            self.refreshControl?.endRefreshing()
-            self.isLoadingItems = false
-            
-            
-            if error != nil {
-                if let errorString = error!.userInfo["error"] as? String {
-                    errorMessage = errorString
-                }
-                AppUtils.displayAlert("Fetching Users Failed", message: errorMessage, onViewController: self)
-                return
-            }
-            
-            guard let users = objects else {return}
-            
-            if skip <= 0 {
-                self.fetchedUsers.removeAll()
-            }
-            
-            for object in users {
-                guard let u = object as? PFUser else {return}
-                if (u.objectId! == PFUser.currentUser()?.objectId) || (u.username == nil) {continue}
-                self.fetchedUsers.append(u)
-            }
-            
-            if skip <= 0 {
-                self.tableView.reloadData()
-            } else {
-                
-                var idxPath = [NSIndexPath]()
-                for i in skip ..< self.fetchedUsers.count {
-                    idxPath.append(NSIndexPath(forRow: i, inSection: 0))
-                }
-                self.tableView.insertRowsAtIndexPaths(idxPath, withRowAnimation: .None)
-            }
-            
-            if users.count < size {
-                self.allItemsLoaded = true
-            }
-        }
-    }
+    
     
     
     

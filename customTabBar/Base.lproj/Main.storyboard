@@ -1123,7 +1123,7 @@
         <scene sceneID="4rh-We-hyb">
             <objects>
                 <tableViewController storyboardIdentifier="SearchResultTVCIdentifier" id="DZd-lG-FKi" customClass="SearchResultTVC" customModule="CodenameD" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="cZH-5r-T50">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="cZH-5r-T50">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1418,7 +1418,7 @@
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Introduction" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ete-yh-Sih">
                                                     <rect key="frame" x="-25" y="-30" width="97" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
                                                     <connections>
                                                         <action selector="resignKeyboard:" destination="AhQ-Ai-7Kj" eventType="editingDidEndOnExit" id="Zgk-Us-nWT"/>
                                                     </connections>
@@ -1791,7 +1791,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fb4-gt-Mee" sceneMemberID="firstResponder"/>
                 <barButtonItem title="Delete" id="bh0-9A-Gfh" userLabel="DeleteButton">
-                    <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="tintColor" red="1" green="0.23529411764705882" blue="0.18823529411764706" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
                         <action selector="deleteAction:" destination="Xmq-nb-kYS" id="uRg-HY-2fL"/>
                     </connections>

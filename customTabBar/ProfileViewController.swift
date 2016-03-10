@@ -32,10 +32,7 @@ class ProfileViewController: InfiniteTableViewController {
     func setupProfile(withUser user: PFUser) {
         
         // make sure is not
-        var profileName = ((user["profileName"] ?? nil) as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        if profileName?.isEmpty != false {
-            profileName = user.username
-        }
+        let profileName = AppUtils.getMeaningfulString(user["profileName"]) ?? user.username
         
         let opts : [String : AnyObject?] = [
             UserProfileKeys.UserID : user.objectId,
@@ -133,11 +130,11 @@ class ProfileViewController: InfiniteTableViewController {
         
         var start = 0
         if type == .Reload {
+            //TODO: reload table header view
             start = 0
         } else if type == .AddOn {
             start = fetchedEpisodes.count
         }
-        
         fetchEpisodes(start, size: size)
     }
     
@@ -320,12 +317,7 @@ class ProfileViewController: InfiniteTableViewController {
         //debugPrint("hi: \(segue.identifier)")
         if segue.sourceViewController is EditProfileController {
             
-            if (PFUser.currentUser()?["profileName"] as? String)?.isEmpty == false {
-                profileView.profileName.text = (PFUser.currentUser()?["profileName"] as? String)
-            } else {
-                profileView.profileName.text = PFUser.currentUser()?.username
-            }
-            
+            profileView.profileName.text = AppUtils.getMeaningfulString(PFUser.currentUser()?["profileName"]) ?? PFUser.currentUser()?.username
             
             if let link = PFUser.currentUser()?["website"] as? String {
                 profileView.userLink.setTitle(profileView.removeScheme(link), forState: .Normal)

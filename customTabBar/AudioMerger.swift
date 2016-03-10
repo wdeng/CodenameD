@@ -16,9 +16,11 @@ import AVFoundation
 
 
 
-class AudioMerger: NSObject {
+class AudioMerger {
     
     var episode = EpisodeToPlay()
+    private let trimLength: (start: Int64, end: Int64) //end is the actual (start + end), use for duration change
+    private var audioTimescale = 1.0
     
     private var audios: [RecordedAudio] = []
     private var tmpAudios: [NSURL] = []
@@ -90,7 +92,8 @@ class AudioMerger: NSObject {
                 prevItemType = .Photo
             } else if let audio = items[i] as? AudioModel {
                 tmpAudios.append(audio.filePathURL)
-                sectDurations[imagesSets.count-1] += audio.duration
+                let trim = Double(trimLength.end) / audioTimescale
+                sectDurations[imagesSets.count-1] += (audio.duration - trim) // each section will be correct length same as audio
                 if prevItemType != .Possible {
                     prevItemType = .Audio
                 }
@@ -113,20 +116,24 @@ class AudioMerger: NSObject {
         episode.thumb = ImageUtils.createCropImageFromSize((episode.imageSets).first?.first as? UIImage)
     }
     
-    override init() {
-        super.init()
-    }
     
-    //TODO: change to convenience init
-    init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a") {
-        super.init()
+    init(withItems items: [AnyObject], toNewAudio: String = "combined.m4a", trim: (start: Double, end: Double) = (0.35, 0.05)) { //TODO: test how long to trim is the best, value/timescale=seconds, try this again afte optimize recorder
+        
+        //get the time scale
+        for i in items {
+            if let audio = i as? AudioModel {
+                audioTimescale = Double(AVURLAsset(URL: audio.filePathURL).duration.timescale)
+                break
+            }
+        }
+        audioTimescale = audioTimescale > 0 ? audioTimescale : 1.0
+        
+        trimLength = (Int64(trim.start * audioTimescale), Int64((trim.start + trim.end) * audioTimescale))
         
         classifyAudioAndPhoto(fromModel: items)
         episode.episodeURL = merge(tmpAudios, toOneAudioName: toNewAudio)
         
     }
-    
-        
     
     var delegate: AudioMergerDelegate?
     
@@ -147,6 +154,7 @@ class AudioMerger: NSObject {
         let composition = AVMutableComposition()
         let compositionAudioTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid) //CMPersistentTrackID()
         
+        
         for i in audioURLs {
             let avAsset = AVURLAsset(URL: i)
             let tracks = avAsset.tracksWithMediaType(AVMediaTypeAudio)
@@ -155,7 +163,12 @@ class AudioMerger: NSObject {
                 return nil
             }
             
-            let timeRangeInAsset = CMTimeRange(start: kCMTimeZero, duration: avAsset.duration)
+            
+            var startTime = avAsset.duration
+            startTime.value = trimLength.start
+            var dur = avAsset.duration
+            dur.value -= trimLength.end
+            let timeRangeInAsset = CMTimeRange(start: startTime, duration: dur)
             let clipAudioTrack = tracks.first!
             do {
             try compositionAudioTrack.insertTimeRange(timeRangeInAsset, ofTrack: clipAudioTrack, atTime: nextClipStartTime)

@@ -22,7 +22,13 @@ class ParseActions: NSObject {
     
     class func loadEpisode(inout episode: EpisodeToPlay, finished: () -> Void) {
         let query = PFQuery(className: "Episode")
-        query.whereKey("objectId", equalTo: episode.episodeId!)
+        if let id = episode.episodeId {
+            query.whereKey("objectId", equalTo: id)
+        } else {
+            finished()
+            return
+        }
+        
         query.getFirstObjectInBackgroundWithBlock{(post, error) in
             
             if error != nil {

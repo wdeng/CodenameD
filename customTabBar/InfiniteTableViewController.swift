@@ -17,7 +17,7 @@ class InfiniteTableViewController: UITableViewController {
     
     var allItemsLoaded = false
     var loadOffset: CGFloat = 100
-    var sizePerPage: Int = 12
+    var sizePerPage: Int = 10
     var isLoadingItems = false
 
     override func viewDidLoad() {

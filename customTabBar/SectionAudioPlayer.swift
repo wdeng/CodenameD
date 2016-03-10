@@ -73,7 +73,6 @@ public class SectionAudioPlayer: NSObject {
         super.init()
         if let data = NSUserDefaults.standardUserDefaults().objectForKey(PlaySoundSetting.currentEpisodeKey) as? NSData {
             if var episode = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? EpisodeToPlay {
-                
                 ParseActions.loadEpisode(&episode) {
                     self.currentEpisode = episode
                     self.setPlayerItemWithURL(episode.episodeURL)
@@ -115,7 +114,11 @@ public class SectionAudioPlayer: NSObject {
         // probably check the NSUserDefault for current playList
         if let url = url {
             player = AVPlayer(URL: url)
-            NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerEpisodeDidSet", object: nil, userInfo: ["title": (currentEpisode?.episodeTitle)!])
+            print("\(currentEpisode) is current episode")
+            if let title = (currentEpisode?.episodeTitle) {
+                NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerEpisodeDidSet", object: nil, userInfo: ["title": title])
+            }
+            
             
             player!.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(), context: nil)
             

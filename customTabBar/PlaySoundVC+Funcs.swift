@@ -123,8 +123,6 @@ extension PlaySoundViewController {
         case .x125:
             audioPlayer.setPlaySpeed(.x150)
         case .x150:
-            audioPlayer.setPlaySpeed(.x175)
-        case .x175:
             audioPlayer.setPlaySpeed(.x200)
         default:
             audioPlayer.setPlaySpeed(.x100)

@@ -39,12 +39,12 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    var audioClipDeleteButton: UIButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+    
     @IBOutlet weak var recordBackgroundView: UIVisualEffectView!
     @IBOutlet weak var recordButton: UIButton!
     var recordMeterView: RecordingMeterView!
-    
     @IBOutlet weak var recordButtonPosition: NSLayoutConstraint!
-    
     
     @IBOutlet var deleteButton: UIBarButtonItem!
     @IBOutlet var closeButton: UIBarButtonItem!
@@ -149,6 +149,13 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("orientationDidChange:"),
             name: UIDeviceOrientationDidChangeNotification, object: nil)
+        
+        audioClipDeleteButton.addTarget(self, action: "audioClipShouldDelete:", forControlEvents: .TouchUpInside)
+        let delImage = UIImage(named: "multiply2")?.imageWithRenderingMode(.AlwaysTemplate)
+        audioClipDeleteButton.setImage(delImage, forState: .Normal)
+        audioClipDeleteButton.tintColor = UIColor(red: 1.0, green: 60/255, blue: 48/255, alpha: 1.0)
+        
+        recordButton.tintColor = UIColor.whiteColor()
     }
     
     // recordButton changes place if
@@ -164,7 +171,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
                 delay: 0,
                 options: [.CurveEaseInOut],
                 animations: {
-                    self.recordBackgroundView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
+                    self.recordButton.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
                     self.view.layoutIfNeeded()
             }, completion: nil)
             
@@ -176,7 +183,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
                 delay: 0,
                 options: [.CurveEaseInOut],
                 animations: {
-                    self.recordBackgroundView.transform = CGAffineTransformMakeRotation(0)
+                    self.recordButton.transform = CGAffineTransformMakeRotation(0)
                     self.view.layoutIfNeeded()
                 }, completion: nil)
         }
@@ -262,6 +269,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
                 layer.path = nil
             }
         }
+        audioClipDeleteButton.removeFromSuperview()
         audioPlayerCurrentIdxPath = nil
         audioPlayer?.stop()
     }
@@ -314,6 +322,13 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
             audioPlayer?.play()
             audioPlayerCurrentIdxPath = idxPath
             
+            audioClipDeleteButton.center = CGPoint(x: cell.frame.maxX + 10, y: cell.center.y)
+            if !audioClipDeleteButton.isDescendantOfView(collectionView) {
+                collectionView.addSubview(audioClipDeleteButton)
+            }
+            
+            
+            
             cell.audioProgressLayer.hidden = false
             let rect = CGRect(x: cell.bounds.origin.x, y: cell.bounds.origin.y, width: 0, height: cell.bounds.height)
             cell.audioProgressLayer.path = UIBezierPath(rect:rect).CGPath
@@ -329,6 +344,29 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
         audioPlayerShouldStop()
+    }
+    
+    func audioClipShouldDelete(sender: UIButton) {
+        if sender.isDescendantOfView(collectionView) {
+            var point = sender.center
+            point.x -= 20
+            guard let idxPath = collectionView.indexPathForItemAtPoint(point) else {return}
+            if collectionView.cellForItemAtIndexPath(idxPath) is UIAudioCell {
+                let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+                alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                
+                let destroyAction = UIAlertAction(title: "Delete This Audio", style: .Destructive) { (action) in
+                    self.audioPlayerShouldStop()
+                    self.addedItems.data.removeAtIndex(idxPath.item)
+                    self.collectionView.deleteItemsAtIndexPaths([idxPath])
+                    
+                }
+                
+                alertController.addAction(destroyAction)
+                self.presentViewController(alertController, animated: true, completion: nil)
+            }
+        }
+        
     }
     
     //MARK: change scene

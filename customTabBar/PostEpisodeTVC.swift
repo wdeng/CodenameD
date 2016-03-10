@@ -103,6 +103,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     func mergingDidFinished(status: AVAssetExportSessionStatus) {
         if status == .Completed {
             debugPrint("Merging complete")
+            print("composition dur: \(CMTimeGetSeconds(AVURLAsset(URL: episodeCreating.episode.episodeURL!).duration))")
             uploadAudio()
             finishedMerging = true
         }
@@ -177,6 +178,7 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
         }
         else { post["title"] = episodeTitle.text }
         post["userId"] = PFUser.currentUser()!.objectId!
+        post["durations"] = episodeCreating.episode.sectionDurations
         
         AppUtils.addCustomView(toBarItem: sender)
         post.saveInBackgroundWithBlock{(success, error) -> Void in
@@ -190,7 +192,6 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
                 AppUtils.displayAlert("Could not post", message: "Please try again later", onViewController: self)
             }
         }
-        
         
     }
     
@@ -211,8 +212,12 @@ class PostEpisodeTVC: UITableViewController, UITextViewDelegate, AudioMergerDele
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showSoundPlayer") {
             
-            audioPlayer.setPlayerItemWithURL(episodeCreating.episode.episodeURL!)
+            
+            audioPlayer.setupPlayerWithEpisode(episodeCreating.episode)
             audioPlayer.play()
+            
+            //audioPlayer.setPlayerItemWithURL(episodeCreating.episode.episodeURL!)
+            //audioPlayer.play()
             
             let postEpisodeVC = segue.destinationViewController as! PlaySoundViewController
             postEpisodeVC.episode = episodeCreating.episode
