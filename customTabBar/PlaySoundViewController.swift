@@ -16,10 +16,9 @@ import MediaPlayer
 
 class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     var pageViewController: UIPageViewController!
-    let progressBar = SectionSlider(frame: CGRectZero)
+    var progressBar: SectionSlider!
     let audioPlayer = SectionAudioPlayer.sharedInstance
     var episode: EpisodeToPlay!
-    var sectionNum: Int = 0
     //private var updateTime: NSTimer?
     
     @IBOutlet weak var topBackgroundView: UIView!
@@ -68,7 +67,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         if progressBar.thumbIsTracking {return}
         if let time = notification.userInfo?["time"] as? Double {
             //print(time)
-            progressBar.value = time
+            progressBar.currentValue = time
         }
     }
     
@@ -107,12 +106,9 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         super.viewDidLoad()
         
         
-        
         // Needed because we need shadows
         
         //let btnName = functionButtonTemplate("dots")
-        
-        
         
         //progress bar related
         if episode == nil { episode = EpisodeToPlay() }
@@ -120,17 +116,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
             episode.sectionDurations = [0.1]
             episode.imageSets = [[]]
         }
-        
-        progressBar.maximumValue = episode.sectionDurations.reduce(0, combine: +)
-        progressBar.sectionsLengths = episode.sectionDurations
-        sectionNum = episode.sectionDurations.count
-        
-        //progressBar.hidden = true
-        
-        createPageViewController()
-        view.addSubview(progressBar)
-        view.bringSubviewToFront(progressBar)
-        progressBar.delegate = self
+        print(view.frame)
         
         
         //TODO: background Play should be in section av player
@@ -168,30 +154,33 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        //TODO: set progressbar hidden if player is not ready
+        progressBar = SectionSlider(withFrame: CGRect(x: view.frame.minX, y: view.frame.height - PlaySoundSetting.progressBarHeight, width: view.frame.width, height: PlaySoundSetting.progressBarHeight), sectionLengths: episode.sectionDurations, options: [:])
+        
+        createPageViewController()
+        view.addSubview(progressBar)
+        view.bringSubviewToFront(progressBar)
+        progressBar.delegate = self
+        
         progressBar.sectionSelectedByUser = false
         if let currentTime = audioPlayer.currentTime {
-            progressBar.value = currentTime
-        } else { progressBar.value = 0.0}
+            progressBar.currentValue = currentTime
+        } else { progressBar.currentValue = 0.0}
         if audioPlayer.isPlaying == true { setPlayerForPlayPause(audioPlayer.currentRate) }
         
-        progressBar.frame = CGRect(x: 0.0, y: view.frame.height - PlaySoundSetting.progressBarHeight, width: view.frame.width, height: PlaySoundSetting.progressBarHeight)
-        let currentSection = progressBar.sectionForLocation(progressBar.positionForValue(progressBar.value))
+        let currentSection = progressBar.sectionForPosition(progressBar.currentPosition)
         
-        //print("view will appear current time: \(progressBar.positionForValue(progressBar.value))   value:  \(progressBar.value)   section: \(progressBar.startOfSectionsInFrame)")
         //resetCurrentContentController(currentSection, direction: .Reverse, animated: true)
         progressBar.currentSection = currentSection
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "AudioPlayerRateChanged", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
         
-        
     }
     
     override func viewWillLayoutSubviews() {
         // put progressBar in layoutsubviews so it conform to rotations
         super.viewWillLayoutSubviews()
-        progressBar.frame = CGRect(x: 0.0, y: view.frame.height - PlaySoundSetting.progressBarHeight, width: view.frame.width, height: PlaySoundSetting.progressBarHeight)
+        //progressBar.frame = CGRect(x: 0.0, y: view.frame.height - PlaySoundSetting.progressBarHeight, width: view.frame.width, height: PlaySoundSetting.progressBarHeight)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -212,7 +201,7 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     }
     
     func sectionSliderThumbDidChange() {
-        audioPlayer.currentTime = progressBar.value
+        audioPlayer.currentTime = progressBar.currentValue
     }
         
     //MARK: hook page view to progressBar
@@ -234,16 +223,15 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
     @IBAction func dismissSelectedSection(sender: AnyObject) {
         progressBar.sectionSelectedByUser = false
         
-        let l = progressBar.positionForValue(progressBar.value)
-        
-        progressBar.currentSection = progressBar.sectionForLocation(l)
+        progressBar.currentSection = progressBar.sectionForPosition(progressBar.currentPosition)
     }
     
     @IBAction func jumpToSelectedSection(sender: AnyObject) {
         //print("bar current section: \(progressBar.currentSection)")
         
         progressBar.sectionSelectedByUser = false
-        audioPlayer.currentTime = progressBar.valueForPosition(progressBar.startOfSectionsInFrame[progressBar.currentSection]) + 0.3 ///TODO: because the length diff for merged audio
+        
+        audioPlayer.currentTime = progressBar.startValueForCurrentSection + 0.1
     }
     
     

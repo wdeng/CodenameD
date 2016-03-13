@@ -41,7 +41,7 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
     
     func viewControllerAtIndex(index: Int) -> ImageTableContentController? {
         //print(index)
-        if (index < 0) || (index >= sectionNum) {
+        if (index < 0) || (index >= episode.sectionDurations.count) {
             return nil
         }
         
@@ -99,10 +99,41 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
             //If didn't successfully finished
         }
         
-        let currentSection = progressBar.sectionForLocation(progressBar.positionForValue(progressBar.value))
+        let currentSection = progressBar.sectionForPosition(progressBar.currentPosition)
         if currentSection == progressBar.currentSection {
             progressBar.sectionSelectedByUser = false
         }
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

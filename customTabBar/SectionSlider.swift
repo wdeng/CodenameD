@@ -1,396 +1,242 @@
 //
 //  SectionSlider.swift
-//  CustomSliderExample
+//  SectionSliderV2
 //
-//  Created by William Archimede on 04/09/2014.
-//  Copyright (c) 2014 HoodBrains. All rights reserved.
+//  Created by Wenxiang Deng on 3/10/16.
+//  Copyright © 2016 Wenxiang Deng. All rights reserved.
 //
 
 import UIKit
-import QuartzCore
-
-private let sectGap = CGFloat(1.0)
-private let thumbConvexLevel = CGSize(width: 5, height: 10)
-
-class SectSliderBackgroundTrackLayer: CALayer {
-    weak var sectSlider: SectionSlider?
-    
-    override func drawInContext(ctx: CGContext) {
-        if let slider = sectSlider {
-            //Background fill
-            //TODO: Maybe background bars should be start from intergers coord for better visual
-            CGContextSetFillColorWithColor(ctx, slider.trackTintColor.CGColor)
-            CGContextFillRect(ctx, bounds)
-            
-            //Sections fill
-            // length of a section is: startOfSectionsInFrame[i] - startOfSectionsInFrame[i-1] - sectGap
-            for i in 0 ..< slider.startOfSectionsInFrame.count {
-                let startOSect = (i > 0) ? slider.startOfSectionsInFrame[i] + sectGap : slider.startOfSectionsInFrame[i]
-                let wid = i < (slider.startOfSectionsInFrame.count - 1) ? (slider.startOfSectionsInFrame[i+1] - startOSect) : (bounds.maxX - startOSect)
-                let rect = CGRect(x: startOSect, y: 0, width: wid, height: bounds.height)
-                CGContextSetFillColorWithColor(ctx, slider.sectionTintColor.CGColor)
-                CGContextFillRect(ctx, rect)
-            }
-        }
-    }
-}
-
-class SectSliderProgressTrackLayer: CALayer {
-    //TODO: maybe should change to to CALayers
-    var sectionSelected: Int = 0 {
-        didSet {
-            prevSection = oldValue
-            setNeedsDisplay()
-        }
-    }
-    
-    private var prevSection = -1
-    private var startOSect: CGFloat!
-    private var widthOSect: CGFloat!
-    weak internal var sectSlider: SectionSlider!
-    
-    override internal func drawInContext(ctx: CGContext) {
-        if let slider = sectSlider {
-            // if prev!= -1, then need cleanning
-            if prevSection != -1 {
-                startOSect = slider.startOfSectionsInFrame[prevSection] + (prevSection > 0 ? sectGap : 0.0)
-                widthOSect = prevSection < (slider.startOfSectionsInFrame.count - 1) ? (slider.startOfSectionsInFrame[prevSection+1] - startOSect) : (bounds.maxX - startOSect)
-                let rect = CGRect(x: startOSect, y: 0, width: widthOSect, height: bounds.height)
-                CGContextSetFillColorWithColor(ctx, slider.sectionTintColor.CGColor)
-                CGContextFillRect(ctx, rect)
-                prevSection = -1
-            }
-            
-            // update to new
-            startOSect = slider.startOfSectionsInFrame[sectionSelected] + (sectionSelected > 0 ? sectGap : 0.0)
-            widthOSect = sectionSelected < (slider.startOfSectionsInFrame.count - 1) ? (slider.startOfSectionsInFrame[sectionSelected+1] - startOSect) : (bounds.maxX - startOSect)
-            //print("the \(sectionSelected) is the selected section, and start of section is \(startOSect)")
-            CGContextSetFillColorWithColor(ctx, slider.sectionHighlightColor.CGColor)
-            CGContextFillRect(ctx, CGRect(x: startOSect, y: 0, width: widthOSect, height: bounds.height))
-            
-            // Fill the progress range
-            let thumbPosition = slider.positionForValue(slider.value)
-            CGContextSetFillColorWithColor(ctx, slider.progressBarColor.CGColor)
-            let rect = CGRect(x: 0.0, y: 0.0, width: thumbPosition, height: bounds.height)
-            CGContextFillRect(ctx, rect)
-            
-            
-            
-            
-            
-            
-        }
-    }
-}
-
-class SectSliderThumbLayer: CALayer {
-    var highlighted: Bool = false {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    weak var sectSlider: SectionSlider?
-    
-    override func drawInContext(ctx: CGContext) {
-        if let slider = sectSlider {
-            let thumbFrame = bounds//.insetBy(dx: 2.0, dy: 2.0)
-            let cornerRadius = thumbFrame.height * 0.0
-            let thumbPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
-            
-            // Fill
-            CGContextSetFillColorWithColor(ctx, slider.thumbTintColor.CGColor)
-            CGContextAddPath(ctx, thumbPath.CGPath)
-            CGContextFillPath(ctx)
-            
-            // Outline
-            let strokeColor = UIColor.lightGrayColor()
-            CGContextSetStrokeColorWithColor(ctx, strokeColor.CGColor)
-            CGContextSetLineWidth(ctx, 0)
-            CGContextAddPath(ctx, thumbPath.CGPath)
-            CGContextStrokePath(ctx)
-            
-            if highlighted {
-                CGContextSetFillColorWithColor(ctx, UIColor(white: 0.0, alpha: 0.1).CGColor)
-                CGContextAddPath(ctx, thumbPath.CGPath)
-                CGContextFillPath(ctx)
-            }
-        }
-    }
-}
-
 
 @objc protocol SectionSliderDelegate {
-    optional func sectionSliderThumbDidBeginTrack()
+    optional func sectionSliderDidBeginTrack()
     optional func sectionSliderThumbDidChange()
-    optional func sectionSliderThumbDidEndTrack()
+    optional func sectionSliderDidEndTrack()
     
     optional func sectionSliderSectionDidChange(oldVal: Int, newVal: Int)
     optional func sliderSelectedStatusDidChanged(oldVal: Bool, newVal: Bool)
-    
 }
 
+
 class SectionSlider: UIControl {
-    //TODO: some of the didset funcs are not neccesary
-    //TODO: should init using dictionary not set one by one [string: anyobject]
-    var delegate: SectionSliderDelegate?
+    
+    struct Options {
+        static let range = "MinAndMaxValue" //(double, double)
+        
+        static let sliderBackgroundColor = "BackgroundColor" // uicolor
+        static let sectionBackgroundColor = "SectionBackgroundColor" // uicolor
+        static let currentSectionColor = "CurrentSectionColor" // uicolor
+        static let progressTrackColor = "ProgressTrackColor" // uicolor
+        static let thumbColor = "ThumbColor" // uicolor
+        
+        static let layersInset = "LayersInset" // cgfloat
+        static let thumbWidth = "ThumbWidth" // cgfloat
+    }
+    
+    var currentSection: Int = 0 {
+        didSet {
+            currentSection = min(max(currentSection, 0), sectionFrames.count - 1)
+            if oldValue != currentSection {
+                updateCurrentSection(toSection: currentSection)
+            }
+        }
+    }
+    var startValueForCurrentSection: Double {
+        get {
+            return Double(sectionFrames[currentSection].minX) * valueToPositionRatio
+        }
+    }
+    
+    private var valueToPositionRatio: Double = 0.5
+    var currentValue: Double { // is in model value
+        get {
+            return Double(currentPosition) * valueToPositionRatio
+        }
+        set {
+            
+            let val = CGFloat(newValue / valueToPositionRatio)
+            currentPosition = val
+            
+            if !sectionSelectedByUser {
+                currentSection = sectionForPosition(currentPosition)
+            }
+            
+        }
+    }
+    internal(set) var currentPosition: CGFloat = 0.0 { /// position in frame
+        didSet {
+            updateThumbRelatedLayers(toLocation: currentPosition)
+        }
+    }
+    
+    
+    internal(set) var thumbIsTracking: Bool = false
     var sectionSelectedByUser: Bool = false {
         didSet {
             self.delegate?.sliderSelectedStatusDidChanged?(oldValue, newVal: sectionSelectedByUser)
         }
     }
-    var thumbIsTracking: Bool = false
-    var currentSection: Int = 0 {
-        didSet {
-            if oldValue != currentSection {
-                progressTrackLayer.sectionSelected = currentSection // Redraw the selected Section
-                
-                if !sectionSelectedByUser {
-                    self.delegate?.sectionSliderSectionDidChange?(oldValue, newVal: currentSection)
-                }
-            }
-        }
-    }
-    var value: Double = 0.0 {
-        // value changes in two situations: one is dragging, the other is sound playing
-        didSet {
-            if value > maximumValue {
-                value = maximumValue
-            }
-            else if value < minimumValue {
-                value = minimumValue
-            }
-            let thumbCenter = positionForValue(value)
-            if !sectionSelectedByUser {
-                //print("value changed, \(sectionForLocation(thumbCenter)) set by value: \(value)")
-                currentSection = sectionForLocation(thumbCenter)
-            }
-            
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            progressTrackLayer.setNeedsDisplay()
-            thumbLayer.frame = CGRect(x: thumbCenter - thumbSize.width/2.0, y: 0.0, width: thumbSize.width, height: thumbSize.height)
-            thumbLayer.setNeedsDisplay()
-            CATransaction.commit()
-            
-        }
-    }
+    private var thumbWidth: CGFloat = 2.0
     
-    //TODO: min and max value is not correct
-    var minimumValue: Double = 0.0 {
-        didSet {
-            if maximumValue < minimumValue {
-                maximumValue = minimumValue + AppSettings.reallySmallNumber
-            }
-            updateLayerFrames()
-        }
-    }
+    var delegate: SectionSliderDelegate?
     
-    var maximumValue: Double = 1.0 {
-        didSet {
-            if minimumValue > maximumValue {
-                minimumValue = maximumValue - AppSettings.reallySmallNumber
-            }
-            updateLayerFrames()
-        }
-    }
+    private var backgroundLayer = CAShapeLayer()
+    private var currentSectionLayer = CAShapeLayer()
+    private var progressTrackLayer = CAShapeLayer()
+    private var thumbLayer = CAShapeLayer()
     
-    var sectionsLengths: [Double] = [] {
-        didSet {
-            backgroundTrackLayer.setNeedsDisplay()
-        }
-    }
+    private var sectionFrames = [CGRect]()   // this should not be used for finding values
     
-    private(set) var startOfSectionsInFrame: [CGFloat]!
-    
-    private var touchableFrame: CGRect!
-    
-    var trackTintColor: UIColor = UIColor(white: 0.3, alpha: 1.0) {
-        didSet {
-            progressTrackLayer.setNeedsDisplay()
-        }
-    }
-    
-    var sectionTintColor: UIColor = UIColor(white: 0.5, alpha: 1.0) {
-        didSet {
-            backgroundTrackLayer.setNeedsDisplay()
-        }
-    }
-    
-    var sectionHighlightColor: UIColor = UIColor.whiteColor() {
-        didSet {
-            progressTrackLayer.setNeedsDisplay()
-        }
-    }
-    
-    var progressBarColor: UIColor = UIColor(white: 0.1, alpha: 0.2) {
-        didSet {
-            progressTrackLayer.setNeedsDisplay()
-        }
-    }
-    
-    var thumbTintColor: UIColor = UIColor.darkGrayColor() {
-        didSet {
-            thumbLayer.setNeedsDisplay()
-        }
-    }
-    
-    private var previousLocation = CGPoint()
-    private let backgroundTrackLayer = SectSliderBackgroundTrackLayer()
-    private let progressTrackLayer = SectSliderProgressTrackLayer()
-    private let thumbLayer = SectSliderThumbLayer()
-    
-    
-    private var thumbSize: CGSize {
-        return CGSize(width: thumbConvexLevel.width, height: bounds.height)
-    }
-    
-    override var frame: CGRect {
-        didSet {
-            startOfSectionsInFrame = [backgroundTrackLayer.frame.minX]
-            updateLayerFrames()
-        }
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(var withFrame frame: CGRect, sectionLengths: [Double] = [1.0], options: [String: AnyObject?] = [:]) {
+        print(frame)
+        thumbWidth = (options[Options.thumbWidth] as? CGFloat) ?? 5.0
+        frame.origin.x += (thumbWidth/2)
+        frame.size.width -= thumbWidth
+        super.init(frame: frame) // TODO: modify from here
         
-        backgroundTrackLayer.sectSlider = self
-        backgroundTrackLayer.contentsScale = UIScreen.mainScreen().scale
-        layer.addSublayer(backgroundTrackLayer)
+        //Calculate section frames
+        valueToPositionRatio = sectionLengths.reduce(0, combine: +) / Double(self.bounds.width)
+        let layersInset = (options[Options.layersInset] as? CGFloat) ?? 6
+        var sectionStartX: CGFloat = bounds.origin.x
+        let sectionStartY: CGFloat = bounds.origin.y + layersInset, sectionHeight = bounds.height - layersInset
         
-        progressTrackLayer.sectSlider = self
-        progressTrackLayer.contentsScale = UIScreen.mainScreen().scale
-        layer.addSublayer(progressTrackLayer)
+        let widthExtension = (thumbWidth/2 + 1)
+        for i in 0 ..< sectionLengths.count {
+            let sectionWidth = CGFloat(sectionLengths[i] / valueToPositionRatio)
+            var rect = CGRect(x: sectionStartX, y: sectionStartY, width: sectionWidth, height: sectionHeight)
+            if i == 0 {
+                rect.origin.x -= widthExtension
+                rect.size.width += widthExtension
+            }
+            if i == (sectionLengths.count - 1) {
+                rect.size.width += widthExtension
+            }
+            sectionFrames.append(rect)
+            sectionStartX += sectionWidth
+        }
         
-        thumbLayer.sectSlider = self
-        thumbLayer.contentsScale = UIScreen.mainScreen().scale
-        layer.addSublayer(thumbLayer)
+        //setup layer colors
+        //backgroundLayer.backgroundColor = (options[Options.sliderBackgroundColor] as? UIColor)?.CGColor
+        backgroundLayer.fillColor = (options[Options.sectionBackgroundColor] as? UIColor)?.CGColor ?? UIColor.grayColor().CGColor
+        currentSectionLayer.backgroundColor = (options[Options.currentSectionColor] as? UIColor)?.CGColor ?? UIColor(white: 0.9, alpha: 1.0).CGColor
+        progressTrackLayer.backgroundColor = (options[Options.progressTrackColor] as? UIColor)?.CGColor ?? UIColor(white: 0.1, alpha: 0.2).CGColor
+        thumbLayer.backgroundColor = (options[Options.thumbColor] as? UIColor)?.CGColor ?? UIColor.darkGrayColor().CGColor
         
-        startOfSectionsInFrame = [backgroundTrackLayer.frame.minX]
-        updateLayerFrames()
+        setupSlider()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    func updateLayerFrames() {
+    private func setupSlider() {
+        let path = CGPathCreateMutable()
+        for i in sectionFrames {
+            let rect = i.insetBy(dx: 1, dy: 0) //TODO: see if need modify first and last sect
+            CGPathAddRect(path, nil, rect)
+        }
+        backgroundLayer.path = path
+        layer.addSublayer(backgroundLayer)
+        
+        currentSectionLayer.frame = sectionFrames[currentSection].insetBy(dx: 1, dy: 0)
+        layer.addSublayer(currentSectionLayer)
+        
+        let sectRect = CGRect(x: sectionFrames[0].minX+1, y: sectionFrames[0].minY, width: 0, height: sectionFrames.first!.height)
+        progressTrackLayer.frame = sectRect //UIBezierPath(rect: sectRect).CGPath
+        layer.addSublayer(progressTrackLayer)
+        
+        let thumbRect = CGRect(x: bounds.minX, y: 0, width: thumbWidth, height: bounds.height)
+        thumbLayer.frame = thumbRect
+        thumbLayer.position.x = 0
+        layer.addSublayer(thumbLayer)
+        
+    }
+    
+    func updateThumbRelatedLayers(toLocation locX: CGFloat) {
+        //print("position: \(locX)  value: \(currentValue)")
         CATransaction.begin()
         CATransaction.setDisableActions(true)
+        thumbLayer.position.x = locX
         
-        progressTrackLayer.frame = CGRect(x: bounds.minX, y: bounds.minY + thumbConvexLevel.height, width: bounds.width, height: bounds.height - thumbConvexLevel.height)
-        progressTrackLayer.setNeedsDisplay()
-        
-        backgroundTrackLayer.frame = progressTrackLayer.frame
-        resetSectionStarters()
-        backgroundTrackLayer.setNeedsDisplay()
-        
-        let thumbCenter = positionForValue(value)
-        thumbLayer.frame = CGRect(x: thumbCenter - thumbSize.width/2.0, y: 0.0, width: thumbSize.width, height: thumbSize.height)
-        thumbLayer.setNeedsDisplay()
-        
+        progressTrackLayer.frame.size.width = locX
         CATransaction.commit()
     }
     
-    func positionForValue(v: Double) -> CGFloat {
-        let p = (v - minimumValue) * Double(backgroundTrackLayer.frame.width - thumbSize.width) / (maximumValue - minimumValue) + Double(thumbSize.width / 2.0) + Double(backgroundTrackLayer.frame.minX)
-        return CGFloat(p)
+    func updateCurrentSection(toSection sect: Int) {
+        //print("new section: \(sect)")
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        currentSectionLayer.frame.origin.x = (sectionFrames[sect].origin.x+1)
+        currentSectionLayer.frame.size.width = (sectionFrames[sect].width-2)
+        CATransaction.commit()
     }
     
-    func valueForPosition(p: CGFloat) -> Double {
-        let v = (p - backgroundTrackLayer.frame.minX - thumbSize.width / 2) / (backgroundTrackLayer.frame.width - thumbSize.width)
-        return (Double(v) * (maximumValue - minimumValue) + minimumValue)
-    }
-    
-    
-    private func resetSectionStarters()
-    {
-        startOfSectionsInFrame = [backgroundTrackLayer.frame.minX]
-        
-        if self.sectionsLengths.count - 1 > 0 {
-            for i in 0 ..< self.sectionsLengths.count - 1 {
-                startOfSectionsInFrame.append(positionForValue(sectionsLengths[i]) + startOfSectionsInFrame[i])
-            }
+    //MARK: Touches
+    func setCurrentSection(currentLocactionX locx: CGFloat) {
+        let sect = sectionForPosition(locx)
+        if sect != currentSection {
+            self.delegate?.sectionSliderSectionDidChange?(currentSection, newVal: sect)
+            currentSection = sect
         }
     }
     
-    func sectionForLocation (loc: CGFloat) -> Int {
-        let x = loc //.x
-        if x < startOfSectionsInFrame[0] {
-            return 0
-        }
-        
-        for i in 0 ..< startOfSectionsInFrame.count - 1 {
-            if (x >= startOfSectionsInFrame[i] && x < startOfSectionsInFrame[i+1]) {
-                return i
-            }
-        }
-        
-        return startOfSectionsInFrame.count - 1
-    }
-
-    // MARK: - Touches
     override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-        previousLocation = touch.locationInView(self)
+        let locx = touch.locationInView(self).x
+        delegate?.sectionSliderDidBeginTrack?()
         
-        // Hit test the thumb layers
-        
-        if abs(thumbLayer.frame.midX - previousLocation.x) < 20 { // pressing the thumb
-            thumbLayer.highlighted = true
-            delegate?.sectionSliderThumbDidBeginTrack?()
+        // if dragging by thumb, player itself should stop, if by track, value change won't affect
+        if abs(thumbLayer.frame.midX - locx) < 20 {
+            sectionSelectedByUser = false
             thumbIsTracking = true
-            return true
-        }
-        else if backgroundTrackLayer.frame.contains(previousLocation){ // doesn't contain thumb
+        } else {
             sectionSelectedByUser = true
-            self.delegate?.sectionSliderSectionDidChange?(currentSection, newVal: sectionForLocation(previousLocation.x))
-            currentSection = sectionForLocation(previousLocation.x)
-            return true
+            setCurrentSection(currentLocactionX: locx)
         }
         
-        return false
+        return true
     }
     
     override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-        var location = touch.locationInView(self)
-        // Determine by how much the user has dragged
+        let locx = min(max(touch.locationInView(self).x, self.bounds.minX), self.bounds.maxX)
         
-        location.x = min(max(location.x, backgroundTrackLayer.frame.minX), backgroundTrackLayer.frame.maxX)
-        
-        // Update the values
-        if thumbLayer.highlighted {
-            //TODO: to implement apple's fine tune, need conditionally change location depending on location.y
-            let deltaLocation = Double(location.x - previousLocation.x)
-            let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(backgroundTrackLayer.frame.width - thumbSize.width)
-            sectionSelectedByUser = false
-            value += deltaValue
+        if thumbIsTracking {
+            currentPosition = locx
             delegate?.sectionSliderThumbDidChange?()
-        } else {
-            //print("by tracking, current section is \(sectionForLocation(location.x))")
-            self.delegate?.sectionSliderSectionDidChange?(currentSection, newVal: sectionForLocation(location.x))
-            currentSection = sectionForLocation(location.x) //TODO: this is called and in "var value: Double" will call this again
-            
         }
         
-        
-        
-        previousLocation = location
+        setCurrentSection(currentLocactionX: locx)
         return true
     }
     
     override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
-        let s = sectionForLocation(positionForValue(value))
-        if sectionSelectedByUser && (currentSection == s) {
+        if sectionForPosition(currentPosition) == currentSection {
             sectionSelectedByUser = false
         }
         
-        if thumbLayer.highlighted {
-            delegate?.sectionSliderThumbDidEndTrack?()
-            thumbIsTracking = false
-            thumbLayer.highlighted = false
+        thumbIsTracking = false
+        delegate?.sectionSliderDidEndTrack?()
+    }
+    
+    override func cancelTrackingWithEvent(event: UIEvent?) {
+        thumbIsTracking = false
+        delegate?.sectionSliderDidEndTrack?()
+    }
+    
+    // Utils
+    func sectionForPosition (loc: CGFloat) -> Int {
+        if loc < sectionFrames.first?.minX {return 0}
+        for i in 0 ..< sectionFrames.count {
+            let rect = sectionFrames[i]
+            if CGRectContainsPoint(rect, CGPoint(x: loc, y: rect.midY)) {
+                return i
+            }
         }
+        
+        return sectionFrames.count > 0 ? sectionFrames.count - 1 : 0
     }
 }
+
+
 
 
 
