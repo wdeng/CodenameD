@@ -9,6 +9,8 @@
 import UIKit
 import Parse
 
+
+//TODO: change to Infinite tvc
 class HomeFeedController: UITableViewController {
     var feeds: [ChannelFeed] = []
     var allItemsLoaded = false

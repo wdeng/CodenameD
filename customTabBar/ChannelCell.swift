@@ -11,7 +11,6 @@ import UIKit
 class ChannelCell: UITableViewCell {
     
     @IBOutlet weak var name: UILabel!
-    @IBOutlet weak var photo: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

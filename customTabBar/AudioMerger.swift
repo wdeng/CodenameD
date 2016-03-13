@@ -14,17 +14,13 @@ import AVFoundation
     optional func mergingWillStart()
 }
 
-
-
 class AudioMerger {
     
     var episode = EpisodeToPlay()
     private let trimLength: (start: Int64, end: Int64) //end is the actual (start + end), use for duration change
     private var audioTimescale = 1.0
     
-    private var audios: [RecordedAudio] = []
     private var tmpAudios: [NSURL] = []
-    private var imageSets: [AddedImageSet] = []
     var outputAudio: NSURL?
     var exportSession: AVAssetExportSession?
     
@@ -33,47 +29,13 @@ class AudioMerger {
     var assetReader: AVAssetReader?
     var assetQueue: dispatch_queue_t?
     
-    //TODO: This should be changed to dynamic in recording scene                       will need a placeholder image if no image
-    private func getImageSetions(items: [AnyObject]) {
-        //TODO: unexpectedly nil optional
-        print(items)
-        var currentSecionIndex = 0
-        for i in 0 ..< items.count {
-            if let item = items[i] as? AddedImageSet {
-                if i == 0 {
-                    imageSets.append(AddedImageSet())
-                }
-                else if audios.last?.itemIndex == imageSets.last!.itemIndex { /// this also solves the first item as audio
-                    currentSecionIndex++
-                    imageSets.append(AddedImageSet())
-                }
-                imageSets.last!.itemIndex = currentSecionIndex
-                imageSets.last!.images += item.images
-            }
-            else if let item = items[i] as? RecordedAudio {
-                item.itemIndex = currentSecionIndex
-                imageSets.last!.sectionDuration += item.duration   /// images hold the duration of the section
-                audios.append(item)
-            }
-            else
-            {
-                debugPrint("something else added in recordedBundle")
-            }
-        }
-        
-        if (currentSecionIndex > 0) && (audios.last!.itemIndex != currentSecionIndex){
-            imageSets[imageSets.count - 2].images += imageSets.last!.images
-            imageSets.removeLast()
-        }
-        
-    }
-    
     private enum ItemType {
         case Photo
         case Audio
         case Possible
     }
     
+    //TODO: This should be changed to dynamic in recording scene                       will need a placeholder image if no image
     private func classifyAudioAndPhoto(fromModel items: [AnyObject]) {
         //var sectionIdx = 0
         var prevItemType = ItemType.Possible
@@ -81,7 +43,6 @@ class AudioMerger {
         var imagesSets = [[AnyObject]()]
         var sectDurations = [0.0]
         
-        imageSets.append(AddedImageSet())
         for i in  0 ..< items.count {
             if let photo = items[i] as? UIImage {
                 if prevItemType == .Audio {

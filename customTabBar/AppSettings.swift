@@ -79,7 +79,7 @@ struct RecordSettings {
     static let photoItemSpacing: CGFloat = 1.0
     static let audioItemSpacing: CGFloat = 4.0
     
-    static let photoItemSize: CGSize = CGSize(width: 88, height: 88)
+    static let photoItemSize: CGSize = UIScreen.mainScreen().bounds.width > 370 ? CGSize(width: 89, height: 89) : CGSize(width: 76, height: 76)
     static let audioItemSize: CGSize = CGSize(width: UIScreen.mainScreen().bounds.width - 82, height: 44)
     
     static let recordedDurationLimit: (Double, Double) = (1.0, 61.0)

@@ -114,7 +114,9 @@ public class SectionAudioPlayer: NSObject {
         // probably check the NSUserDefault for current playList
         if let url = url {
             player = AVPlayer(URL: url)
-            print("\(currentEpisode) is current episode")
+            player?.currentItem?.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmTimeDomain //TODO: what is better
+            
+            //print("\(currentEpisode) is current episode")
             if let title = (currentEpisode?.episodeTitle) {
                 NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerEpisodeDidSet", object: nil, userInfo: ["title": title])
             }
