@@ -14,6 +14,7 @@ struct PlayerInfo {
     static var playSpeed: Float = 1.0
 }
 
+
 public class SectionAudioPlayer: NSObject {
     static let sharedInstance = SectionAudioPlayer()
     private var player: AVPlayer?
