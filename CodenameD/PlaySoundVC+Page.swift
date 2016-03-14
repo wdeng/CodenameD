@@ -69,6 +69,7 @@ extension PlaySoundViewController: UIPageViewControllerDataSource,UIPageViewCont
         return vc
     }
     
+    
     //MARK: UIPageViewController DataSource and Delegate,
     
     //These method only responsible for gesture sliding the VCs
