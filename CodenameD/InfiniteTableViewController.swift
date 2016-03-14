@@ -13,6 +13,7 @@ enum LoadType {
     case Reload
 }
 
+
 class InfiniteTableViewController: UITableViewController {
     
     var allItemsLoaded = false
