@@ -123,7 +123,7 @@
 		766E978E1C2AFC570012EDA9 /* NotifViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifViewController.swift; sourceTree = "<group>"; };
 		767659F81C5600D20078CFF4 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
 		767659FE1C62C7190078CFF4 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
-		768706981C1563AB00D1A457 /* CodenameD.temp_caseinsensitive_rename.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodenameD.temp_caseinsensitive_rename.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		768706981C1563AB00D1A457 /* CodenameD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodenameD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7687069B1C1563AB00D1A457 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		768706A01C1563AB00D1A457 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		768706A21C1563AB00D1A457 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -267,7 +267,7 @@
 		768706991C1563AB00D1A457 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				768706981C1563AB00D1A457 /* CodenameD.temp_caseinsensitive_rename.app */,
+				768706981C1563AB00D1A457 /* CodenameD.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -365,7 +365,7 @@
 			);
 			name = CodenameD;
 			productName = customTabBar;
-			productReference = 768706981C1563AB00D1A457 /* CodenameD.temp_caseinsensitive_rename.app */;
+			productReference = 768706981C1563AB00D1A457 /* CodenameD.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -595,7 +595,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wdeng.CodenameD;
-				PRODUCT_NAME = CodenameD.temp_caseinsensitive_rename;
+				PRODUCT_NAME = CodenameD;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -614,7 +614,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wdeng.CodenameD;
-				PRODUCT_NAME = CodenameD.temp_caseinsensitive_rename;
+				PRODUCT_NAME = CodenameD;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
