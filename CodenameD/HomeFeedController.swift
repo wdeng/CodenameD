@@ -11,11 +11,8 @@ import Parse
 
 
 //TODO: change to Infinite tvc
-class HomeFeedController: UITableViewController {
+class HomeFeedController: InfiniteTableViewController {
     var feeds: [ChannelFeed] = []
-    var allItemsLoaded = false
-    let loadOffset: CGFloat = 100
-    var isLoadingItems = false
     
     //for infinite scrolling
     @IBOutlet var refreshView : UIView!
@@ -42,47 +39,26 @@ class HomeFeedController: UITableViewController {
         
         tableView.registerNib(UINib(nibName: "EpisodeCell", bundle: nil), forCellReuseIdentifier: "episodeCell")
         
-        refreshControl = UIRefreshControl()
-        refreshControl!.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
         //feeds = NSKeyedUnarchiver.unarchiveObjectWithFile(homeFeedFilePath) as? [ChannelFeed] ?? [homeFeedFilePath]()
-    }
-    
-    func refresh(refresher: UIRefreshControl) {
-        if !refresher.refreshing {
-            refresher.beginRefreshing()
-        }
-        
-        allItemsLoaded = false
-        loadFeed(.Reload, size: HomeFeedsSettings.sectionsInPage)
-        performSelector("refreshShouldStop:", withObject: refresher, afterDelay: 10.0)
-    }
-    
-    func refreshShouldStop(refresher: UIRefreshControl) {
-        if refresher.refreshing { /// Refreshing failed
-            refresher.endRefreshing()
-        }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Home"
         
-        //TODO: When posting, make nav bar right item as indicator
-        //activityIndicator = UIActivityIndicatorView(frame: view.bounds)
-        //AppUtils.switchOnActivityIndicator(activityIndicator, forView: view, ignoreUser: true)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
     }
     
-    func loadFeed(type: LoadType, size:Int) {
-        if isLoadingItems || allItemsLoaded {
+    override func loadItems(type: LoadType, size:Int) {
+        if isLoadingItems {
             return
         }
         isLoadingItems = true
         
-        var start: Int!
+        var start = 0
         if type == .Reload {
             start = 0
         }
@@ -121,17 +97,6 @@ class HomeFeedController: UITableViewController {
             self.isLoadingItems = false
             
             //NSKeyedArchiver.archiveRootObject(self.feeds, toFile: homeFeedFilePath)
-        }
-    }
-    
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
-        //TODO: will crash after pull request, because feeds has been set to []
-        let offset = scrollView.contentOffset.y
-        let maxOffset = scrollView.contentSize.height - scrollView.frame.size.height + scrollView.contentInset.bottom
-        // this runs when scrolling started !!!!!!!!!!!!!!!!
-        
-        if (maxOffset-offset < loadOffset) && (!allItemsLoaded) {
-            loadFeed(.AddOn, size: HomeFeedsSettings.sectionsInPage)
         }
     }
     
