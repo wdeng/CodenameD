@@ -22,8 +22,13 @@ class FollowingFollowerVC: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.navigationController?.setNavigationBarHidden(true, animated: false)
         
-        
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     func reloadUsers() {
         guard let query = PFUser.query() else {return}

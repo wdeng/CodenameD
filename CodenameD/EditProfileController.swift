@@ -60,6 +60,12 @@ class EditProfileController: UITableViewController, UITextFieldDelegate {
         if let introduction = user["introduction"] {
             intro.text = introduction as? String
         }
+        tabBarController?.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     @IBAction func saveProfile(sender: AnyObject) {

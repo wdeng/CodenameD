@@ -29,11 +29,6 @@ class ProfileViewController: InfiniteTableViewController {
         ]
         profileView.setupProfile(withOptions: opts)
         
-        if navBarShouldHide {
-            tabBarController?.navigationController?.setNavigationBarHidden(true, animated: false)
-        } else {
-            tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
-        }
     }
     
     override func viewDidLoad() {
@@ -76,6 +71,11 @@ class ProfileViewController: InfiniteTableViewController {
         headerView.frame.size.height = 148 + profileView.userIntro.sizeThatFits(maxSize).height + userLinkHeight
         tableView.tableHeaderView = headerView // everytime this was called, layout subviews will be called
         
+        if navBarShouldHide {
+            tabBarController?.navigationController?.setNavigationBarHidden(true, animated: false)
+        } else {
+            tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
+        }
         
         tabBarController?.navigationItem.title = profileView.profileName.text
         navigationItem.title = profileView.profileName.text
@@ -87,6 +87,8 @@ class ProfileViewController: InfiniteTableViewController {
                 tableView.contentInset.bottom = TabBarSettings.height
             }
         }
+        
+        
         
         //tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
         //let item = UIBarButtonItem(title: "Following", style: .Plain, target: self, action: "followingTapped")
@@ -103,6 +105,7 @@ class ProfileViewController: InfiniteTableViewController {
         if tabBarController?.navigationItem.rightBarButtonItems?.count > 1 {
             tabBarController?.navigationItem.rightBarButtonItems?.removeLast()
         }
+        tabBarController?.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     override func loadItems(type: LoadType, size: Int) {

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		76017D5F1C1C772000E9693B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76017D5E1C1C772000E9693B /* LoginViewController.swift */; };
-		76017D651C1CD36E00E9693B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D641C1CD36E00E9693B /* AudioToolbox.framework */; };
 		76017D671C1CD37C00E9693B /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D661C1CD37C00E9693B /* CFNetwork.framework */; };
 		76017D691C1CD43600E9693B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D681C1CD43600E9693B /* CoreGraphics.framework */; };
 		76017D6B1C1CD43F00E9693B /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76017D6A1C1CD43F00E9693B /* CoreLocation.framework */; };
@@ -77,7 +76,6 @@
 		76017D5E1C1C772000E9693B /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		76017D601C1CCA1400E9693B /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = CodenameD/Bolts.framework; sourceTree = "<group>"; };
 		76017D611C1CCA1400E9693B /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = CodenameD/Parse.framework; sourceTree = "<group>"; };
-		76017D641C1CD36E00E9693B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		76017D661C1CD37C00E9693B /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		76017D681C1CD43600E9693B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		76017D6A1C1CD43F00E9693B /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -157,7 +155,6 @@
 				76017D6B1C1CD43F00E9693B /* CoreLocation.framework in Frameworks */,
 				76017D691C1CD43600E9693B /* CoreGraphics.framework in Frameworks */,
 				76017D671C1CD37C00E9693B /* CFNetwork.framework in Frameworks */,
-				76017D651C1CD36E00E9693B /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,7 +174,6 @@
 				76017D6A1C1CD43F00E9693B /* CoreLocation.framework */,
 				76017D681C1CD43600E9693B /* CoreGraphics.framework */,
 				76017D661C1CD37C00E9693B /* CFNetwork.framework */,
-				76017D641C1CD36E00E9693B /* AudioToolbox.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -383,6 +379,9 @@
 						DevelopmentTeam = 7X5H79S2RL;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+							com.apple.InterAppAudio = {
 								enabled = 0;
 							};
 						};
