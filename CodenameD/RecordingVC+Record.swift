@@ -14,29 +14,16 @@ extension RecordingViewController {
     
     // MARK: recording events
     @IBAction func recordStart(sender: UIButton) {
-        UIView.animateWithDuration(0.2) {
-            self.recordBackgroundView.transform = CGAffineTransformMakeScale(0.8, 0.8)
-        }
+        
+        UIView.animateWithDuration(0.2,
+            delay: 0,
+            options: [.BeginFromCurrentState, .CurveEaseInOut],
+            animations: {
+                self.recordBackgroundView.transform = CGAffineTransformMakeScale(0.8, 0.8)
+            }, completion: nil)
+        
         
         self.audioPlayerShouldStop()
-        //tmp audio saving dir
-        //TODO: 点击录制有延时  需要在开始录制之前就把这些设定好
-//        let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first! as String
-//        let recordingName = "myaudio\(recordingNameIndex).wav"
-//        let pathArray = [dirPath, recordingName]
-//        let filePath = NSURL.fileURLWithPathComponents(pathArray)
-//        
-//        //start recording
-//        do {
-//            try audioRecorder = AVAudioRecorder(URL: filePath!, settings: RecordSettings.recordAudioSettings)
-//            audioRecorder.delegate = self
-//            audioRecorder.meteringEnabled = true
-//            audioRecorder.prepareToRecord()
-//            audioRecorder.record()
-//        } catch {
-//            debugPrint("recording failed")
-//            return
-//        }
         
         audioRecorder.record()
         
@@ -190,6 +177,14 @@ extension RecordingViewController {
             audioRecorder.prepareToRecord()
         } catch {
             debugPrint("recording failed")
+            
+            let alert = UIAlertController(title: "Error", message: "Couldn't initialize the recorder", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "Retry", style: .Default) { (action) -> Void in
+                self.prepareRecorder()
+                })
+            alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { (action) -> Void in
+                })
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
     
