@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import AVFoundation
 
 class RecordingModel: NSObject {
     var data = [AnyObject]()
@@ -103,10 +103,14 @@ struct RecordSettings {
     static let thumbImageSize: CGSize = CGSize(width: 165, height: 165)
     
     //for iphone only, iphone is mono input
-    static let numberOfChannels:Int = 1
+    static let recordAudioSettings: [String : AnyObject] = [
+        AVEncoderAudioQualityKey : AVAudioQuality.High.rawValue,
+        AVEncoderBitRateKey : 64000,
+        AVNumberOfChannelsKey: 1,
+        AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key, if cannot change export session in the
     
     static let minCellBlankWidth: CGFloat = 36.0
-    static let minAudioButtonWidth: CGFloat = 40.0
+    static let minAudioButtonWidth: CGFloat = 50.0
 }
 
 struct PlaySoundSetting {

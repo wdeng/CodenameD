@@ -122,7 +122,6 @@ public class SectionAudioPlayer: NSObject {
                 NSNotificationCenter.defaultCenter().postNotificationName("AudioPlayerEpisodeDidSet", object: nil, userInfo: ["title": title])
             }
             
-            
             player!.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(), context: nil)
             
             // not sure if this is needed
@@ -194,6 +193,13 @@ public class SectionAudioPlayer: NSObject {
     }
     
     func play() {
+        if AVAudioSession.sharedInstance().category != AVAudioSessionCategoryPlayback {
+            do {
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback) // if headphone plugged, should be PlayAndRecord
+                UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+                
+            } catch _ {debugPrint("Audio session error")}
+        }
         player?.rate = playbackSpeed.rawValue
     }
     

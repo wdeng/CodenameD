@@ -193,69 +193,6 @@ class HomeFeedFromParse: NSObject {
             }
         }
         
-        
-        
-//        let query = PFQuery(className: "Activities")
-//        query.whereKey("fromUser", equalTo: PFUser.currentUser()!.objectId!)
-//        query.whereKey("type", equalTo: "following")
-//        query.orderByDescending("updatedAt")
-//        query.skip = skip
-//        query.limit = size
-//        query.findObjectsInBackgroundWithBlock { (users, error) in
-//            //print(users)
-//            if (error != nil) {
-//                print("couldn't find following users")
-//                return
-//            }
-//            //TODO: if us is []
-//            guard let us = users else {return}
-//            if us.count == 0{
-//                finished(feeds)
-//            }
-//            
-//            var counter = 0
-//            
-//            for u: PFObject in us as [PFObject] {
-//                let ch = ChannelFeed()
-//                
-//                ch.username = u["toUsername"] as? String
-//                ch.userThumb = u["thumb"] as? PFFile
-//                ch.userId = u["toUser"] as? String
-//                
-//                feeds.append(ch)
-//                let q = PFQuery(className: "Episode")
-//                q.whereKey("userId", equalTo: u["toUser"])
-//                q.orderByDescending("updatedAt")
-//                q.limit = HomeFeedsSettings.itemsInSection
-//                q.findObjectsInBackgroundWithBlock{ (posts, error) in
-//                    if error != nil {
-//                        print("couldn't fetch home")
-//                        return
-//                    }
-//                    
-//                    for p in posts! {
-//                        let e = EpisodeToPlay()
-//                        if let urlString = (p["audio"] as? PFFile)?.url {
-//                            e.episodeURL = NSURL(string: urlString)
-//                        }
-//                        e.episodeTitle = p["title"] as? String
-//                        e.thumb = p["thumb"]
-//                        e.imageSets = (p["images"] as? [[AnyObject]]) ?? []
-//                        e.sectionDurations = (p["durations"] as? [Double]) ?? []
-//                        e.episodeId = p.objectId
-//                        
-//                        //print("Title: \(e.episodeTitle), url: \(e.episodeURL), image: \(e.imageSets)")
-//                        ch.episodes.append(e)
-//                    }
-//                    // shouldn't only be like this, doesn't load this one when all feeds loaded, us is []
-//                    if (++counter) == us.count {
-//                        finished(feeds)
-//                    }
-//                }
-//                
-//            }
-//        }
-        
     }
     
     

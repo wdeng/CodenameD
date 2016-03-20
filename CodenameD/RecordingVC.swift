@@ -156,6 +156,17 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         audioClipDeleteButton.tintColor = UIColor(red: 1.0, green: 60/255, blue: 48/255, alpha: 1.0)
         
         recordButton.tintColor = UIColor.whiteColor()
+        
+        
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: .DefaultToSpeaker)
+            try session.setActive(true)
+        } catch {
+            //TODO: find actions
+            debugPrint("couldn't init")
+        }
+        prepareRecorder()
     }
     
     // recordButton changes place if
@@ -193,9 +204,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         super.viewWillDisappear(animated)
         audioPlayerShouldStop()
         updateTime?.invalidate()
-        if audioRecorder != nil {
-            audioRecorder.stop()
-        }
+        audioRecorder?.stop()
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -260,7 +269,6 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    
     //MARK: play audio item
     func audioPlayerShouldStop() {
         if let idxPath = self.audioPlayerCurrentIdxPath {
@@ -269,6 +277,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
                 layer.path = nil
             }
         }
+        
         audioClipDeleteButton.removeFromSuperview()
         audioPlayerCurrentIdxPath = nil
         audioPlayer?.stop()
@@ -312,10 +321,8 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         
         audioPlayerShouldStop()
         
-        let session = AVAudioSession.sharedInstance()
         do {
-            try session.setCategory(AVAudioSessionCategoryPlayback)
-            //try session.setActive(true)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: .DefaultToSpeaker)
             
             audioPlayer = try AVAudioPlayer(contentsOfURL: audioToRun.filePathURL)
             audioPlayer?.delegate = self

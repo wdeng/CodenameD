@@ -107,29 +107,29 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         progressBar.delegate = self
         //TODO: background Play should be in section av player
         // setup background play
-//        if NSClassFromString("MPNowPlayingInfoCenter") != nil {
-//            if let poster = UIImage(named: "IMG_0006.jpg") {
-//                let pic = MPMediaItemArtwork(image: poster)
-//                let info: [String: AnyObject] = [MPMediaItemPropertyTitle: "Hello this is MKBHD",
-//                    MPMediaItemPropertyArtist: "MKBHD",    /// place holder, neeeeeed to change
-//                    MPMediaItemPropertyArtwork: pic]
-//                
-//                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = info
-//            }
-//        }
+        if NSClassFromString("MPNowPlayingInfoCenter") != nil {
+            if let poster = UIImage(named: "image1.jpg") {
+                let pic = MPMediaItemArtwork(image: poster)
+                let info: [String: AnyObject] = [MPMediaItemPropertyTitle: "Hello this is MKBHD",
+                    MPMediaItemPropertyArtist: "MKBHD",    /// place holder, neeeeeed to change
+                    MPMediaItemPropertyPlaybackDuration: 123,
+                    MPMediaItemPropertyArtwork: pic]
+                
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = info
+            }
+        }
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback) // if headphone plugged, should be PlayAndRecord
-            debugPrint("Receiving remote control events")
             UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
             
-        } catch _ {print("Audio session error")}
+        } catch _ {debugPrint("Audio session error")}
         
         //add gradient color to background top
         let gradientOpacity = CAGradientLayer()
         gradientOpacity.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 74)
         gradientOpacity.frame.size.height = 74
-        gradientOpacity.colors = [UIColor(white: 0.0, alpha: 0.2).CGColor, UIColor(white: 0.0, alpha: 0.2).CGColor, UIColor(white: 0.0, alpha: 0.12).CGColor, UIColor.clearColor().CGColor]
-        gradientOpacity.locations = [0.0, 0.6, 0.8, 1.0]
+        gradientOpacity.colors = [UIColor(white: 0.0, alpha: 0.25).CGColor, UIColor(white: 0.0, alpha: 0.0).CGColor]//, UIColor(white: 0.0, alpha: 0).CGColor]
+        gradientOpacity.locations = [0.0, 1.0]
         
         topBackgroundView.layer.addSublayer(gradientOpacity)
         

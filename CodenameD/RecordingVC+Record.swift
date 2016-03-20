@@ -14,39 +14,31 @@ extension RecordingViewController {
     
     // MARK: recording events
     @IBAction func recordStart(sender: UIButton) {
-        UIView.animateWithDuration(0.05) {
-            self.recordBackgroundView.transform = CGAffineTransformMakeScale(0.9, 0.9)
+        UIView.animateWithDuration(0.2) {
+            self.recordBackgroundView.transform = CGAffineTransformMakeScale(0.8, 0.8)
         }
         
         self.audioPlayerShouldStop()
-        
         //tmp audio saving dir
         //TODO: 点击录制有延时  需要在开始录制之前就把这些设定好
-        let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first! as String
-        let recordingName = "myaudio\(recordingNameIndex).wav"
-        let pathArray = [dirPath, recordingName]
-        let filePath = NSURL.fileURLWithPathComponents(pathArray)
+//        let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first! as String
+//        let recordingName = "myaudio\(recordingNameIndex).wav"
+//        let pathArray = [dirPath, recordingName]
+//        let filePath = NSURL.fileURLWithPathComponents(pathArray)
+//        
+//        //start recording
+//        do {
+//            try audioRecorder = AVAudioRecorder(URL: filePath!, settings: RecordSettings.recordAudioSettings)
+//            audioRecorder.delegate = self
+//            audioRecorder.meteringEnabled = true
+//            audioRecorder.prepareToRecord()
+//            audioRecorder.record()
+//        } catch {
+//            debugPrint("recording failed")
+//            return
+//        }
         
-        let recordSettings:[String : AnyObject] = [
-            //AVFormatIDKey: NSNumber(unsignedInt:kAudioFormatMPEG4AAC),
-            AVEncoderAudioQualityKey : AVAudioQuality.High.rawValue,
-            AVEncoderBitRateKey : 64000,
-            AVNumberOfChannelsKey: 1,
-            AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key, if cannot change export session in the
-        
-        //start recording
-        do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
-            try audioRecorder = AVAudioRecorder(URL: filePath!, settings: recordSettings)
-            audioRecorder.delegate = self
-            audioRecorder.meteringEnabled = true
-            audioRecorder.prepareToRecord()
-            audioRecorder.record()
-        } catch {
-            debugPrint("recording failed")
-            return
-        }
+        audioRecorder.record()
         
         // timer to sample sound level
         sampledAudioLevel.removeAll()
@@ -91,14 +83,14 @@ extension RecordingViewController {
     }
     
     @IBAction func recordEndSucceed(sender: AnyObject) {
-        UIView.animateWithDuration(0.05) {
+        UIView.animateWithDuration(0.1) {
             self.recordBackgroundView.transform = CGAffineTransformIdentity
         }
         stopRecorder()
     }
     
     @IBAction func recordEndFail(sender: UIButton) {
-        UIView.animateWithDuration(0.05) {
+        UIView.animateWithDuration(0.1) {
             self.recordBackgroundView.transform = CGAffineTransformIdentity
         }
         //recordingShouldFail = true   TODO: add back when title can notify cancel
@@ -107,10 +99,9 @@ extension RecordingViewController {
     
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
         
-        
         // remove first a few level when recording is starting
         if sampledAudioLevel.count > 5 {
-            sampledAudioLevel[0 ... 3] = []
+            sampledAudioLevel[0 ... 2] = []
         }
         
         updateTime?.invalidate()
@@ -125,6 +116,8 @@ extension RecordingViewController {
                 totalRecordedLength += dur
                 recordingNameIndex++
                 appendItemInCollectionView(withItem: recordedAudio)
+                
+                prepareRecorder()
             }
         }
         else{
@@ -132,7 +125,7 @@ extension RecordingViewController {
             recordingShouldFail = false
         }
         
-        if totalRecordedLength >= 540 {
+        if totalRecordedLength > 540 {
             navigationItem.title = AppUtils.durationToClockTime(totalRecordedLength) + "/10:00"
         } else {
             navigationItem.title = "Record"
@@ -183,25 +176,28 @@ extension RecordingViewController {
         }
     }
     
-    func initializeRecorder() {  //  may be should be static,
-        //TODO: the newer version of the Recorder, initialized after the recording, and when will did appear
-        let _:[String : AnyObject] = [
-            //AVFormatIDKey: NSNumber(unsignedInt:kAudioFormatMPEG4AAC),
-            AVEncoderAudioQualityKey : AVAudioQuality.High.rawValue,
-            AVEncoderBitRateKey : 64000,
-            AVNumberOfChannelsKey: 1,
-            AVSampleRateKey : 32000.0]   ///TODO: need to change sample rate key, if cannot change export session in the
+    func prepareRecorder() {  //  may be should be static,
+        let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first! as String
+        let recordingName = "myaudio\(recordingNameIndex).wav"
+        let pathArray = [dirPath, recordingName]
+        let filePath = NSURL.fileURLWithPathComponents(pathArray)
         
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try audioRecorder = AVAudioRecorder(URL: filePath!, settings: RecordSettings.recordAudioSettings)
+            audioRecorder.delegate = self
+            audioRecorder.meteringEnabled = true
+            audioRecorder.prepareToRecord()
+        } catch {
+            debugPrint("recording failed")
+        }
     }
     
     func stopRecorder() {
         updateTime?.invalidate()
         audioRecorder?.stop()
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setActive(false)
-        } catch {}
         removeRecordMeterGradientView()
+        
     }
 }
 
