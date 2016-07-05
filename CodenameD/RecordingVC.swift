@@ -159,13 +159,14 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         
         
         do {
+            UIApplication.sharedApplication().endReceivingRemoteControlEvents() //TODO: not sure if should change
             let session = AVAudioSession.sharedInstance()
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: .DefaultToSpeaker)
             try session.setActive(true)
         } catch {
-            //TODO: find actions
             debugPrint("couldn't init")
         }
+        
         prepareRecorder()
     }
     
@@ -208,9 +209,6 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-    
-    
-    
     
     
     // MARK: photo events

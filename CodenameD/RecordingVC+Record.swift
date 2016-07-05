@@ -101,7 +101,7 @@ extension RecordingViewController {
                 recordedAudio.samples = sampledAudioLevel
                 
                 totalRecordedLength += dur
-                recordingNameIndex++
+                recordingNameIndex+=1
                 appendItemInCollectionView(withItem: recordedAudio)
                 
                 prepareRecorder()

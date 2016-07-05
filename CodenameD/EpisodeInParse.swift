@@ -184,7 +184,8 @@ class HomeFeedFromParse: NSObject {
                         ch.episodes.append(e)
                     }
                     // shouldn't only be like this, doesn't load this one when all feeds loaded, us is []
-                    if (++counter) == users.count {
+                    counter+=1
+                    if counter == users.count {
                         finished(feeds)
                     }
                 }

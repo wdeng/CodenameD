@@ -49,16 +49,16 @@ extension RecordingViewController: UIGestureRecognizerDelegate {
                     if x {return true}
                 }
                 
-                ++idxItem
+                idxItem+=1
                 return false
             }
             while checkingBlockBackward(&minIdxItem) {
                 let backwardCell = collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: minIdxItem, inSection: toIdx.section))
                 
                 if backwardCell?.frame.midY == midY {
-                    --minIdxItem
+                    minIdxItem-=1
                 } else {
-                    ++minIdxItem
+                    minIdxItem+=1
                     break
                 }
             }
@@ -69,16 +69,16 @@ extension RecordingViewController: UIGestureRecognizerDelegate {
                     if x {return true}
                 }
                 
-                --idxItem
+                idxItem-=1
                 return false
             }
             while checkingBlockForward(&maxIdxItem) {
                 let forwardCell = collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: maxIdxItem, inSection: toIdx.section))
                 
                 if forwardCell?.frame.midY == midY {
-                    ++maxIdxItem
+                    maxIdxItem+=1
                 } else {
-                    --maxIdxItem
+                    maxIdxItem-=1
                     break
                 }
             }

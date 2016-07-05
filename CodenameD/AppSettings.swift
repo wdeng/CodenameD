@@ -35,7 +35,7 @@ extension Array {
         var count = 0
         for i in self {
             if i is AudioModel {
-                ++count
+                count+=1
             }
         }
         return count

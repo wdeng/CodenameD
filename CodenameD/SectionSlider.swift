@@ -89,11 +89,17 @@ class SectionSlider: UIControl {
     
     private var sectionFrames = [CGRect]()   // this should not be used for finding values
     
-    init(var withFrame frame: CGRect, sectionLengths: [Double] = [1.0], options: [String: AnyObject?] = [:]) {
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    init(withFrame frame: CGRect, sectionLengths: [Double] = [1.0], options: [String: AnyObject?] = [:]) {
+        
         thumbWidth = (options[Options.thumbWidth] as? CGFloat) ?? 5.0
-        frame.origin.x += (thumbWidth/2)
-        frame.size.width -= thumbWidth
-        super.init(frame: frame) // TODO: modify from here
+        var aFrame = frame
+        aFrame.origin.x += (thumbWidth/2)
+        aFrame.size.width -= thumbWidth
+        super.init(frame: aFrame) // TODO: modify from here
         
         //Calculate section frames
         valueToPositionRatio = sectionLengths.reduce(0, combine: +) / Double(self.bounds.width)
@@ -124,10 +130,6 @@ class SectionSlider: UIControl {
         thumbLayer.backgroundColor = (options[Options.thumbColor] as? UIColor)?.CGColor ?? UIColor.darkGrayColor().CGColor
         
         setupSlider()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
     }
     
     private func setupSlider() {
