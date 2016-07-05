@@ -209,7 +209,7 @@ extension RecordingViewController: UIGestureRecognizerDelegate {
     func setupTimer(dist: CGFloat, scrollDown: Bool) {
         if dist < 100 {
             if updateTime?.valid != true {
-                updateTime = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "scrollTableView:", userInfo: ["scrollDown": scrollDown], repeats: true)
+                updateTime = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: #selector(RecordingViewController.scrollTableView(_:)), userInfo: ["scrollDown": scrollDown], repeats: true)
             }
         } else {
             updateTime?.invalidate()

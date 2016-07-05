@@ -149,8 +149,8 @@ class PlaySoundViewController: UIViewController, SectionSliderDelegate {
         //let currentSection = progressBar.sectionForPosition(progressBar.currentPosition)
         //progressBar.currentSection = currentSection
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "AudioPlayerRateChanged", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaySoundViewController.sectionPlayerDidChangeRate(_:)), name: "AudioPlayerRateChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaySoundViewController.sectionPlayerDidChangeTime(_:)), name: "AudioPlayerTimeChanged", object: nil)
         
     }
     

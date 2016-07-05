@@ -160,7 +160,7 @@ class HomeFeedController: InfiniteTableViewController {
             }
             
             
-            epCell.otherOptions.addTarget(self, action: Selector("otherFunctions:"), forControlEvents: .TouchUpInside)
+            epCell.otherOptions.addTarget(self, action: #selector(HomeFeedController.otherFunctions(_:)), forControlEvents: .TouchUpInside)
 
             return epCell
         }

@@ -24,7 +24,7 @@ class InfiniteTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(InfiniteTableViewController.refresh), forControlEvents: .ValueChanged)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -37,7 +37,7 @@ class InfiniteTableViewController: UITableViewController {
         
         allItemsLoaded = false
         loadItems(.Reload, size: sizePerPage)
-        performSelector("refreshShouldStop", withObject: nil, afterDelay: 10.0)
+        performSelector(#selector(InfiniteTableViewController.refreshShouldStop), withObject: nil, afterDelay: 10.0)
     }
     
     func refreshShouldStop() {

@@ -66,7 +66,7 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDataSourc
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = CGSize(width: view.bounds.size.width + 10, height: view.bounds.size.height)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("orientationDidChange"),
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ImageCollectionViewController.orientationDidChange),
             name: UIDeviceOrientationDidChangeNotification, object: nil)
     }
     
@@ -94,11 +94,11 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDataSourc
             cell.imageView.image = image
         }
         
-        cell.panGesture = UIPanGestureRecognizer(target: self, action: "handlePan:")
+        cell.panGesture = UIPanGestureRecognizer(target: self, action: #selector(ImageCollectionViewController.handlePan(_:)))
         cell.addGestureRecognizer(cell.panGesture)
         cell.panGesture.delegate = self
         
-        cell.tapGesture = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+        cell.tapGesture = UITapGestureRecognizer(target: self, action: #selector(ImageCollectionViewController.handleSingleTap(_:)))
         cell.tapGesture.numberOfTapsRequired = 1
         cell.scrollView.addGestureRecognizer(cell.tapGesture)
         

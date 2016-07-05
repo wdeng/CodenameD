@@ -243,7 +243,7 @@ class ProfileViewController: InfiniteTableViewController {
             }
         }
         
-        cell.otherOptions.addTarget(self, action: Selector("otherFunctions:"), forControlEvents: .TouchUpInside)
+        cell.otherOptions.addTarget(self, action: #selector(ProfileViewController.otherFunctions(_:)), forControlEvents: .TouchUpInside)
         
 
 

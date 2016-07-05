@@ -52,9 +52,9 @@ class CustomTabBarController: UITabBarController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeRate:", name: "AudioPlayerRateChanged", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidChangeTime:", name: "AudioPlayerTimeChanged", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "sectionPlayerDidSetEpisode:", name: "AudioPlayerEpisodeDidSet", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CustomTabBarController.sectionPlayerDidChangeRate(_:)), name: "AudioPlayerRateChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CustomTabBarController.sectionPlayerDidChangeTime(_:)), name: "AudioPlayerTimeChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CustomTabBarController.sectionPlayerDidSetEpisode(_:)), name: "AudioPlayerEpisodeDidSet", object: nil)
         
         
     }
@@ -118,7 +118,7 @@ class CustomTabBarController: UITabBarController {
                 tabs.append(button)
                 barView.addSubview(button)
                 button.tag = i
-                button.addTarget(self, action: "selectTab:", forControlEvents: .TouchUpInside)
+                button.addTarget(self, action: #selector(CustomTabBarController.selectTab(_:)), forControlEvents: .TouchUpInside)
             }
         }
     }
@@ -193,12 +193,12 @@ class CustomTabBarController: UITabBarController {
         //audioTitleButton.titleLabel?.textAlignment = .Left
         //audioTitleButton.titleEdgeInsets.left = 4
         //audioTitleButton.titleEdgeInsets.right = TabBarSettings.playButtonWidth
-        audioTitleButton.addTarget(self, action: "openPlayer", forControlEvents: .TouchUpInside)
+        audioTitleButton.addTarget(self, action: #selector(CustomTabBarController.openPlayer), forControlEvents: .TouchUpInside)
         customTabBar.addSubview(audioTitleButton)
         
         playPauseButton.tintColor = UIColor.whiteColor()
         playPauseButton.imageView?.contentMode = .ScaleAspectFit
-        playPauseButton.addTarget(self, action: "playPauseAudio", forControlEvents: .TouchUpInside)
+        playPauseButton.addTarget(self, action: #selector(CustomTabBarController.playPauseAudio), forControlEvents: .TouchUpInside)
         playPauseButton.progress = 0
         
         audioTitleButton.addSubview(playPauseButton)

@@ -24,7 +24,7 @@ class ImageViewCell: UICollectionViewCell {
         
         // where should the gesture added to, cell or imageview
         
-        doubleTap = UITapGestureRecognizer(target: self, action: "handleDoubleTap:")
+        doubleTap = UITapGestureRecognizer(target: self, action: #selector(ImageViewCell.handleDoubleTap(_:)))
         doubleTap.numberOfTapsRequired = 2
         scrollView.addGestureRecognizer(doubleTap)
         scrollView.decelerationRate = UIScrollViewDecelerationRateFast

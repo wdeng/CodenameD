@@ -30,7 +30,7 @@ extension RecordingViewController {
         // timer to sample sound level
         sampledAudioLevel.removeAll()
         updateTime?.invalidate()
-        updateTime = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "updateTimer:", userInfo: audioRecorder, repeats: true)
+        updateTime = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(RecordingViewController.updateTimer(_:)), userInfo: audioRecorder, repeats: true)
         
     }
     

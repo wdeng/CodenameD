@@ -114,7 +114,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         recordBackgroundView.layer.cornerRadius = 35
         //recordBackgroundView.clipsToBounds = true
         
-        longPress = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
+        longPress = UILongPressGestureRecognizer(target: self, action: #selector(RecordingViewController.handleLongPress(_:)))
         longPress.minimumPressDuration = 0.3
         longPress.delegate = self
         
@@ -124,7 +124,7 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         //nav button
         navigationItem.rightBarButtonItem = closeButton
         navigationItem.leftBarButtonItem = self.editButtonItem()
-        navigationItem.leftBarButtonItem?.action = Selector("editButtonPressed")
+        navigationItem.leftBarButtonItem?.action = #selector(RecordingViewController.editButtonPressed)
         
         // record collection view
         //collectionView.allowsSelection = true
@@ -147,10 +147,10 @@ class RecordingViewController: UIViewController, AVAudioRecorderDelegate, AVAudi
         
         recordMeterView = RecordingMeterView(frame: recordBackgroundView.frame)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("orientationDidChange:"),
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RecordingViewController.orientationDidChange(_:)),
             name: UIDeviceOrientationDidChangeNotification, object: nil)
         
-        audioClipDeleteButton.addTarget(self, action: "audioClipShouldDelete:", forControlEvents: .TouchUpInside)
+        audioClipDeleteButton.addTarget(self, action: #selector(RecordingViewController.audioClipShouldDelete(_:)), forControlEvents: .TouchUpInside)
         let delImage = UIImage(named: "multiply2")?.imageWithRenderingMode(.AlwaysTemplate)
         audioClipDeleteButton.setImage(delImage, forState: .Normal)
         audioClipDeleteButton.tintColor = UIColor(red: 1.0, green: 60/255, blue: 48/255, alpha: 1.0)

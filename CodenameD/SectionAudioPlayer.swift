@@ -127,7 +127,7 @@ public class SectionAudioPlayer: NSObject {
             // not sure if this is needed
             player!.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
             //print("current status is unknown: \(player!.status == .Unknown)")
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: player!.currentItem)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SectionAudioPlayer.playerDidFinishPlaying(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: player!.currentItem)
             
             if periodicTimeObserver == nil {
                 periodicTimeObserver = player!.addPeriodicTimeObserverForInterval(CMTime(seconds: PlaySoundSetting.playbackTimerInterval, preferredTimescale: 1000), queue: nil, usingBlock: {(time) in
